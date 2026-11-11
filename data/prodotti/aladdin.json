@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 1,
+  "code": "aladdin",
+  "name": "Aladdin",
+  "designer": "Rodolfo Dordoni con Michele Angelini",
+  "description": "Sauna con frame esterno e cover della stufa in alluminio anodizzato e specchi nella parte bassa, che la fanno sembrare sospesa dal pavimento.",
+  "viewer": "image",
+  "source": {
+    "url": "https://www.effe.it/prodotto/aladdin/",
+    "consultedOn": "2026-11-11"
+  },
+  "sizes": [
+    { "code": "45", "label": "Aladdin 45", "widthCm": 180, "depthCm": 140, "heightCm": 210 },
+    { "code": "60", "label": "Aladdin 60", "widthCm": 200, "depthCm": 160, "heightCm": 210 }
+  ],
+  "defaultSize": "60",
+  "materials": [
+    { "code": "rovere-rigatino", "name": "Rovere rigatino", "type": "wood", "color": "#cba77b", "texture": "/texture/rovere-rigatino.jpg" },
+    { "code": "wenge-rigatino", "name": "Wengé rigatino", "type": "wood", "color": "#3b2c26", "texture": "/texture/wenge-rigatino.jpg" },
+    { "code": "specchio", "name": "Specchio", "type": "mirror", "color": "#b8c8d0", "texture": "/texture/specchio.jpg" },
+    { "code": "alluminio-anodizzato", "name": "Alluminio anodizzato", "type": "aluminium", "color": "#b4b7ba", "texture": null },
+    { "code": "gres-moka", "name": "Gres Masterpiece Moka", "type": "ceramic", "color": "#705d4e", "texture": "/texture/gres-moka.jpg" },
+    { "code": "gres-light", "name": "Gres Masterpiece Light", "type": "ceramic", "color": "#d3cdc3", "texture": "/texture/gres-light.jpg" },
+    { "code": "gres-siena", "name": "Gres Masterpiece Siena", "type": "ceramic", "color": "#ab7e5e", "texture": "/texture/gres-siena.jpg" }
+  ],
+  "fixedZones": {
+    "mirror": "specchio",
+    "frame": "alluminio-anodizzato"
+  },
+  "groups": [
+    {
+      "code": "wood",
+      "label": "Essenza",
+      "type": "single",
+      "step": 2,
+      "zones": ["ext", "int", "furn"],
+      "default": "rovere",
+      "values": [
+        { "code": "rovere", "label": "Rovere rigatino", "material": "rovere-rigatino" },
+        { "code": "wenge", "label": "Wengé rigatino", "material": "wenge-rigatino" }
+      ]
+    },
+    {
+      "code": "floor",
+      "label": "Pedana a pavimento in gres (120 × 120 × 5 cm)",
+      "type": "single",
+      "step": 2,
+      "zones": ["floor"],
+      "default": "none",
+      "values": [
+        { "code": "none", "label": "Nessuna pedana", "material": null },
+        { "code": "moka", "label": "Gres Masterpiece Moka", "material": "gres-moka" },
+        { "code": "light", "label": "Gres Masterpiece Light", "material": "gres-light" },
+        { "code": "siena", "label": "Gres Masterpiece Siena", "material": "gres-siena" }
+      ]
+    }
+  ],
+  "rules": [],
+  "photoGroup": "wood",
+  "photos": {
+    "45/rovere": "/foto/aladdin/aladdin-rovere-45.png",
+    "45/wenge": "/foto/aladdin/aladdin-wenge-45.png",
+    "60/rovere": "/foto/aladdin/aladdin-rovere-60.png",
+    "60/wenge": "/foto/aladdin/aladdin-wenge-60.png"
+  },
+  "geometry": null,
+  "_assetSources": {
+    "/texture/rovere-rigatino.jpg": "https://static.effe.it/website/2023/05/Rovere-rigatino-1b.jpg",
+    "/texture/wenge-rigatino.jpg": "https://static.effe.it/website/2023/05/Wenge.jpg",
+    "/texture/specchio.jpg": "https://static.effe.it/website/2023/05/Specchio.jpg",
+    "/texture/gres-moka.jpg": "https://static.effe.it/website/2024/02/15115925/Gres-Masterpiece-Moka.jpg",
+    "/texture/gres-light.jpg": "https://static.effe.it/website/2024/02/15115922/Gres-Masterpiece-Light-1.jpg",
+    "/texture/gres-siena.jpg": "https://static.effe.it/website/2024/02/15115929/Gres-Masterpiece-Siena.jpg",
+    "/foto/aladdin/aladdin-rovere-60.png": "https://static.effe.it/website/2023/05/Aladdin-Rovere-200-1200px.png",
+    "/foto/aladdin/aladdin-wenge-60.png": "https://static.effe.it/website/2023/05/Aladdin-Wenge-200-1200px.png",
+    "/foto/aladdin/aladdin-rovere-45.png": "https://static.effe.it/website/2023/05/Aladdin-Rovere-180-1200px.png",
+    "/foto/aladdin/aladdin-wenge-45.png": "https://static.effe.it/website/2023/05/Aladdin-Wenge-180-1200px.png"
+  },
+  "_daVerificare": [
+    "Ordine delle dimensioni: il sito scrive '200 x 210 x 160 cm'; qui si assume larghezza 200, altezza 210, profondità 160 (come nel mockup). Verificare sulla scheda di preinstallazione.",
+    "La pedana 120 × 120 cm entra nel taglio 45 (profondità esterna 140 cm)? Se no, aggiungere una regola only_with_size verso il taglio 60.",
+    "Optional: il sito non ne indica. Quelli del mockup (cromoterapia, audio, mensole) sono di esempio e non vanno inseriti senza una fonte.",
+    "Regole di compatibilità: il sito non ne indica.",
+    "Colori esadecimali: approssimati (dal mockup), usati solo per il ripiego a colori pieni.",
+    "geometry: da compilare nella fase 2 secondo lo schema del contratto (parti del fronte, panche, stufa a destra come nel mockup); fino ad allora viewer resta image, poi diventa svg.",
+    "Mapping zone: si assume che l'essenza valga per esterno, interno e arredi, come indica il sito ('Interno, Esterno').",
+    "Le texture del sito sono foto di campioni non ripetibili: vedi la decisione P13 dell'analisi.",
+    "I campi che iniziano con '_' sono annotazioni della bozza: lo schema Zod li scarta, non vanno tolti a mano."
+  ]
+}
