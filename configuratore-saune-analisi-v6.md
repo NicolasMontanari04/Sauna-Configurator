@@ -35,7 +35,7 @@ Ogni decisione ha la sua scheda nel [registro delle decisioni](docs-iniziali/doc
 | Email | Nodemailer con un Gmail dedicato; Mailpit in sviluppo | 0017 |
 | PDF | Impaginato sul server con PDFKit; l'SVG si converte in PNG con `@resvg/resvg-js`; ripiego a colori pieni | 0015 (da confermare con la prova) |
 | Ricontatto | Nessun ricontatto dei clienti, nessun consenso commerciale | 0007 |
-| Privacy | Presa visione dell'informativa; conservazione 12 mesi con scadenza in una colonna; cancellazione su richiesta | 0007 (proposta, da verificare con il tutor) |
+| Privacy | Presa visione dell'informativa; conservazione 12 mesi con scadenza in una colonna; cancellazione su richiesta | 0007 |
 | Cookie | Nessun cookie e nessuna risorsa esterna caricata nel browser | 0008 |
 | Accessibilità | WCAG 2.1 livello AA sulle pagine del flusso, usabile da tastiera; il PDF per ora non deve essere accessibile | 0009 |
 | Grafica | Viste SVG da parametri con texture del catalogo per le famiglie di layout supportate; per gli altri prodotti le immagini ufficiali del sito con i campioni dei materiali | 0010, 0016 (da verificare nella fase 3) |
@@ -329,7 +329,7 @@ Il peso di una vista va misurato distinguendo le texture incorporate da quelle r
 
 ### 9.4 Uso delle immagini
 
-Il tutor ha autorizzato a voce l'uso di ciò che è visibile sul sito; non c'è un'autorizzazione scritta. Le foto si copiano in `public/` e non si richiamano dal sito, per rispettare la regola sulle risorse esterne. I file 3D e 2D dell'Area Pro (DWG, FBX, SKP) restano solo sul computer locale e non entrano nel repository.
+Il tutor ha autorizzato a voce l'uso di ciò che è visibile sul sito; non c'è un'autorizzazione scritta. Le foto si copiano in `public/` e non si richiamano dal sito, per rispettare la regola sulle risorse esterne. I file 3D e 2D dell'Area Pro (DWG, FBX, SKP) restano solo sul computer locale e non entrano nel repository. Il tutor ha autorizzato (2026-11-11) l'uso delle schede di preinstallazione per ricavare dimensioni e vincoli, con la stessa regola: si leggono in locale e non entrano nel repository.
 
 ---
 
@@ -445,7 +445,7 @@ L'email scritta due volte intercetta gli errori di battitura, ma non un indirizz
   - (a) inviare il riepilogo richiesto: art. 6(1)(b) GDPR, cioè una risposta a una richiesta dell'interessato;
   - (b) conservare la richiesta per dimostrare e verificare il funzionamento del progetto: legittimo interesse, art. 6(1)(f).
 
-  Entrambe sono da confermare con il tutor. I dati non sono usati per altri scopi né per ricontattare il cliente.
+  Entrambe confermate dal tutor il 2026-11-11. I dati non sono usati per altri scopi né per ricontattare il cliente.
 - **Durata:** 12 mesi, perché coprono il tirocinio e l'eventuale verifica successiva del progetto.
 - **Consenso:** non c'è un consenso commerciale; il cliente dichiara di aver letto l'informativa. Nella riga si salvano data e versione dell'informativa.
 - **Conservazione (scadenza "pigra"):**
@@ -472,7 +472,7 @@ Il tutor inserisce un'email vera, quindi le misure qui sopra si implementano dav
 | Conservazione nella casella Gmail | Procedura manuale documentata | Gmail non la automatizza |
 | Link di conferma dell'email, anti-spam | Lavoro futuro | Gli utenti sono noti; rischio accettato per la demo |
 
-L'informativa e la base giuridica sono una bozza da far verificare al tutor (e a un eventuale referente privacy) prima del flusso completo (fase 5), cioè prima che il tutor inserisca un indirizzo vero.
+Il tutor ha confermato il 2026-11-11 contitolarità, basi giuridiche, durata di 12 mesi e bozza dell'informativa. L'informativa entra nel flusso completo (fase 5), prima che il tutor inserisca un indirizzo vero.
 
 ---
 
@@ -720,7 +720,7 @@ La documentazione sta nella cartella `docs/` del repository, in Markdown, e fa p
 | 0004 | [Prezzi fuori dal progetto](docs-iniziali/docs/decisioni/0004-prezzi-fuori-dal-progetto.md) | Accettata |
 | 0005 | [Funzioni di intelligenza artificiale fuori dal progetto](docs-iniziali/docs/decisioni/0005-ia-fuori-dal-progetto.md) | Accettata |
 | 0006 | [Un solo pulsante: salva, invia al cliente, notifica il progetto](docs-iniziali/docs/decisioni/0006-salvataggio-ed-email.md) | Accettata |
-| 0007 | [Privacy: finalità, conservazione e cancellazione](docs-iniziali/docs/decisioni/0007-privacy.md) | Proposta |
+| 0007 | [Privacy: finalità, conservazione e cancellazione](docs-iniziali/docs/decisioni/0007-privacy.md) | Accettata |
 | 0008 | [Nessun cookie e nessuna risorsa esterna caricata nel browser](docs-iniziali/docs/decisioni/0008-nessun-cookie.md) | Accettata |
 | 0009 | [Accessibilità WCAG 2.1 livello AA](docs-iniziali/docs/decisioni/0009-accessibilita.md) | Accettata |
 | 0010 | [Grafica: viste SVG da parametri e immagini del sito come ripiego](docs-iniziali/docs/decisioni/0010-grafica-svg-da-parametri.md) | Accettata; in parte sostituita da 0021 |
@@ -770,10 +770,14 @@ La documentazione sta nella cartella `docs/` del repository, in Markdown, e fa p
 | Tutor e valutatore | Sono la stessa persona: nei documenti si usa solo "tutor" |
 | Dove sta il mockup | È un artifact HTML/JS su claude.ai, generato a partire dai file forniti dall'autore. Il contenuto è descritto nell'appendice B |
 | Dati di Aladdin | Raccolti dal sito il 2026-11-11: bozza in [`data/prodotti/aladdin.json`](data/prodotti/aladdin.json), fonti e lacune nell'appendice A |
+| Contratto condiviso | Confermato da Marko: tipo `Geometria` della sezione 15.2; formato delle regole di P2, nel file e nella tabella `option_rule`; nel criterio 2 il ripiego su un prodotto della stessa famiglia è ammesso solo oltre la soglia della sezione 9.2, punto 5; il seed rifiuta un predefinito bersaglio di una regola (P2) |
+| Privacy | Confermata dal tutor: contitolarità dei due sviluppatori, art. 6(1)(b) per l'invio e 6(1)(f) per la conservazione, 12 mesi, bozza dell'informativa (sezione 12, scheda 0007) |
+| Fonte per optional e regole | Il tutor conferma che non esiste: nessun optional nel catalogo, regole solo da dati verificabili (P3) |
+| Schede di preinstallazione dell'Area Pro | Il tutor ne autorizza l'uso per ricavare dimensioni e vincoli, solo sul computer locale e fuori dal repository (sezione 9.4) |
 
 ### 20.3 Decisioni sui punti aperti
 
-Le decisioni P1–P15 sono state prese il 2026-11-11. Alcune hanno una condizione: P3 dipende da una fonte per optional e regole, P13 dalla prova della fase 2, P12 dalla vista diagonale pronta in tempo (scheda 0021); i testi che riguardano la privacy (base giuridica e informativa, P11) restano da far verificare al tutor. Le decisioni entrano nel contratto condiviso (sezione 15.2) e sono registrate nelle schede: P1 e P3 nella 0018, P2 nella 0020, P4, P5 e P11 nella 0017, P6–P10 nella 0019, P12–P15 nella 0016. Dopo la revisione sono cambiate quattro scelte, registrate in schede nuove: le viste e P12 nella 0021, il seed nella 0022, l'attesa della notifica nella 0023, il `request_id` di P4 nella 0024.
+Le decisioni P1–P15 sono state prese il 2026-11-11. Alcune hanno una condizione: P13 dipende dalla prova della fase 2, P12 dalla vista diagonale pronta in tempo (scheda 0021). P3 e i testi della privacy (P11) sono stati chiusi con il tutor (sezione 20.2). Le decisioni entrano nel contratto condiviso (sezione 15.2) e sono registrate nelle schede: P1 e P3 nella 0018, P2 nella 0020, P4, P5 e P11 nella 0017, P6–P10 nella 0019, P12–P15 nella 0016. Dopo la revisione sono cambiate quattro scelte, registrate in schede nuove: le viste e P12 nella 0021, il seed nella 0022, l'attesa della notifica nella 0023, il `request_id` di P4 nella 0024.
 
 | # | Tema | Decisione |
 |---|---|---|
@@ -829,9 +833,9 @@ Nel database diventa una riga di `option_rule` (sezione 8.1).
 
 **P3. Optional e regole reali (lacuna emersa dalla raccolta dei dati).**
 - Le pagine di Aladdin e Sky su effe.it **non riportano né optional né regole di compatibilità**: elencano solo versioni, dimensioni e materiali. Gli optional del mockup (cromoterapia, audio, mensole) e la sua regola su Sky 30 sono dati di esempio, non del catalogo.
-- *Decisione:* non si inventano dati. Si chiede al tutor se esiste una fonte (listino, Area Pro, brochure) per optional e incompatibilità. Finché non c'è:
-  - gli optional si inseriscono solo dove una fonte li documenta;
-  - le regole si ricavano solo da dati verificabili. Il primo candidato è un `only_with_size` sulla pedana 120 × 120 cm di Aladdin, se la scheda di preinstallazione mostra che non entra nel taglio 45;
+- *Decisione:* non si inventano dati. Il tutor ha confermato il 2026-11-11 che non esiste una fonte (listino, brochure) per optional e incompatibilità. Quindi:
+  - nessun prodotto ha optional;
+  - le regole si ricavano solo da dati verificabili, comprese le schede di preinstallazione dell'Area Pro (sezione 9.4). Il primo candidato è un `only_with_size` sulla pedana 120 × 120 cm di Aladdin, se la scheda di preinstallazione mostra che non entra nel taglio 45;
   - il motore delle regole è comunque provato con prove automatiche su un catalogo di prova.
 - Il criterio di successo 3 è stato riscritto di conseguenza (sezione 16).
 
@@ -905,15 +909,16 @@ Nel database diventa una riga di `option_rule` (sezione 8.1).
 
 ### 20.4 Domande per il tutor
 
-1. Base giuridica delle due finalità, durata della conservazione, contitolarità dei due sviluppatori e testo dell'informativa (sezione 12).
-2. Esiste una fonte per optional e incompatibilità dei prodotti (P3)?
-3. Si possono usare le schede di preinstallazione dell'Area Pro per ricavare dimensioni e vincoli, senza mettere i file nel repository?
+Le tre domande hanno avuto risposta il 2026-11-11 (sezione 20.2):
+1. privacy (base giuridica, durata, contitolarità, informativa): proposta confermata (sezione 12);
+2. fonte per optional e incompatibilità: non esiste (P3);
+3. schede di preinstallazione dell'Area Pro: si possono usare, solo sul computer locale (sezione 9.4).
 
 ### 20.5 Ancora da fare
 
 - Creare l'**email del progetto**: finché manca, il codice usa la variabile `PROJECT_EMAIL` e l'informativa un segnaposto.
 - Annotare cosa è stato verificato di Docker su entrambi i portatili (ad esempio `docker run hello-world` con WSL2).
-- Verificare sulla scheda di preinstallazione l'ordine delle dimensioni di Aladdin (appendice A).
+- Verificare sulla scheda di preinstallazione dell'Area Pro l'ordine delle dimensioni di Aladdin e se la pedana 120 × 120 cm entra nel taglio 45 (appendice A), prima di scrivere la `geometry` di Aladdin (fase 2).
 
 ---
 
@@ -973,14 +978,14 @@ Nel database diventa una riga di `option_rule` (sezione 8.1).
 | MySQL | "Ecosistema meno ampio" | Supporto JSON meno completo, vincoli `CHECK` solo dalla 8.0.16 (6.6) |
 | Prisma | "Alternativa valutata" | Ipotesi iniziale, rivalutata e scartata, come nella scheda 0003 (6.7) |
 | Cookie | "Nessun servizio esterno" | Nessuna risorsa esterna caricata nel browser; Gmail è dichiarato (2, 12) |
-| Base giuridica | "Da definire" | Proposta art. 6(1)(b), da confermare (12) |
+| Base giuridica | "Da definire" | Art. 6(1)(b) per l'invio e 6(1)(f) per la conservazione, confermati dal tutor (12) |
 | Accessibilità | axe "a ogni passo" | Tastiera a ogni modifica, axe e verifica formale in tre momenti fissi (14) |
 | Valutazione | "La documentazione fa parte della valutazione" | Non c'è voto; la documentazione fa parte della consegna (1, 19) |
 | Carico di lavoro | Tutto il generatore su M | N trascrive dati e geometria; contatto sullo schema Zod (15.1) |
 | Libreria PDF | Non scelta | PDFKit, scheda 0015 (11) |
 | Tutor e valutatore | Non distinti | Stessa persona: solo "tutor" (3) |
-| Optional e regole | Dati come presenti nel catalogo | Il sito non li riporta: criterio 3 riscritto, domanda al tutor (16, 20.3 P3) |
-| Punti aperti | Elenco senza soluzioni | Decisioni P1–P15, domande per il tutor (20.3, 20.4) |
+| Optional e regole | Dati come presenti nel catalogo | Il sito non li riporta e il tutor conferma che non c'è altra fonte: nessun optional, criterio 3 riscritto (16, 20.3 P3) |
+| Punti aperti | Elenco senza soluzioni | Decisioni P1–P15, domande al tutor chiuse (20.2, 20.3, 20.4) |
 | Viste | Esterna e frontale interna | Frontale e diagonale, entrambe esterne; interno visibile dal vetro (9.1, scheda 0021) |
 | Seed | Upsert senza cancellazioni | Sincronizzazione completa in transazione; catalogo letto dal database dalla fase 3 (8.2, scheda 0022) |
 | Notifica al progetto | Non bloccava la risposta | Si attende entro RNF4 (10.2, scheda 0023) |
@@ -1007,7 +1012,7 @@ Fonte: [effe.it/prodotto/aladdin](https://www.effe.it/prodotto/aladdin/), consul
 
 **Lacune e incertezze**
 - *Ordine delle dimensioni.* Per Aladdin il sito scrive "200 x 210 x 160", per Sky "200 x 150 x 201". La lettura più probabile è larghezza × altezza × profondità per Aladdin e larghezza × profondità × altezza per Sky (l'altezza di una sauna è intorno a 2 m). La bozza usa 200 × 160 × 210 (L × P × H), come il mockup; va verificato sulla scheda di preinstallazione.
-- *Pedana nel taglio 45.* Il sito non dice se la pedana da 120 × 120 cm entra nel taglio 45 (profondità esterna 140 cm). Se non entra, diventa la prima regola reale (`only_with_size`).
+- *Pedana nel taglio 45.* Il sito non dice se la pedana da 120 × 120 cm entra nel taglio 45 (profondità esterna 140 cm). Si verifica sulla scheda di preinstallazione (sezione 20.5); se non entra, diventa la prima regola reale (`only_with_size`).
 - *Pedana facoltativa.* Il sito la presenta come completamento ("può essere completata"): la bozza la tratta come gruppo con il valore "Nessuna pedana" predefinito.
 - *Colori dei materiali.* I valori esadecimali sono quelli approssimati del mockup e servono solo per il ripiego a colori pieni.
 

@@ -10,7 +10,7 @@ Una scheda per ogni scelta. Se una scelta cambia, non si modifica la vecchia: si
 | [0004](./0004-prezzi-fuori-dal-progetto.md) | Prezzi fuori dal progetto | Accettata |
 | [0005](./0005-ia-fuori-dal-progetto.md) | Funzioni di intelligenza artificiale fuori dal progetto | Accettata |
 | [0006](./0006-salvataggio-ed-email.md) | Un solo pulsante: salva, invia al cliente, notifica il progetto | Accettata |
-| [0007](./0007-privacy.md) | Privacy: finalità, conservazione e cancellazione | Proposta |
+| [0007](./0007-privacy.md) | Privacy: finalità, conservazione e cancellazione | Accettata |
 | [0008](./0008-nessun-cookie.md) | Nessun cookie e nessuna risorsa esterna caricata nel browser | Accettata |
 | [0009](./0009-accessibilita.md) | Accessibilità WCAG 2.1 livello AA | Accettata |
 | [0010](./0010-grafica-svg-da-parametri.md) | Grafica: viste SVG da parametri e immagini del sito come ripiego | Accettata; in parte sostituita da 0021 |

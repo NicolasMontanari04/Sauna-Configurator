@@ -77,10 +77,10 @@
     "/foto/aladdin/aladdin-wenge-45.png": "https://static.effe.it/website/2023/05/Aladdin-Wenge-180-1200px.png"
   },
   "_daVerificare": [
-    "Ordine delle dimensioni: il sito scrive '200 x 210 x 160 cm'; qui si assume larghezza 200, altezza 210, profondità 160 (come nel mockup). Verificare sulla scheda di preinstallazione.",
+    "Ordine delle dimensioni: il sito scrive '200 x 210 x 160 cm'; qui si assume larghezza 200, altezza 210, profondità 160 (come nel mockup). Verificare sulla scheda di preinstallazione (uso autorizzato dal tutor, solo in locale).",
     "La pedana 120 × 120 cm entra nel taglio 45 (profondità esterna 140 cm)? Se no, aggiungere una regola only_with_size verso il taglio 60.",
-    "Optional: il sito non ne indica. Quelli del mockup (cromoterapia, audio, mensole) sono di esempio e non vanno inseriti senza una fonte.",
-    "Regole di compatibilità: il sito non ne indica.",
+    "Optional: il sito non ne indica e il tutor conferma che non c'è altra fonte (2026-11-11): nessun optional. Quelli del mockup (cromoterapia, audio, mensole) sono di esempio.",
+    "Regole di compatibilità: il sito non ne indica e non c'è altra fonte. L'unica possibile viene dalla scheda di preinstallazione (pedana nel taglio 45).",
     "Colori esadecimali: approssimati (dal mockup), usati solo per il ripiego a colori pieni.",
     "geometry: da compilare nella fase 2 secondo lo schema del contratto (parti del fronte, panche, stufa a destra come nel mockup); fino ad allora viewer resta image, poi diventa svg.",
     "Mapping zone: si assume che l'essenza valga per esterno, interno e arredi, come indica il sito ('Interno, Esterno').",

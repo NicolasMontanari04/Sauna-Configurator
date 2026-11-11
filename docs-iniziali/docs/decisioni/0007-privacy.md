@@ -1,6 +1,6 @@
 # 0007. Privacy: finalità, conservazione e cancellazione
 
-- **Stato:** Proposta (base giuridica e informativa da confermare con il tutor)
+- **Stato:** Accettata (confermata dal tutor il 2026-11-11)
 - **Note:** Rivista il 2026-11-11 (analisi v6): stato corretto da "Accettata" a "Proposta", base giuridica proposta, conservazione precisata
 
 ## Contesto
@@ -25,3 +25,7 @@ Consenso al ricontatto (escluso); pulizia periodica con uno scheduler (scartata:
 Precisazione dopo la revisione dell'analisi v6; la scelta non cambia.
 
 - I titolari sono i due sviluppatori, come contitolari; le basi giuridiche proposte sono l'art. 6(1)(b) per l'invio del riepilogo e l'art. 6(1)(f) per la conservazione (analisi, sezione 12).
+
+## Nota del 2026-11-11 (conferma del tutor)
+
+Il tutor ha confermato la proposta: contitolarità dei due sviluppatori, art. 6(1)(b) per l'invio del riepilogo e art. 6(1)(f) per la conservazione, durata di 12 mesi, informativa dalla bozza del mockup. Il "Contesto" (una persona fisica come titolare) e la riga "Base giuridica proposta" della Decisione sono superati da questa nota e da quella precedente.

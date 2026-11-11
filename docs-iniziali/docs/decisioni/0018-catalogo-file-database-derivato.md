@@ -46,3 +46,8 @@ Bozza di Aladdin valida come JSON. Da completare: schema Zod nella PR del contra
 
 Dopo la revisione dell'analisi v6 il seed e la lettura del catalogo sono cambiati: è un cambio di scelta, registrato nella scheda [0022](./0022-seed-sincronizzazione-catalogo.md). Le righe "Seed" e "Interfaccia" della Decisione sono superate da quella scheda.
 - Le chiavi che iniziano con `_` non si tolgono a mano: le scarta lo schema Zod, che per il resto è `.strict()` (analisi, P1).
+
+## Nota del 2026-11-11 (risposte del tutor)
+
+- Non esiste una fonte per optional e regole di compatibilità: nessun prodotto ha optional, e il motore delle regole si prova solo sul catalogo di prova finché un dato verificabile non documenta una regola.
+- Le schede di preinstallazione dell'Area Pro si possono usare per ricavare dimensioni e vincoli, solo sul computer locale e fuori dal repository.
