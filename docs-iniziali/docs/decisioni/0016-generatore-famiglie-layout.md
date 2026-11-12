@@ -1,6 +1,6 @@
 # 0016. Generatore delle viste come funzione pura, per famiglie di layout
 
-- **Stato:** Accettata (estensione ad altre famiglie da verificare nella fase 3); sostituita in parte da [0021](./0021-viste-frontale-diagonale.md) (viste e immagini nel PDF)
+- **Stato:** Sostituita da [0025](./0025-viste-pronte-da-modello-3d.md); restano validi i font (P14) e l'opzione `flat`
 - **Note:** Precisa la [0010](./0010-grafica-svg-da-parametri.md); raccoglie le decisioni P12, P13, P14 e P15 dell'analisi v6
 
 ## Contesto

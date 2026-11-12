@@ -1,6 +1,6 @@
 # 0010. Grafica: viste SVG da parametri e immagini del sito come ripiego
 
-- **Stato:** Accettata; sostituita in parte da [0021](./0021-viste-frontale-diagonale.md) (viste)
+- **Stato:** Sostituita da [0025](./0025-viste-pronte-da-modello-3d.md)
 - **Note:** Rivista il 2026-11-11 (analisi v6): la replicabilità vale per le famiglie di layout supportate; 3D escluso; pianta solo se avanza tempo
 
 ## Contesto

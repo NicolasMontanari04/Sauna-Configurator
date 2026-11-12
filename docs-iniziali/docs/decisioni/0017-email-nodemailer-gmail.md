@@ -1,6 +1,6 @@
 # 0017. Email: Nodemailer con Gmail, stati nella riga, Mailpit in sviluppo
 
-- **Stato:** Accettata; sostituita in parte da [0023](./0023-notifica-attesa.md) (momento della notifica) e da [0024](./0024-request-id-dal-server.md) (`request_id`)
+- **Stato:** Accettata; sostituita in parte da [0023](./0023-notifica-attesa.md) (momento della notifica) e da [0026](./0026-pagina-unica-come-il-mockup.md) (`request_id`, che sostituisce la 0024)
 - **Note:** Precisa la [0006](./0006-salvataggio-ed-email.md); raccoglie le decisioni P4, P5 e P11 dell'analisi v6
 
 ## Contesto

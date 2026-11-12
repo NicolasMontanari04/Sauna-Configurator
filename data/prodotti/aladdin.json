@@ -31,7 +31,6 @@
     {
       "code": "wood",
       "label": "Essenza",
-      "type": "single",
       "step": 2,
       "zones": ["ext", "int", "furn"],
       "default": "rovere",
@@ -43,19 +42,16 @@
     {
       "code": "floor",
       "label": "Pedana a pavimento in gres (120 × 120 × 5 cm)",
-      "type": "single",
       "step": 2,
       "zones": ["floor"],
-      "default": "none",
+      "default": "moka",
       "values": [
-        { "code": "none", "label": "Nessuna pedana", "material": null },
         { "code": "moka", "label": "Gres Masterpiece Moka", "material": "gres-moka" },
         { "code": "light", "label": "Gres Masterpiece Light", "material": "gres-light" },
         { "code": "siena", "label": "Gres Masterpiece Siena", "material": "gres-siena" }
       ]
     }
   ],
-  "rules": [],
   "photoGroup": "wood",
   "photos": {
     "45/rovere": "/foto/aladdin/aladdin-rovere-45.png",
@@ -63,7 +59,6 @@
     "60/rovere": "/foto/aladdin/aladdin-rovere-60.png",
     "60/wenge": "/foto/aladdin/aladdin-wenge-60.png"
   },
-  "geometry": null,
   "_assetSources": {
     "/texture/rovere-rigatino.jpg": "https://static.effe.it/website/2023/05/Rovere-rigatino-1b.jpg",
     "/texture/wenge-rigatino.jpg": "https://static.effe.it/website/2023/05/Wenge.jpg",
@@ -77,14 +72,10 @@
     "/foto/aladdin/aladdin-wenge-45.png": "https://static.effe.it/website/2023/05/Aladdin-Wenge-180-1200px.png"
   },
   "_daVerificare": [
-    "Ordine delle dimensioni: il sito scrive '200 x 210 x 160 cm'; qui si assume larghezza 200, altezza 210, profondità 160 (come nel mockup). Verificare sulla scheda di preinstallazione (uso autorizzato dal tutor, solo in locale).",
-    "La pedana 120 × 120 cm entra nel taglio 45 (profondità esterna 140 cm)? Se no, aggiungere una regola only_with_size verso il taglio 60.",
-    "Optional: il sito non ne indica e il tutor conferma che non c'è altra fonte (2026-11-11): nessun optional. Quelli del mockup (cromoterapia, audio, mensole) sono di esempio.",
-    "Regole di compatibilità: il sito non ne indica e non c'è altra fonte. L'unica possibile viene dalla scheda di preinstallazione (pedana nel taglio 45).",
-    "Colori esadecimali: approssimati (dal mockup), usati solo per il ripiego a colori pieni.",
-    "geometry: da compilare nella fase 2 secondo lo schema del contratto (parti del fronte, panche, stufa a destra come nel mockup); fino ad allora viewer resta image, poi diventa svg.",
+    "Colori esadecimali: approssimati (dal mockup). Servono come base del colore di ogni zona e per il ripiego senza texture: vanno confrontati con le foto dei campioni.",
+    "viewer resta image finché le viste dei due tagli non sono in public/viste/aladdin/; poi diventa svg.",
     "Mapping zone: si assume che l'essenza valga per esterno, interno e arredi, come indica il sito ('Interno, Esterno').",
-    "Le texture del sito sono foto di campioni non ripetibili: vedi la decisione P13 dell'analisi.",
+    "Pedana: il sito la presenta come facoltativa; qui una finitura è sempre selezionata, con Moka predefinita (scheda 0027). Nelle viste colora tutto il pavimento.",
     "I campi che iniziano con '_' sono annotazioni della bozza: lo schema Zod li scarta, non vanno tolti a mano."
   ]
 }

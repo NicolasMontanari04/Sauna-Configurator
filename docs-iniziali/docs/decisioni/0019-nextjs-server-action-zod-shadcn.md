@@ -1,6 +1,6 @@
 # 0019. Next.js con Server Action e Route Handler, Zod, shadcn/ui
 
-- **Stato:** Accettata; sostituita in parte da [0024](./0024-request-id-dal-server.md) (`request_id`)
+- **Stato:** Accettata; sostituita in parte da [0026](./0026-pagina-unica-come-il-mockup.md) (route, firme delle Server Action, funzionamento senza JavaScript, `request_id`)
 - **Note:** Raccoglie le decisioni P6, P7, P8, P9 e P10 dell'analisi v6
 
 ## Contesto

@@ -1,6 +1,6 @@
 # 0021. Viste esterne: frontale e diagonale
 
-- **Stato:** Accettata
+- **Stato:** Sostituita da [0025](./0025-viste-pronte-da-modello-3d.md)
 - **Sostituisce:** in parte la [0010](./0010-grafica-svg-da-parametri.md) e la [0016](./0016-generatore-famiglie-layout.md), solo per le viste e per le immagini nel PDF (decisione P12 dell'analisi v6)
 
 ## Contesto

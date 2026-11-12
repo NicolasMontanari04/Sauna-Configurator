@@ -1,6 +1,6 @@
 # 0018. Catalogo come file JSON, database derivato
 
-- **Stato:** Accettata; sostituita in parte da [0022](./0022-seed-sincronizzazione-catalogo.md) (seed e lettura del catalogo)
+- **Stato:** Accettata; sostituita in parte da [0022](./0022-seed-sincronizzazione-catalogo.md) (seed e lettura del catalogo) e da [0027](./0027-niente-regole-ne-optional.md) (regole e optional nei file)
 - **Note:** Raccoglie le decisioni P1 e P3 dell'analisi v6
 
 ## Contesto

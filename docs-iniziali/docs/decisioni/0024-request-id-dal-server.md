@@ -1,6 +1,6 @@
 # 0024. Il request_id lo genera il server, nel modulo
 
-- **Stato:** Accettata
+- **Stato:** Sostituita da [0026](./0026-pagina-unica-come-il-mockup.md)
 - **Sostituisce:** in parte la [0017](./0017-email-nodemailer-gmail.md) e la [0019](./0019-nextjs-server-action-zod-shadcn.md), solo per chi genera il `request_id` (decisione P4 dell'analisi v6)
 
 ## Contesto

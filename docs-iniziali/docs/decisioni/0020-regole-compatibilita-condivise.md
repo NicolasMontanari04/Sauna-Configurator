@@ -1,6 +1,6 @@
 # 0020. Regole di compatibilità condivise tra interfaccia e server
 
-- **Stato:** Accettata
+- **Stato:** Sostituita da [0027](./0027-niente-regole-ne-optional.md)
 - **Note:** Raccoglie la decisione P2 dell'analisi v6
 
 ## Contesto
