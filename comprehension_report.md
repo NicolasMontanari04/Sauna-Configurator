@@ -1,150 +1,112 @@
 ## Cosa propone il documento
 
-Il documento propone una demo di tirocinio: un configuratore web per le saune del catalogo effe.it, scritto in Next.js e React. L'applicazione gira sul portatile, mentre solo PostgreSQL gira in Docker; l'ORM è Drizzle. Il cliente sceglie prodotto, taglio, essenza, pedana e optional. Vede un'anteprima SVG generata da parametri da una funzione pura. Per i prodotti che il generatore non copre vede la foto ufficiale con i campioni dei materiali (livello B).
+Due tirocinanti devono costruire entro il 26 novembre 2026 un configuratore web in Next.js per le saune del catalogo effe.it. Serve solo per una demo locale.
 
-Un unico pulsante, "Ricevi il riepilogo", fa tre cose in sequenza. Prima salva una riga `configuration`, che contiene uno snapshot JSONB e gli stati di invio. Poi invia al cliente un PDF, impaginato con PDFKit con l'immagine convertita da resvg, tramite Nodemailer e Gmail. Infine notifica la casella del progetto. In caso di errore il cliente ha "Riprova" e "Scarica il PDF", entrambi legati a un token casuale.
+Il cliente sceglie prodotto, taglio (cioè la misura) e materiali. Vede un'anteprima SVG in quattro viste: Esterno, Frontale, Pianta e Materiali. Il colore e la texture di ogni zona cambiano in tempo reale.
 
-Il documento fissa anche:
-- privacy minima: scadenza a 12 mesi, pulizia all'avvio, cancellazione su richiesta;
-- nessun cookie;
-- WCAG 2.1 AA sul flusso;
-- un piano in 10 fasi per due sviluppatori, che prova per prime le parti incerte;
-- i criteri di successo: almeno 3 prodotti, con un obiettivo di 6–8.
+Le viste sono disegni SVG già pronti, uno per taglio. Si ricavano dai file 3D e 2D dell'"Area Pro" del produttore e seguono un formato fisso: ogni path ha una zona e un livello d'ombra. Dove le viste mancano, si mostra la foto ufficiale con i campioni dei materiali. Questo ripiego è il livello B.
 
-## Come funziona il sistema esistente, secondo il documento
+Un solo pulsante, "Ricevi il riepilogo", fa tre cose:
+- salva la configurazione in PostgreSQL, che gira in Docker;
+- invia al cliente un PDF fatto con PDFKit e resvg;
+- manda una notifica al progetto.
 
-Il codice di produzione non esiste ancora. Esistono:
-- un mockup HTML/JS, generato come artifact su claude.ai, con 5 prodotti di esempio, venature generate dal codice e dati inventati (appendice B);
-- un generatore SVG provato solo su Aladdin 60;
-- una bozza dei dati di Aladdin in `data/prodotti/aladdin.json`, con lacune note: ordine delle dimensioni, pedana nel taglio 45, nessun optional e nessuna regola sul sito;
-- un registro di decisioni 0001–0020 in `docs-iniziali/`.
+Le email partono con Nodemailer e Gmail, in parallelo. Ognuna ha una scadenza di 15 secondi, e "Riprova" permette fino a 3 tentativi.
 
-Le decisioni P1–P15 sono state chiuse il 2026-11-11. Restano aperte tre domande per il tutor (base giuridica, fonte per optional e regole, uso delle schede dell'Area Pro) e la creazione dell'email del progetto.
+Il catalogo sta in file JSON validati con Zod, e un seed svuota e ricarica le tabelle del catalogo. Non ci sono regole di compatibilità né optional.
 
-Ho potuto parafrasare tutte le sezioni, quindi non ci sono Blocker. Restano però alcuni punti dove le parti del documento non si collegano.
+## Come funziona oggi il sistema, secondo il documento
+
+Il codice dell'applicazione non esiste ancora. Il lavoro parte dal via libera del tutor. Oggi esistono quattro cose:
+- il sito effe.it, con una foto per versione. Per Yoku S non ci sono foto dei due legni esterni;
+- un mockup HTML in `docs/mockup/`, con l'interfaccia di riferimento e viste curate solo per Aladdin 60. Le viste usano classi e variabili CSS che resvg non supporta, quindi vanno convertite;
+- una bozza di `data/prodotti/aladdin.json`;
+- il registro delle decisioni, con le schede 0001–0030.
+
+La fase 1 è fatta:
+- account Gmail e invii di prova;
+- Docker con il solo database su entrambi i portatili;
+- una prova di uno script delle viste, poi abbandonato.
 
 ---
 
-# Stage 6, Comprehension Test: configuratore-saune-analisi-v6.md
+# Stage 6: Comprehension Test, round 2 (riesame)
 
-- **Revisore:** `egm-comprehension`, contesto isolato, ha letto **solo** il documento target (righe 1–832), senza contesto Goldfish.
-- **Divisione:** FeatureRange 1..434, DetailedRange 435..831.
+- **Documento:** `configuratore-saune-analisi-v7.md` (righe 1..1134). Il revisore ha letto solo il documento, senza file collegati e senza standard.
+- **Intervalli:** FeatureRange 1..526, DetailedRange 527..1134
+- **Revisore:** `egm-comprehension`, in un nuovo contesto isolato. Il report del round 1 non gli è stato passato.
+- **Round 1:** `archivio/revisione-v7/comprehension_report-round1.md`
+- **Limite dei riesami:** questo è l'unico riesame ammesso per lo Stage 6.
 
-> **Nota dell'orchestratore:** tre problemi Major coincidono con quelli dello Stage 5, trovati qui in modo indipendente da un lettore senza contesto:
-> - #1 corrisponde ad A in `zoom_out_report.md`;
-> - #2 corrisponde a B e C;
-> - #6 corrisponde a D.
->
-> Lo stesso vale per i Nit #7, #13 e #15. Sono i punti più confermati della revisione finora.
+**Esito:** si può riassumere tutto il documento, quindi non ci sono Blocker. Ci sono 3 Major e 9 Nit. Il punto più debole resta la "chat" (S1): chi legge capisce cosa si costruisce, ma non come si ottengono le viste dei prodotti dopo Aladdin 60.
 
-## Findings
+## Stato dei risultati del round 1
 
-### Major
+Il revisore non ha visto il round 1. Questo confronto l'ho fatto io, cercando nel testo attuale.
 
-**1. La rigenerazione del PDF dallo snapshot non è coerente con l'immutabilità dichiarata**
-- **Righe:** 88, 137, 205, 305, 353 e 206/212–225.
-- **Problema:** il documento dice che una configurazione salvata "resta identica anche se il catalogo viene modificato" e che un prodotto tolto dal catalogo non blocca le configurazioni (riga 205). Dice anche che "Scarica il PDF" e "Riprova" rigenerano il PDF "dalla riga salvata".
-- Però lo snapshot (righe 212–225) contiene solo codici ed etichette. La geometria, le texture e `material.colore`, che servono a disegnare la vista SVG o la foto con i campioni, vengono dal catalogo corrente.
-- Un lettore non sa quindi cosa succede al PDF se il prodotto viene rimosso o la geometria cambia: fallisce, cambia, oppure c'è un ripiego? Le garanzie dichiarate e il meccanismo descritto non si combinano.
+| Voce del round 1 | Stato | Verifica |
+|---|---|---|
+| C1 Cos'è la "chat" | **aperto** | Il glossario (r. 80) e la 9.1 (r. 293, 304) dicono come si usa la chat, non cos'è. La 9.4 (r. 347) dice ancora "un servizio esterno". Il revisore lo segnala di nuovo come S1. |
+| C2 Viste del mockup | risolto | L'appendice B (r. 1114) ora spiega che per Aladdin 60 la seconda vista è la Frontale. |
+| C3 Proporzioni delle viste riusate | non segnalato di nuovo | Il revisore non lo riporta. Non ho controllato se il testo della 9.1 è cambiato. |
+| C4 Storico: 3 tentativi per la notifica | risolto | La frase non è più nel documento. |
+| C5–C14 (Nit) | per lo più non segnalati di nuovo | C10, la variante di Yoku S, torna come S9. C14, la corrispondenza P1–P15, torna come S12. |
 
-**2. Non è chiaro da dove legge il catalogo il configuratore a regime: file o database**
-- **Righe:** 231–236, 291–293, 760.
-- **Problema:** i file in `data/prodotti/` sono "la fonte". Marko li importa nell'interfaccia "finché il database non è pronto". Le pagine del catalogo vengono dal database.
-- Non è detto se, dopo la fase 3, il configuratore e la `valuta` lato server leggono regole e geometria dai file o dal database. Se usano fonti diverse, interfaccia e server potrebbero valutare regole diverse.
-- La parola "finché" fa pensare a una sostituzione, ma la sostituzione non viene mai descritta.
+## 🟡 Major
 
-**3. Il taglio è modellato in due modi**
-- **Righe:** 48, 191, 218, 640, 682.
-- **Problema:** il taglio ha una tabella propria, `product_size`, e nello snapshot `size` sta fuori da `selections`. Però P1 (riga 640) elenca `size` tra "i codici dei gruppi", come `wood` e `floor`, e P7 lo tratta come una chiave di gruppo nell'URL.
-- Un lettore non capisce se il taglio è anche un `option_group` (con `passo`, default e regole) oppure un'entità separata. La differenza conta per `only_with_size` e per la regola "ogni gruppo `single` è obbligatorio" (riga 654).
+### S1. "In chat": non si capisce chi o che cosa produce le viste
+- **Dove:** glossario r. 80; 9.1 r. 293 e 303–309; 9.4 r. 347; 21 r. 960; appendice B r. 1115.
+- **Cosa manca:** tutta la grafica si basa sulle viste "prodotte in chat", ma il documento non dice mai cos'è la chat. Non dice:
+  - quale servizio o strumento sia;
+  - se sia un assistente di intelligenza artificiale;
+  - chi ottiene l'SVG, e come, partendo da un FBX, DWG o SKP.
 
-**4. Le viste "frontale" e "interna" si confondono**
-- **Righe:** 246, 248, 56, 825.
-- **Problema:** le viste previste sono esterna, frontale ed eventualmente pianta. La "vista interna" è scartata perché difficile da replicare. Subito dopo, però, si legge che la vista "Interno" del mockup è "la vista frontale interna" ed è la "frontale" di questo documento.
-- Il lettore non riesce a dire cosa mostra la frontale: la parete frontale vista da fuori, cioè la sequenza del fronte, o vista da dentro, con panche e stufa? E quindi non capisce cosa sia la vista interna scartata.
+  La 9.4 parla solo di "un servizio esterno". La sez. 21 esclude le "funzioni di IA nell'applicazione", e così lascia solo intuire che la chat sia un'IA.
+- **Perché ci si blocca:** chi legge non sa giudicare se il metodo è fattibile né se si può ripetere.
+  - Come si ottiene una prospettiva a tre quarti con 6 livelli d'ombra da un DWG 2D? Yoku S 80 ha solo file 2D.
+  - Perché è stato scartato lo script (scheda 0029)?
+  - Su cosa poggia la stima della "mezza giornata per taglio"?
+- **Proposta:**
+  - Una frase nel glossario e nella 9.1, per esempio "chat = [nome dello strumento], un assistente di IA a cui si carica il file e si chiede l'SVG".
+  - Indicare quali formati di partenza bastano per ciascuna vista: per esempio, un file 2D basta per la Pianta ma non per l'Esterno?
+  - Dire chi controlla il risultato.
 
-**5. La firma della funzione pura di disegno cambia da sezione a sezione**
-- **Righe:** 272, 350, 362, 711–713.
-- **Problema:** in 9.3 la firma è `(geometria, scelte, vista) → stringa SVG`. In altre sezioni la stessa funzione:
-  - incorpora le texture come data URI sul server, mentre nel browser usa i percorsi di `public/`;
-  - accetta `flat: true`;
-  - riceve il prefisso degli `id` come parametro (P15).
-- Non viene mai data un'unica firma, né spiegato come la funzione passa da riferimenti relativi a data URI. Chi scrive il contratto (15.2) dovrebbe ricostruirla da quattro punti diversi.
+### S2. Il calendario non spiega come si assorbe un ritardo
+- **Dove:** 15.5 r. 631, 640, 646–654; sez. 16 criterio 2.
+- **Cosa non torna:** ogni giorno di ritardo si toglie dalla fase 6 "applicando i tagli nel loro ordine". Però:
+  - il primo taglio riguarda i "prodotti oltre i tre minimi", che nella fase 6 non ci sono;
+  - il quarto taglio, le prove Playwright, non appartiene alla fase 6;
+  - con 2 giorni di ritardo la fase 6 sparisce, e Yoku S, che è obbligatorio, non entra.
+- **Perché ci si blocca:** non si capisce cosa si fa davvero con 1 o 2 giorni in meno.
+- **Proposta:** una tabella "ritardo di 1 giorno → si fa X, si toglie Y; ritardo di 2 giorni → …", oppure legare ogni taglio al giorno che fa risparmiare.
+- **Collegamento:** conferma R1 e R3 dello Stage 5, che restano aperti.
 
-**6. Non è spiegato come la notifica "non blocca la risposta al cliente"**
-- **Righe:** 304, 685.
-- **Problema:** il passo 6 dice che il risultato della notifica non blocca la risposta, ma non spiega il meccanismo. In una Server Action la risposta parte di norma dopo che la funzione è terminata.
-- Il lettore non sa se la notifica viene eseguita dopo la risposta, e con quale meccanismo, oppure in sequenza con il suo timeout. È proprio il caso di "il sistema lo gestisce" senza dire come.
-- Non è detto nemmeno se esiste un modo per ritentare una notifica `fallita`.
+### S3. La regola della mezza giornata è ambigua tra taglio e prodotto
+- **Dove:** 9.2 punti 2, 4 e 6 (r. 320, 322, 326).
+- **Cosa non torna:**
+  - il punto 6 dice che, se un taglio richiede più di mezza giornata, il prodotto passa al livello B;
+  - i punti 2 e 4 dicono invece che un taglio senza file riusa le viste di un altro taglio oppure resta fuori.
+- **Perché ci si blocca:** se Aladdin 45 è lento, non si sa se tutto Aladdin scende al livello B, compreso il 60 che è già pronto, o se basta escludere il 45. La risposta incide sul criterio 2.
+- **Proposta:** scrivere in modo esplicito: "si esclude il taglio; il prodotto passa al livello B solo se non resta nessun taglio con viste". Oppure il contrario, se è quella l'intenzione.
 
-### Nit
+## 🟢 Nit
 
-**7. Riga di tabella fuori posto**
-- **Riga:** 831.
-- **Problema:** la riga "Nuove sezioni | — | Contesto, glossario, …" appartiene alla tabella della sezione 23, ma sta dopo l'elenco dell'appendice B. È rimasta staccata dalla tabella, che così è incompleta.
+- **S4. Il titolo della scheda 0025 contraddice il testo.** Compare in sez. 19 (r. 780) e 23.1 (r. 998). Il titolo dice "generate da uno script a partire dal modello 3D", mentre la 9.1 (r. 309) dice che nel repository non c'è nessuno script. Proposta: aggiungere nella colonna Stato "(il metodo dello script è sostituito da 0029)".
+- **S5. Il terzo prodotto non ha un nome.** Compare in 15.5 (r. 646) e nel criterio 2. Si parla di "un prodotto con la foto ufficiale" senza dire quale. Proposta: un candidato, oppure il criterio per sceglierlo.
+- **S6. "La conferma subito" non è chiaro.** 10.2 passo 3 (r. 372): può voler dire il commit della transazione o un messaggio al cliente. Proposta: "e la salva subito (commit), prima di qualsiasi invio".
+- **S7. Manca l'esito di una richiesta doppia già conclusa.** 10.2 r. 377 e P8 r. 888 descrivono solo il caso `pending` → `in-corso`. Se la riga è già `sent` o `failed`, non si dice cosa restituisce `inviaRiepilogo`. Proposta: aggiungere "altrimenti restituisce l'esito già registrato nella riga".
+- **S8. Due tempi di attesa diversi.** La sez. 14 (r. 517) dice "una ventina di secondi", la 10.2 (r. 374) dice "circa 15 secondi più il PDF". Proposta: usare la stessa formulazione.
+- **S9. "Variante" non è nel glossario.** Il termine compare solo dentro la voce "Versione" (r. 72), mentre la 9.2 punto 3 e l'appendice A.2 lo usano. Proposta: una voce "Variante: forma alternativa dello stesso taglio (Door, Glass, Shelf); se ne inserisce una sola per prodotto".
+- **S10. Colonna `source` non spiegata.** 8.1 (r. 234): la colonna JSONB `source` di `product` non è spiegata da nessuna parte. Proposta: mezza riga di spiegazione.
+- **S11. Non si sa se il contratto attuale è approvato da entrambi.** 20.2 (r. 818) dice "confermato da Marko l'11, superato il 12". Non si capisce se la versione attuale, con il nuovo formato delle viste, è approvata. Proposta: dichiarare se è confermata o da riconfermare nella PR della fase 2.
+- **S12. Troppi rimandi incrociati.** Soprattutto in sez. 2, 19 e 20.3. La sez. 19 dice che le schede 0016–0020 registrano P1–P15, mentre la tabella P le collega alle schede 0017–0030. Proposta: togliere quella frase dalla sez. 19, perché la tabella della 20.3 dà già la corrispondenza giusta.
 
-**8. "Tutor e tutor"**
-- **Riga:** 609.
-- **Problema:** la voce non ha senso così com'è scritta. Dalla riga 793 si capisce che era "Tutor e valutatore".
+## Collegamenti con gli altri stadi
 
-**9. Termini specifici del processo non definiti**
-- **Riga:** 3.
-- **Problema:** "brainstorm EGM" e `concepts_brief.md` non sono definiti. Sono marginali, ma un lettore nuovo non sa cosa sia EGM.
-
-**10. Il codice P5 compare prima di essere spiegato**
-- **Righe:** 199–201 e successive.
-- **Problema:** i codici P4 e P5 compaiono dalla riga 199, ma sono spiegati solo in 20.3 (riga 615). Solo la riga 451 indica dove trovarli. Basterebbe un rinvio alla prima occorrenza.
-
-**11. Nome della colonna delle zone e significato di `furn`**
-- **Righe:** 193, 227, 274, 640.
-- **Problema:** la colonna si chiama "zone interessate" in 8.1 e `option_group.zone` in 9.3.
-- Delle zone elencate in P1 (`ext`, `int`, `furn`, `floor`, più `mirror` e `frame`) non si spiega `furn`. Non si spiega neanche come le zone fisse ricevono il materiale, visto che non appartengono a nessun gruppo.
-
-**12. `option_rule` lascia aperte origine, destinazione e prodotto**
-- **Riga:** 195.
-- **Problema:** non è detto a quali entità puntano "origine" e "destinazione": valori di opzione, gruppi o tagli. La tabella non ha nemmeno una colonna prodotto.
-- P2 chiarisce la semantica, ma non lo schema. Non si spiega neppure perché `valuta` applica le regole proprio nell'ordine `only_with_size`, `excludes`, `requires` (riga 655).
-
-**13. `npm run demo` esegue `next start` prima del controllo**
-- **Riga:** 173.
-- **Problema:** `next start` è un processo che non termina, quindi un controllo eseguito "in ordine" dopo di lui non partirebbe. Non è chiaro come sono composti i comandi.
-
-**14. Criterio 1 "senza passaggi manuali"**
-- **Righe:** 498, 178.
-- **Problema:** il criterio richiede comunque di copiare `.env` a mano e di avviare Docker Desktop. Va precisato cosa conta come passaggio manuale.
-
-**15. "Il modulo funziona anche senza JavaScript"**
-- **Righe:** 685, 201, 307.
-- **Problema:** il `request_id`, che protegge dai doppi invii, è generato dal client. Senza JavaScript non esiste, e non è detto cosa succede in quel caso.
-
-**16. Variabile di `/galleria` senza nome**
-- **Righe:** 538, 680.
-- **Problema:** la demo gira con `next build` e `next start`, cioè in produzione, ma la galleria è "materiale di riserva per la demo". Si attiva solo con "una variabile dedicata", che non viene nominata.
-
-**17. Rinvio errato su "Riprova"**
-- **Riga:** 769.
-- **Problema:** la sezione 23 dice "pulsante disattivato durante l'invio (10.3)", ma la 10.3 non lo dice. La disattivazione è descritta solo per il pulsante principale, al passo 1 della 10.2 (riga 299).
-
-**18. Prodotti citati senza presentazione**
-- **Righe:** 658, 816.
-- **Problema:** "Sky" e "Sky 30" compaiono in P3 e nell'appendice A. Si capisce solo dall'appendice B (riga 826) che sono prodotti del mockup e del sito.
-
-**19. Il tutor "valuta la demo", ma "non c'è un voto"**
-- **Righe:** 10, 60.
-- **Problema:** la tensione è lieve, ma un lettore si chiede cosa valuti il tutor e con quale esito.
-
-**20. `numero` è salvato o calcolato?**
-- **Righe:** 199, 669.
-- **Problema:** il valore deriva dall'`id` ed è elencato tra i campi della riga. Non è detto se è una colonna generata, viene scritto con un update dopo l'insert o si calcola solo in lettura.
-
-## Esito
-
-Comprensione sufficiente, ma con lacune Major. I termini sono quasi tutti definiti e il glossario è efficace. I problemi stanno nei collegamenti tra le parti:
-- lo snapshot e la rigenerazione del PDF;
-- file e database come fonte del catalogo;
-- il taglio come gruppo o come tabella;
-- frontale e interna;
-- la firma della funzione di disegno;
-- l'invio non bloccante della notifica.
-
-Va chiarito tutto questo prima che il contratto condiviso (15.2) venga fissato.
+| Stage 6 (round 2) | Collegato a |
+|---|---|
+| S1 | C1 del round 1, ancora aperto |
+| S2 | R1 e R3 dello Stage 5 |
+| S3 | R1 dello Stage 5 (Aladdin 45 in fase 2) |
+| S9 | C10 del round 1 e N-g dello Stage 5 |
+| S12 | C14 del round 1 e N1 dello Stage 5 |

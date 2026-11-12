@@ -1,6 +1,6 @@
 # 0022. Seed come sincronizzazione completa, catalogo letto dal database
 
-- **Stato:** Accettata
+- **Stato:** Accettata; sostituita in parte da [0028](./0028-seed-svuota-e-ricarica.md) (funzionamento del seed)
 - **Sostituisce:** in parte la [0018](./0018-catalogo-file-database-derivato.md), solo per il funzionamento del seed e per la lettura del catalogo
 
 ## Contesto

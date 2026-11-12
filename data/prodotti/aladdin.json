@@ -15,24 +15,24 @@
   ],
   "defaultSize": "60",
   "materials": [
-    { "code": "rovere-rigatino", "name": "Rovere rigatino", "type": "wood", "color": "#cba77b", "texture": "/texture/rovere-rigatino.jpg" },
-    { "code": "wenge-rigatino", "name": "Wengé rigatino", "type": "wood", "color": "#3b2c26", "texture": "/texture/wenge-rigatino.jpg" },
-    { "code": "specchio", "name": "Specchio", "type": "mirror", "color": "#b8c8d0", "texture": "/texture/specchio.jpg" },
-    { "code": "alluminio-anodizzato", "name": "Alluminio anodizzato", "type": "aluminium", "color": "#b4b7ba", "texture": null },
-    { "code": "gres-moka", "name": "Gres Masterpiece Moka", "type": "ceramic", "color": "#705d4e", "texture": "/texture/gres-moka.jpg" },
-    { "code": "gres-light", "name": "Gres Masterpiece Light", "type": "ceramic", "color": "#d3cdc3", "texture": "/texture/gres-light.jpg" },
-    { "code": "gres-siena", "name": "Gres Masterpiece Siena", "type": "ceramic", "color": "#ab7e5e", "texture": "/texture/gres-siena.jpg" }
+    { "code": "rovere-rigatino", "name": "Rovere rigatino", "type": "wood", "color": "#e1c8ad", "texture": "/texture/rovere-rigatino.jpg" },
+    { "code": "wenge-rigatino", "name": "Wengé rigatino", "type": "wood", "color": "#4c3a32", "texture": "/texture/wenge-rigatino.jpg" },
+    { "code": "specchio", "name": "Specchio", "type": "mirror", "color": "#adadad", "texture": "/texture/specchio.jpg" },
+    { "code": "alluminio-anodizzato", "name": "Alluminio anodizzato", "type": "aluminium", "color": "#8a8d91", "texture": null },
+    { "code": "gres-moka", "name": "Gres Masterpiece Moka", "type": "ceramic", "color": "#b6b5b4", "texture": "/texture/gres-moka.jpg" },
+    { "code": "gres-light", "name": "Gres Masterpiece Light", "type": "ceramic", "color": "#bcbdbd", "texture": "/texture/gres-light.jpg" },
+    { "code": "gres-siena", "name": "Gres Masterpiece Siena", "type": "ceramic", "color": "#bfbeba", "texture": "/texture/gres-siena.jpg" }
   ],
   "fixedZones": {
     "mirror": "specchio",
-    "frame": "alluminio-anodizzato"
+    "metal": "alluminio-anodizzato"
   },
   "groups": [
     {
       "code": "wood",
       "label": "Essenza",
       "step": 2,
-      "zones": ["ext", "int", "furn"],
+      "zones": ["ext", "roof", "int", "bench"],
       "default": "rovere",
       "values": [
         { "code": "rovere", "label": "Rovere rigatino", "material": "rovere-rigatino" },
@@ -72,9 +72,9 @@
     "/foto/aladdin/aladdin-wenge-45.png": "https://static.effe.it/website/2023/05/Aladdin-Wenge-180-1200px.png"
   },
   "_daVerificare": [
-    "Colori esadecimali: approssimati (dal mockup). Servono come base del colore di ogni zona e per il ripiego senza texture: vanno confrontati con le foto dei campioni.",
-    "viewer resta image finché le viste dei due tagli non sono in public/viste/aladdin/; poi diventa svg.",
-    "Mapping zone: si assume che l'essenza valga per esterno, interno e arredi, come indica il sito ('Interno, Esterno').",
+    "Colori esadecimali: presi dalle viste di Aladdin 60 del mockup, dove fanno da base alla texture fusa in moltiplicazione. Servono anche per il ripiego senza texture: per quel caso vanno confrontati con le foto dei campioni.",
+    "viewer resta image finché le viste dei due tagli non sono in public/viste/aladdin/; poi diventa svg. Le viste del 60 vengono dal mockup, quelle del 45 si producono in chat (scheda 0029).",
+    "Mapping zone: si assume che l'essenza valga per esterno, tetto, interno e panche, come indica il sito ('Interno, Esterno'). Le viste del mockup non hanno la zona int: le pareti interne visibili sono ext.",
     "Pedana: il sito la presenta come facoltativa; qui una finitura è sempre selezionata, con Moka predefinita (scheda 0027). Nelle viste colora tutto il pavimento.",
     "I campi che iniziano con '_' sono annotazioni della bozza: lo schema Zod li scarta, non vanno tolti a mano."
   ]

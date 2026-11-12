@@ -1,214 +1,154 @@
-# Stage 5: Initial Zoom Out Review
+# Stage 5: Initial Zoom Out Review, round 2 (riesame)
 
-- **Documento:** `configuratore-saune-analisi-v6.md` (righe 1..831)
-- **Divisione:** FeatureRange 1..434, DetailedRange 435..831
-- **Contesto Goldfish:** `docs-iniziali/docs/decisioni/` (README, 0001-0020), `data/prodotti/aladdin.json`. L'URL effe.it è escluso su richiesta.
-- **Revisori:** `egm-zoom-out`, `egm-inventive-catalyst`, eseguiti in parallelo e in contesti isolati.
+- **Documento:** `configuratore-saune-analisi-v7.md` (righe 1..1130), dopo le modifiche dell'autore
+- **Divisione:** FeatureRange 1..522 (sezioni 1–14), DetailedRange 523..1130 (sezioni 15–26)
+- **Contesto Goldfish:**
+  - `docs-iniziali/docs/decisioni/` (README e schede 0001–0030);
+  - `data/prodotti/aladdin.json`;
+  - `contesto-web/effe-it-home.html`, `effe-it-prodotto-aladdin.html` e `effe-it-prodotto-yoku-s.html`, cioè le pagine grezze di effe.it.
+- **Revisori, in contesti isolati:** `egm-zoom-out` e `egm-inventive-catalyst`.
+- **Round 1:** `archivio/revisione-v7/zoom_out_report-round1.md`. La v7 prima delle modifiche è in `archivio/revisione-v7/configuratore-saune-analisi-v7-prima-dello-stage5.md`.
+- **Limite dei riesami:** questo è l'unico riesame ammesso per lo Stage 5. Se ci sono altre modifiche, i risultati rimasti si registrano come compromessi accettati e si passa allo Stage 6.
 
-## Sintesi
+**Esito:** il contesto basta. Non ci sono Blocker. Restano 3 Major, uno dei quali risolto solo in parte, e 9 Nit, di cui 4 aperti dal round 1.
 
-| # | Severità | Tema | Fonte |
-|---|---|---|---|
-| A | 🟡 Major | Lo snapshot non basta a rigenerare il PDF: "immutabile" e "rigenerabile" sono in conflitto | zoom-out M2 + catalyst 1 (**trovato da entrambi**) |
-| B | 🟡 Major | Il catalogo sta in due posti (file e 6 tabelle) e il modello tabellare non corrisponde al JSON | zoom-out M1 |
-| C | 🟡 Major | Il seed "mai cancellazione totale" non ha più motivo; non è detto da dove `valuta` legge le regole sul server | catalyst 4 (si collega a B) |
-| D | 🟡 Major | La "posta in uscita" non ha nessun componente che la svuoti: stati `in_attesa` orfani, notifica fallita mai ripresa | catalyst 2 |
-| E | 🟡 Major | Lo schema della geometria entra nel contratto prima del censimento e del secondo prodotto | zoom-out M3 |
-| F | 🟡 Major | Motore delle regole completo senza nessuna regola reale (YAGNI) | zoom-out M4 |
-| G | 🟡 Major | Resa grafica binaria (parametri o foto): manca il livello intermedio "SVG con zone nominate" | catalyst 3 |
-| H | 🟡 Major | La sezione 20.3 duplica le schede 0016-0020 e scende nel dettaglio di codice | zoom-out M5 |
-| N1-N8 | 🟢 Nit | `request_id` senza JS, ordine di `npm run demo`, filtro scadute, GIN, memoizzazione, colonne di stato, refusi, texture ripetibili | zoom-out N1-N7, catalyst 5 |
+Le modifiche hanno semplificato il progetto: lo seed svuota e ricarica, gli invii partono in parallelo, "Riprova" è più semplice e lo script delle viste è uscito dal repository.
 
-I problemi B e C sono collegati: tutti e due dicono che la relazione tra file e database non è definita. Conviene risolverli insieme.
+Entrambi i revisori questa volta hanno controllato le pagine di effe.it. Confermano misure, essenze e file di Aladdin e di Yoku S, e confermano che sul sito la pedana di Aladdin è facoltativa ("può essere completata"). Le differenze trovate sono in R2 e N-c.
 
 ---
 
-## Report 1: egm-zoom-out
+## Stato dei risultati del round 1
 
-**Verdetto: da rivedere.** Non ci sono Blocker. Ci sono 5 problemi Major e 7 Nit. Il contesto basta (sezione 0 superata): obiettivo, vincoli e motivazioni sono chiari (righe 7-38). Il documento risolve il problema giusto, cioè una demo locale con email reale e grafica di qualità. Le scelte di piattaforma sono standard e non reinventano nulla. I punti deboli sono tre: la duplicazione del catalogo, alcune astrazioni fissate prima delle prove, e l'altitudine del documento.
+I due revisori concordano su tutte le voci tranne N8: zoom-out lo considera chiuso, catalyst lo lascia aperto. In entrambi i casi la scelta è dichiarata nel documento e coerente.
 
-**Riuso:** non c'è codice da riusare. Nel repository l'unico file sorgente è `data/prodotti/aladdin.json`, e il mockup non è nel workspace (riga 610).
+| Voce | Stato | Nota |
+|---|---|---|
+| Z1 Problema e Aladdin | risolto | Il problema è riformulato in sez. 2. Yoku S porta le combinazioni senza foto e il livello B è dichiarato un ripiego. Il problema si sposta però sul calendario, vedi R1. |
+| Z2 Livello per prodotto | risolto | 9.2 punto 2 e sez. 21 ora dicono la stessa cosa. |
+| Z3 Formato e script | risolto | Il formato è ricavato dalle viste del mockup (15.2). |
+| Z4 Zone `ext`/`int`/`furn` | risolto | Si usano le zone del mockup, con rotazione costante per zona. |
+| Z5 Invio e "Riprova" | risolto | Scheda 0030. Lo storico ha ancora una riga in contrasto, vedi N-a. |
+| Z6 Seed | risolto | Scheda 0028. |
+| Z7 Calendario | parzialmente | La fase 2 ora dura 2 giorni e la dipendenza dal via libera è dichiarata. Restano R1 e R3. |
+| Z8 Dettagli di codice | risolto | Spostati nell'appendice C. Resta un `DELETE … WHERE` in sez. 12, trascurabile. |
+| N1 Contenuti ripetuti | aperto | Sono ancora nel documento: sez. 19, 20.3 e 23.2. |
+| N2 `ENABLE_GALLERY` | aperto | r. 216, 874. |
+| N3 Pedana obbligatoria | aperto, ora con motivazione più debole | Vedi N-b. |
+| N4 `attributes` JSONB come motivo | aperto | 6.5 punto 2 invariato. |
+| N5 Vettorializzazione a mano | superato | Lo script è uscito dal progetto. |
+| N6 Venatura | risolto, in altro modo | Rotazione costante per zona. |
+| N7 Viste nella pagina iniziale | risolto | Si caricano solo le viste del prodotto aperto. |
+| N8 `Message-ID` fisso | chiuso, non adottato | Il doppione resta un rischio accettato. |
 
-### Major
+---
 
-**M1. Il catalogo sta in due posti e il database fa poco**
-- **Ambito:** 8.1 (righe 188-196, 205), 8.2 (righe 229-236), 6.5.1 (riga 135), 22.6 (riga 760); scheda 0018.
-- **Problema:** i file JSON sono la fonte. L'interfaccia li importa (riga 232) e `valuta` lavora sulle regole dei file. Poi gli stessi dati vengono normalizzati in sei tabelle (`product`, `product_size`, `material`, `option_group`, `option_value`, `option_rule`). Il motivo dichiarato, "seconda linea di difesa... anche per i dati scritti dall'applicazione" (riga 135), regge poco: l'unica tabella che l'applicazione scrive è `configuration`, e per scelta non ha chiave esterna verso il catalogo (riga 205).
-- **Il modello tabellare non corrisponde ai file:**
-  - `aladdin.json` contiene `photos`, `fixedZones`, `defaultSize`, `default` per gruppo, `source` e `designer`, ma le tabelle non li prevedono.
-  - `material` è una tabella globale, mentre i materiali sono dichiarati dentro ogni file prodotto. Con l'upsert per codice, due prodotti con lo stesso `specchio` ma colori diversi si sovrascrivono.
-  - `option_rule` non ha la colonna del prodotto (riga 195).
-  - P1 cita `size` tra i codici di gruppo (riga 640), ma nel JSON i tagli sono un elenco separato.
-- **Conseguenza:** il configuratore leggerà comunque i file, o dovrà ricostruire il file dal database. Sono due strade di lettura che possono divergere.
-- **Proposta:** scegliere una sola strada di lettura per l'applicazione. La più semplice: tabella `product` con codice, nome, visualizzatore e una colonna `data` JSONB con il file validato da Zod. Le colonne servono solo per le query delle pagine, cioè l'elenco del catalogo. Le tabelle normalizzate si tengono solo se si dichiara quale query o vincolo le richiede davvero. Se il motivo vero è l'indicazione del tutor (riga 760), va scritto come motivo principale.
+## 🟡 Major
 
-**M2. Snapshot immutabile e PDF rigenerato dal catalogo attuale sono in conflitto**
-- **Ambito:** 5.3 (riga 88), 6.5.3 (riga 137), 8.1 (righe 205-225), 10.2.7 (riga 305), 11 (riga 353).
-- **Problema:** il documento promette che la configurazione salvata "resta identica" anche se il catalogo cambia. Promette anche che "Scarica il PDF" e "Riprova" rigenerano il PDF dalla riga. Però lo snapshot (righe 214-225) contiene solo codici ed etichette. L'immagine richiede `geometry`, materiali, texture e foto del catalogo attuale.
-- **Conseguenza:** se un prodotto viene tolto, un caso che il documento prevede esplicitamente (riga 205), la rigenerazione fallisce. Se il prodotto cambia, il PDF rigenerato non coincide con quello inviato.
-- **Proposta:** decidere esplicitamente una di queste strade.
-  - Il PDF rigenerato usa il catalogo attuale; se il prodotto manca, si produce un PDF con il solo elenco `lines`.
-  - Lo snapshot conserva anche ciò che serve a ridisegnare.
-
-  Per una demo basta la prima, purché sia scritta. Oggi è un'incoerenza nascosta.
-
-**M3. Schema della geometria fissato nel contratto prima di avere i dati per farlo**
-- **Ambito:** 9.2.1-9.2.3 (righe 252-259), 15.2 (righe 449-455), 15.5 fasi 2-3 (righe 480-481), 15.1 (righe 443-445); `aladdin.json` riga 65 (`"geometry": null`).
-- **Problema:** lo schema Zod della geometria ("elenco di parti tipizzate") entra nella PR del contratto della fase 2. Il censimento per famiglie e il secondo prodotto SVG arrivano solo nella fase 3. Si stabilizza un'astrazione prima delle due prove che dovrebbero giustificarla. Oggi il generatore esiste solo come mockup con dati scritti nel codice, e la geometria di Aladdin è `null`.
-- **Si aggiungono due complicazioni:**
-  - La stessa PR di "circa 3 ore" contiene anche tipi, semantica delle regole, `valuta`, schema Drizzle, schema Zod del catalogo e dipendenze. È una stima poco realistica.
-  - La divisione "N scrive i dati della geometria, M scrive le primitive" (riga 445) mette tra due persone l'interfaccia più instabile del progetto. Ogni modifica dello schema richiede una PR condivisa (riga 457).
+### R1. Il prodotto che risponde al problema viene per ultimo in calendario ed è il primo a saltare
+- **Fonte:** zoom-out R1 e catalyst R1, che sono d'accordo.
+- **Dove:** sez. 2 (r. 25), 9.2 punto 6 (r. 322), 9.2 punto 4 (r. 318), 15.5 (r. 627, 632, 636, 642–648), criterio 2 (r. 662–665), A.2 (r. 1101–1103).
+- **Problema:**
+  - Yoku S è l'unico prodotto che mostra combinazioni senza foto, ma si fa nella fase 6.
+  - La fase 6 è anche quella che assorbe il ritardo del via libera, che oggi non c'è ancora. Due giorni di ritardo la azzerano.
+  - Nella fase 2, invece, M produce le viste di Aladdin 45, una versione che ha già la foto ufficiale.
+  - Per Yoku S la chat deve fare una cosa che con Aladdin non è mai stata provata: separare `ext` dalle zone in Aspen (`int` e `bench`). Nelle viste del mockup le pareti interne sono `ext`. Se la separazione riesce male, cambiare il legno esterno ricolora anche l'interno, e il contributo di Yoku S scompare.
+- **Perché conta:** il calendario protegge il lavoro meno utile ed espone quello che giustifica il progetto. È lo stesso difetto di Z1, spostato dal "cosa" al "quando".
 - **Proposta:**
-  - Togliere la geometria dal contratto iniziale. `geometry` è già JSONB e appartiene a `src/lib/viste/`, cioè a M.
-  - Anticipare il censimento alla fase 1-2, che è lavoro da tavolino.
-  - Fissare lo schema della geometria solo dopo il secondo prodotto.
-  - In alternativa, lasciare a M sia schema sia dati di geometria finché lo schema non è stabile.
+  - Nella fase 2 produrre in chat le viste di Yoku S 60, che ha DWG, FBX e SKP, con `ext` separato da `int` e `bench`, e misurare quanto tempo serve. Zoom-out chiede almeno la sola vista esterna, come prova a tempo; catalyst propone il prodotto intero.
+  - Aladdin 45 va nella fase 6, come primo taglio sacrificabile, oppure si copre con `viewsFrom: "60"` se la forma è la stessa.
+  - La regola di r. 318 ("dove esistono i file di entrambi i tagli, si producono le viste di entrambi") diventa una preferenza, non un obbligo.
+  - Se Aladdin 45 resta in fase 2, va spiegato perché viene prima di Yoku S.
+- **Costi:**
+  - più carico su M nei primi giorni, che contengono già scaffold, contratto e prova del PDF;
+  - `componiVista` si prova su due prodotti diversi, quindi con due possibili fonti di errore insieme;
+  - Aladdin resta con `viewer: "image"` più a lungo.
 
-**M4. Motore delle regole completo senza nessuna regola reale (YAGNI)**
-- **Ambito:** RF3 (riga 69), 8.1 `option_rule` (riga 195), P2 (righe 644-655), P3 (righe 657-663), criterio 3 (riga 505), appendice A (righe 810-811); scheda 0020 e `aladdin.json` (`"rules": []`).
-- **Problema:** il sito non documenta né optional né regole. Il documento lo riconosce. Si progettano comunque:
-  - tre tipi di regola con un ordine di applicazione fisso;
-  - una tabella dedicata;
-  - il ritorno al predefinito con annuncio `aria-live`;
-  - gruppi `multi` con la sintassi a virgole nell'URL (riga 682);
-  - un gruppo `extras` nel contratto (riga 640);
-  - prove automatiche obbligatorie su un catalogo di prova per tutti e tre i tipi (riga 505).
+### R2. I dati di Yoku S su cui poggia il problema non sono verificati sul sito
+- **Fonte:** zoom-out R2. La citazione l'ho ricontrollata io con una ricerca: "tre diverse essenze" compare nella pagina di Yoku S, alle righe 23, 29, 41 e 565.
+- **Dove:** sez. 2 (r. 20), P1 (r. 848), A.2 (r. 1098, 1100, 1103), 22 punto 5 (r. 983).
+- **Problema:**
+  - Il sito dice "Tre diverse soluzioni estetiche declinabili in tre diverse essenze di legno". La pagina mette ASPEN, SCURO e NOCE sotto tre titoli separati, la stessa struttura che su Aladdin indica essenze alternative.
+  - Il documento invece considera l'Aspen fisso su `int` e `bench`, con la scelta tra due soli legni esterni. Nessuna delle due letture è dimostrata. Catalyst ha accettato la lettura del documento, che quindi resta da decidere.
+  - Oltre alle 12 foto delle versioni, la pagina ha una galleria di 10 foto e uno slider di 3. Il documento non dice se qualcuna mostra il Noce o lo Scuro.
+- **Perché conta:** il numero di combinazioni senza foto è il dato che giustifica il progetto. La scelta tra "Aspen fisso" e "gruppo a tre valori" cambia il file di Yoku S e il modo di chiedere le viste in chat. Al tutor basta aprire la pagina per porre la domanda.
+- **Proposta:**
+  - Citare la frase in A.2 e aggiungerla a `_daVerificare`.
+  - Guardare le 13 foto della galleria e dello slider e annotare quali legni compaiono.
+  - Correggere la sez. 2 prima della fase 6.
+  - Costa pochi minuti.
 
-  L'unico caso reale possibile è un `only_with_size` sulla pedana, ancora da verificare (riga 661).
-- **Proposta:** implementare e provare solo `only_with_size` e i gruppi `single`. `valuta` resta l'unico punto di estensione: `requires`, `excludes` e `multi` si aggiungono quando una fonte li documenta. RF3 resta dimostrabile con la regola reale o con un solo prodotto di prova. Così si risparmia lavoro nella fase più carica senza chiudere strade future.
-
-**M5. Il documento duplica le schede e scende troppo nei dettagli**
-- **Ambito:** 20.3 (righe 613-716), parti di 8.1, 10.5 e 11; schede 0015-0020.
-- **Problema:** le decisioni P1-P15 sono riportate quasi parola per parola sia nell'analisi sia nelle schede 0016-0020. Si creano due fonti di verità da tenere allineate. Lo stesso documento impone che ogni PR aggiorni la documentazione (riga 546) e che le schede non si modifichino ma si sostituiscano (README del registro, riga 3).
-- **Dettaglio di codice che non serve a un'analisi:**
-  - 16 byte di `crypto.randomBytes` in base64url (riga 666);
-  - `patternContentUnits="objectBoundingBox"` (riga 704);
-  - `transporter.verify()` (riga 326);
-  - ordine di applicazione delle regole (riga 655);
-  - `save-exact=true` (riga 694);
-  - i tre passi del porting del mockup (righe 711-714).
-- **Proposta:** nell'analisi tenere per ogni P una riga con decisione e motivo, cioè la tabella delle righe 617-633, più il link alla scheda. Il dettaglio implementativo deve stare solo nelle schede.
-
-### Nit
-
-**N1. `request_id` e "il modulo funziona senza JavaScript" si contraddicono**
-- **Ambito:** riga 201, riga 307, riga 685.
-- **Problema:** il `request_id` è generato dal client, quindi senza JavaScript non esiste. Inoltre l'intero configuratore è un componente client con anteprima live, quindi il funzionamento senza JavaScript non è un vantaggio reale.
-- **Proposta:** togliere quel motivo da P8 e dalla scheda 0019. In alternativa, generare il `request_id` sul server al render del modulo, come campo nascosto.
-
-**N2. Lo script `npm run demo` è in ordine impossibile**
-- **Ambito:** riga 173; scheda 0014.
-- **Problema:** `next start` non termina, quindi il controllo preliminare che lo segue nella sequenza non parte mai.
-- **Proposta:** eseguire `npm run check` prima di `next start`, oppure in parallelo.
-
-**N3. Filtro sulle righe scadute ridondante**
-- **Ambito:** riga 379.
-- **Problema:** il filtro "le letture ignorano le righe scadute" va ripetuto in ogni query. Però le letture avvengono solo per token, durante la demo, e la pulizia gira a ogni avvio.
-- **Proposta:** si può tenere, ma la pulizia all'avvio basta per la demo. Un filtro dimenticato in una sola query vanifica la garanzia.
-
-**N4. JSONB "indicizzabile" e GIN usati come argomento senza query che li richiedano**
-- **Ambito:** righe 127, 136, 143.
-- **Problema:** nessuna query prevista filtra dentro JSONB. Il vantaggio è teorico.
-- **Proposta:** l'argomento migliore per PostgreSQL resta l'integrità più l'indicazione del tutor. Si può togliere il riferimento agli indici.
-
-**N5. Ottimizzazione non misurata**
-- **Ambito:** riga 273 ("memoizzata"), riga 279.
-- **Problema:** la memoizzazione della geometria non è giustificata da una misura.
-- **Proposta:** rimandarla a quando l'anteprima risulta lenta.
-
-**N6. Molte colonne di stato per due invii**
-- **Ambito:** righe 207-208.
-- **Problema:** per ciascuno dei due invii ci sono enum, ultimo errore, tentativi e data, cioè 8 colonne. Per la demo bastano stato ed errore.
-- **Proposta:** i tentativi e la data sono accettabili, ma sono un candidato da tagliare se lo schema va semplificato.
-
-**N7. Problemi redazionali**
-- **Riga 831:** la riga di tabella "Nuove sezioni" della sezione 23 è finita dopo l'appendice B, fuori dalla tabella.
-- **Riga 274:** si cita `option_group.zone`, mentre la colonna si chiama "zone interessate" (righe 193 e 227) e nel JSON `zones`. Va uniformato nel contratto.
-- **Scheda 0007 riga 7:** usa ancora "valutatore", in contrasto con la decisione "solo tutor" (riga 609).
+### R3. Calendario senza margine (resto di Z7)
+- **Fonte:** zoom-out R3.
+- **Dove:** 15.5 (r. 627–648).
+- **Problema:**
+  - Le fasi sommano ancora a 11 giorni su 11.
+  - La fase 3 ha 1,5 giorni e la fase 4 ne ha 1, dopo un accorciamento che il documento non motiva.
+  - L'elenco dei tagli non contiene niente delle fasi 3–5.
+- **Proposta:** due strade possibili.
+  - Indicare cosa delle fasi 3–5 si taglia per primo, per esempio la Pianta di Aladdin 45 o le prove Playwright oltre il percorso minimo.
+  - Oppure scrivere che uno sforamento delle fasi 3–5 toglie tempo alla fase 6, con le stesse regole del ritardo del via libera. Insieme a R1, la fase 6 non conterrebbe più Yoku S.
 
 ---
 
-## Report 2: egm-inventive-catalyst
+## 🟢 Nit
 
-**Contesto (verifica 0).** L'obiettivo è chiaro: una demo locale del configuratore, con invio reale del PDF e una scelta documentata per ogni decisione (righe 9-14, 20). Le contraddizioni principali sono già risolte bene: una funzione pura per anteprima e PDF (9.3, 11), la riga salvata prima degli invii (10.2), `valuta` condivisa (10.1) e il ripiego `flat`. Restano quattro compromessi da rivedere (Major) e un Nit.
+- **N-a. Lo storico contraddice la 0030.** Zoom-out e catalyst R6.
+  - 23.1, r. 1008: "limite di 3 tentativi anche per la notifica", mentre la 0030 toglie quelle colonne.
+  - 23.1, r. 994: la colonna v7 parla ancora di "script a partire dal modello FBX".
+  - Proposta: correggere le righe, oppure spostare lo storico in `archivio/`, come già proposto in N1.
+- **N-b. Il motivo della pedana obbligatoria non c'è più.** Zoom-out N-b e catalyst R3, che riprendono N3.
+  - La 0027 giustifica l'obbligo dicendo che "non serve un caso senza materiale". Ma la v7 introduce proprio quel caso per Yoku S: `floor` senza materiale prende un colore neutro (9.3, r. 332).
+  - "Nessuna pedana" può quindi essere un valore normale del gruppo, senza `material`. Il valore predefinito può restare Moka.
+  - P3 (r. 860) dice inoltre che questo è "l'unico punto in cui il progetto si discosta dal sito", ma non è vero: la pedana colora tutto il pavimento e per Yoku S c'è anche l'ipotesi sui legni di R2.
+  - Proposta: rendere la pedana facoltativa, oppure correggere il motivo nella 0027 e togliere "unico".
+- **N-c. Le schede di preinstallazione non sono solo nell'Area Pro.** Zoom-out.
+  - Appendice A (r. 1081), 9.4 (r. 341), 20.2 (r. 817), 20.4 punto 3.
+  - Nelle pagine salvate, le schede di Aladdin 45/60 e di Yoku S 45/60/80/105 puntano a cartelle Google Drive pubbliche, senza lucchetto.
+  - Va corretta l'appendice e rivista la regola "solo sul computer locale".
+- **N-d. Per Aladdin, zone del gruppo e zone delle viste non coincidono, e il testo non lo dice.** Zoom-out.
+  - In `aladdin.json`, `wood.zones` contiene `int`, ma le viste del mockup non hanno `int`.
+  - Chi produce in chat le viste di Aladdin 45 non sa se deve creare quella zona.
+  - Proposta: scrivere in P1 o in `docs/viste.md` che per Aladdin le pareti interne sono `ext`, mentre per Yoku S `int` è obbligatoria.
+- **N-e. Con il seed tutto-o-niente, cosa fa `npm run demo` se il seed fallisce non è scritto.** Catalyst R2.
+  - Dove: sez. 7 passo 1 (r. 204), 8.2 (r. 276–277), 15.2 (r. 578), 10.5 (r. 408–409), 18 (r. 726).
+  - Il seed fallisce anche per una sola vista mancante, mentre il controllo preliminare la tratta come un avviso.
+  - Proposta: se il seed fallisce, stampare FAIL e avviare con il catalogo precedente, che la transazione ha conservato. L'avvio si blocca solo se il database è vuoto. In alternativa, rendere bloccante anche il controllo preliminare.
+- **N-f. Scala sugli assi per le viste riusate tra tagli.** Catalyst R4.
+  - Dove: 9.2 punto 4, 9.3, 15.2.
+  - Per Frontale e Pianta, che sono proiezioni ortogonali, `componiVista` potrebbe scalare le due direzioni con il rapporto tra le misure dei tagli. La vista Esterno resta con la nota.
+  - È facoltativo. Va deciso prima di fissare la firma di `componiVista`.
+- **N-g. Per Yoku S si guadagna una sola combinazione per taglio inserito.** Catalyst R5.
+  - Dove: 9.2 punto 3, A.2.
+  - Un file descrive una sola variante (Door, Glass o Shelf), quindi il guadagno è piccolo.
+  - Proposta: controllare nell'inventario se le varianti cambiano solo il fronte. Se non è così, scrivere in sez. 2 che il guadagno vale "per taglio e variante inseriti".
+- **N1, N2, N4 del round 1:** ancora aperti, valgono le proposte del round 1.
 
-### 1. Lo snapshot non basta a rigenerare il PDF
-1. **Severity:** Major
-2. **Affected Scope:** sezione 5 punto 3 (riga 88), 8.1 (righe 205-206, 212-225), 10.2 punto 7 (riga 305), sezione 11 "Motivi" (riga 353)
-3. **False Compromise:** il documento promette che una configurazione salvata "resta identica anche se il catalogo viene modificato" (riga 88). Promette anche che il PDF si rigenera dalla riga salvata (righe 305, 353). Lo snapshot però contiene solo codici e `lines` con le etichette (righe 214-224). L'immagine dipende da `product.geometry`, dai materiali e dalle texture del catalogo *attuale*. Le conseguenze:
-   - "Scarica il PDF" e "Riprova" producono un'immagine diversa da quella vista dal cliente se nel frattempo cambia la geometria. Nella fase 6 succede di continuo, mentre esistono già righe salvate nella fase 5.
-   - Se il prodotto viene tolto, cosa che la riga 205 consente esplicitamente, la rigenerazione fallisce.
+---
 
-   Si accetta quindi in silenzio che "rigenerabile" e "immutabile" non stiano insieme.
-4. **Proposed Resolution:** *Preliminary Action*.
-   - **(a), la più semplice:** il PDF prodotto al passo 4 (riga 302) si salva come `bytea` nella riga. "Riprova" e "Scarica il PDF" leggono quei byte. La regola 4 della sezione 13 vieta i file locali, non i dati nel database.
-   - **(b):** in alternativa, al salvataggio si scrive nello snapshot l'input già risolto del rendering: copia della geometria e, per ogni zona, codice, colore e percorso della texture.
+## Da decidere prima della PR del contratto (fase 2)
 
-   In tutti e due i casi va aggiunto un *Beforehand Cushioning*. Se mancano i dati di rendering, il PDF esce con il solo elenco `lines` o in versione `flat`, invece di dare errore.
-5. **Secondary Liabilities:**
-   - Con (a): da centinaia di KB a circa 1 MB per riga. Una correzione al generatore non si applica ai PDF già salvati. `npm run check` deve comunque usare il percorso di generazione.
-   - Con (b): il generatore deve restare compatibile con le geometrie salvate, quindi `schemaVersion` deve coprire anche lo schema della geometria. Lo snapshot diventa più grande.
+- **R1:** l'ordine dei lavori, cioè Yoku S nella fase 2.
+- **N-d:** la regola sulla zona `int` nella richiesta in chat.
+- **N-b:** se `material` può essere nullo su un valore di opzione.
+- **N-f:** se `componiVista` riceve un parametro di scala.
 
-### 2. "Posta in uscita" senza chi la svuota
-1. **Severity:** Major
-2. **Affected Scope:** 10.2 (righe 297-307), 10.3 (righe 311-314), criterio 4 (righe 506-509), scheda 0017
-3. **False Compromise:** la riga è chiamata "posta in uscita" (riga 297), ma nessun componente la svuota. Tre problemi:
-   - Se il processo si interrompe tra il passo 3 e il passo 5 (Ctrl+C, crash, timeout), gli stati restano `in_attesa` per sempre. La pagina `/riepilogo/[token]` non sa se offrire "Riprova".
-   - Una notifica `fallita` "resta registrata" (riga 314) e basta: è il caso classico di errore gestito come log passivo, anche se il criterio 4 chiede entrambi gli stati `inviata`.
-   - "Il risultato della notifica non blocca la risposta al cliente" (riga 304) non ha un meccanismo. Dentro una Server Action la notifica o si attende, e allora blocca per altri 10 s circa, oppure si lancia senza attenderla, e allora non c'è garanzia che finisca né che lo stato venga aggiornato.
-4. **Proposed Resolution:**
-   - **Self-Service (reconciliation loop):** una passata di riconciliazione nello stesso punto in cui oggi gira la pulizia all'avvio (`npm run demo`, riga 173), che si può lanciare anche a mano. La passata:
-     - rimanda le notifiche al progetto con `stato_progetto` in (`in_attesa`, `fallita`) e tentativi sotto un limite;
-     - segna `fallita` le righe con `stato_cliente = in_attesa` più vecchie di qualche minuto, così compare "Riprova".
-   - **Inversion:** la notifica si esegue con `after()` di `next/server` dopo la risposta, invece che in coda alla Server Action.
-   - **Cosa resta escluso:** nessun reinvio automatico al cliente. Resta lui a decidere, con "Riprova".
-5. **Secondary Liabilities:**
-   - Consegna "almeno una volta": se il processo cade dopo che l'SMTP ha accettato il messaggio ma prima dell'aggiornamento dello stato, la notifica può arrivare due volte. Per il progetto è accettabile.
-   - Servono un limite di tentativi e una soglia di tempo.
-   - È un comando in più da documentare in `docs/demo.md`.
-   - `after()` richiede una versione di Next.js che lo supporti come API stabile, da fissare in P10.
+Inoltre **R2** va chiuso prima della fase 6 e della presentazione.
 
-### 3. Resa grafica binaria (SVG da parametri oppure foto): manca il livello intermedio
-1. **Severity:** Major
-2. **Affected Scope:** 9.2 punti 4-5 e "Alternativa da valutare" (righe 260-266), rischio "generatore" (riga 596), scheda 0016
-3. **False Compromise:** la regola di decisione (riga 263) mette solo due esiti: o generatore da parametri, o foto con campioni. Il conflitto "qualità grafica contro costo per prodotto" è segnato come rischio Alto (riga 596). Il modello SVG disegnato a mano con zone nominate (riga 266) resta un'"alternativa da valutare", fuori dalla regola. Eppure la 9.3 separa già le due cose: cambiare materiale cambia solo il `<pattern>` di ogni zona (riga 274). La resa dei materiali non dipende quindi da come nasce la forma.
-4. **Proposed Resolution:** *Segmentation / Intermediary*.
-   - Il contratto esplicito tra le due fasi è "SVG con zone nominate":
-     - fase 1, sorgente della forma: generatore da parametri **oppure** modello disegnato, uno per taglio e per vista;
-     - fase 2, applicazione dei materiali: una funzione pura comune che inserisce i `<defs>` con prefisso e collega le zone ai pattern.
-   - La regola della riga 263 diventa a tre livelli: famiglia supportata → parametri; modello disegnabile in circa 2 ore → modello a zone; altrimenti → foto.
-   - `flat`, gli `id` con prefisso, le texture come data URI e il PDF funzionano uguali per i primi due livelli.
-5. **Secondary Liabilities:**
-   - Un modello disegnato non si adatta da solo ai tagli: serve un file per ogni taglio e vista.
-   - Gli SVG esportati da Inkscape o Figma vanno ripuliti per resvg (niente CSS, filtri, `id` instabili).
-   - Serve una prova automatica che controlli che ogni zona di `option_group.zone` esista nel modello.
-   - Ci sono due tipi di sorgente grafica da mantenere e da censire in `catalogo-inventario.md`.
+---
 
-### 4. Seed "mai cancellazione totale": il vincolo non c'è più
-1. **Severity:** Major
-2. **Affected Scope:** 8.2 (riga 234), 8.1 (riga 205), 10.1 (riga 293), scheda 0018
-3. **False Compromise:** il seed è un upsert e non cancella mai, "così le configurazioni salvate non si perdono" (riga 234). Ma `configuration` non ha chiavi esterne verso il catalogo (riga 205) ed è uno snapshot (riga 206): cancellare le tabelle del catalogo non può toccare le configurazioni. Il motivo non regge più, mentre il costo resta:
-   - valori, tagli e regole tolti dai file restano nel database;
-   - il database si allontana dalla fonte, che secondo la scheda 0018 sono i file.
+## Matrice di tracciabilità
 
-   Il documento non dice da dove il server legge le regole per `valuta` (riga 293). Se le legge dal database, il server può accettare un valore che nei file non esiste più, o rifiutare combinazioni per una regola già tolta. Interfaccia e server darebbero allora risultati diversi, cioè proprio quello che la 0020 vuole impedire (RF3).
-4. **Proposed Resolution:** sincronizzazione completa delle sole tabelle del catalogo in **una transazione**: o sostituzione completa, o upsert più cancellazione dei codici assenti dai file. `configuration` non si tocca. In più va fissato nel contratto (15.2) da quale sorgente il server carica le regole.
-5. **Secondary Liabilities:**
-   - Gli `id` interni del catalogo possono cambiare a ogni seed: nessun riferimento esterno deve usarli, le relazioni restano tra codici o dentro il catalogo.
-   - Il seed tiene un lock breve sulle tabelle del catalogo.
-   - Un errore di validazione annulla l'intero seed. È coerente con la riga 233, ma va detto.
-
-### 5. Texture: "ripetibile" non richiede ritocco manuale
-1. **Severity:** Nit
-2. **Affected Scope:** P13 (righe 703-707), scheda 0016 "Texture"
-3. **False Compromise:** si sceglie tra due strade. Con A la foto si allarga all'intera zona: è fedele, ma la grana viene fuori scala su pareti di 200 cm. Con B le venature sono procedurali: si ripetono, ma sono meno fedeli. La terza strada, rendere le foto ripetibili, è scartata perché "richiede lavoro manuale per ogni materiale". La premessa è falsa: la ripetibilità si può ottenere in automatico.
-4. **Proposed Resolution:** *Preliminary Action* nel generatore:
-   - un `<pattern>` 2×2 che riusa la stessa `<image>` con `<use>` specchiati (`scale(-1,1)`, `scale(1,-1)`), senza giunture e senza ritocchi;
-   - dimensioni in `userSpaceOnUse` pari alla misura reale stimata del campione, così la grana è in scala con le quote.
-
-   La prova della fase 2 (riga 366) la può confrontare subito con A.
-5. **Secondary Liabilities:**
-   - La simmetria a specchio si nota su legni con nodi o figure marcate. Rischio basso per il rigatino a righe e il gres uniforme.
-   - Va verificato come resvg gestisce `<use>` dentro `<pattern>`.
-   - La misura reale dei campioni non è nota e va stimata.
-   - In ogni vista l'immagine incorporata come data URI deve comparire una volta sola nei `<defs>`.
+| Voce | zoom-out (round 2) | inventive-catalyst (round 2) |
+|---|---|---|
+| R1 | R1 | R1 |
+| R2 | R2 | — (ha accettato la lettura del documento) |
+| R3 | R3 | — |
+| N-a | N-a | R6 |
+| N-b | N-b, N3 | R3 |
+| N-c | N-c | — |
+| N-d | N-d | — |
+| N-e | — | R2 |
+| N-f | — | R4 |
+| N-g | — | R5 |
+| N1, N2, N4 | aperti | aperti |

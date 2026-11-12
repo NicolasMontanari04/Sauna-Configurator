@@ -1,425 +1,319 @@
-# Stage 9: Implementation Readiness Test, round 2 (ri-audit)
-
-- **Documento:** `configuratore-saune-analisi-v6.md`, DetailedRange 497..958, dopo le correzioni del round 1.
-- **Revisori, in contesti isolati:**
-  - `egm-implementation-readiness`: completed;
-  - `egm-codebase-details`: completed;
-  - `egm-style`: completed.
-- **Limite:** questo è l'unico ri-audit ammesso per lo Stage 9. Non ci saranno altri round di revisione.
-
-**Verdetto: non pronto, ma vicino.**
-- **Il Blocker B1 è risolto**, insieme a 12 dei 16 Major del round 1.
-- **Dopo aver tolto i doppioni restano** 0 Blocker, 25 Major e circa 25 Nit.
-- **Quasi tutti i Major** riguardano il contratto condiviso. Vanno chiusi prima della PR del contratto della fase 2, altrimenti le scelte le farà chi scrive il codice.
-
-## Errori miei nelle correzioni del round 1
-
-Tre revisori su tre segnalano errori che ho introdotto io con le correzioni:
-- **Foto adattata alla zona (P13):** con `patternContentUnits="objectBoundingBox"` il contenuto del pattern vive in un quadrato 1 × 1, che poi viene scalato in modo non uniforme. `slice` ritaglia quindi a un quadrato, e il risultato viene stirato. La frase "non si deforma" è falsa.
-- **Chiavi `_`:** lo strip di Zod toglie **tutte** le chiavi sconosciute, non solo quelle che iniziano con `_`. Un errore di battitura come `defualt` sparirebbe senza dare errore.
-- **`redirect` lato client:** "con `ok` la pagina reindirizza" non funziona senza JavaScript.
-- **`photoGroup`:** l'ho aggiunto al file ma non alla tabella `product`.
-- **Diagonale in resvg:** la sua verifica è rimasta "nella fase 2", ma la diagonale ora nasce nella fase 3.
-- **Terzo tentativo:** la tabella delle prove dice "terzo tentativo rifiutato", ma la sezione 10.3 ammette 3 tentativi compreso il primo invio. Quello da rifiutare è il quarto.
-
-## Stato dei finding del round 1
-
-| Round 1 | Stato |
-|---|---|
-| B1 | Risolto. Lo schema della geometria però non basta (R1) |
-| M1 formato `aladdin.json` | In parte: R11, R12 |
-| M2 elenco dei file | In parte: R10 |
-| M3 script | Risolto, ma gli script non leggono `.env` (R9) |
-| M4 dipendenze | In parte: R13 |
-| M5 prove | In parte: R7, R8, R19, R20, R24 |
-| M6 zone interne (opzione B) | Risolto |
-| M7 interfacce | In parte: R5, R6 |
-| M8, M10, M12-M16 | Risolti |
-| M9 fasi | Quasi: le fasi 6-8 non hanno un responsabile (Nit) |
-| M11 resa della foto | Tecnica sbagliata: R2 |
-| Nit 30-34 (DECLINE) | Ancora presenti, accettati come trade-off |
-
----
-
-## 🟡 Major
-
-| # | Tema | Fonti | Righe | Proposta in breve |
-|---|---|---|---|---|
-| R1 | **Lo schema della geometria non descrive Aladdin.** Mancano: le misure per taglio (180 e 200 cm), la fascia dello specchio e il frame, i valori di `shape` e `side`. La 9.2 e la 0016 usano campi diversi (profondità, tipo di stufa). La 0021 dice che la stufa serve solo per la pianta | IR N1, CD M3, ST M2 | 528, 297-300; 0016, 0021 | Un solo tipo completo in 15.2. Le misure che cambiano con il taglio vanno in `sizes[].attributes`. Aggiungere `mirrorBandCm` e `frameCm`, ed elencare i valori ammessi. La 9.2 rimanda alla 15.2; nota nella 0016 e nella 0021 |
-| R2 | **La foto si deforma comunque** (errore mio) | IR N2, CD M9, ST M17 | 829-832, 316-318 | Un pattern per forma con `patternUnits="userSpaceOnUse"` e le misure del riquadro. Dentro, `<image>` con le stesse misure e `slice`. Gli `id` diventano `<prefisso>-<zona>-<indice>`. Va aggiornata anche la frase della 9.3 sul "cambio del riferimento" |
-| R3 | **Nessuna fase prova la diagonale in resvg**, ma la diagonale è l'immagine grande del PDF | IR N3, CD M11, ST M4 | 568-569; 0021 righe 24 e 29 | Fase 3: conversione della diagonale con i 4 controlli della sezione 11; se fallisce, si usa il ripiego della 0021. Correggere la 0021 |
-| R4 | **Il formato delle regole non è definito né nel file né nel database.** I codici sono unici solo dentro il gruppo | IR N4 | 231, 762-774 | `{type, from:{group,value}, to:{group,value}, message}`. Per `only_with_size`: `{type, from, sizes[], message}`. Nel database: chiave esterna verso `option_value`, `sizes` come `text[]`, `CHECK` sul tipo |
-| R5 | **`valuta` non restituisce i messaggi delle scelte disattivate.** In `errori` il campo `code` è ambiguo e l'ingresso non ha un tipo | IR N5, CD Nit 10 | 811 | `disattivati: Record<group, Record<value, messaggio>>`; `errori: {tipo, group?, value?, messaggio}[]`; tipo di `config` |
-| R6 | **Server Action senza JavaScript e "Riprova".** Mancano: `redirect` sul server, una form action per `riprova`, i nomi dei campi, la risposta quando l'`UPDATE` non trova righe. Se all'`INSERT` `customer_last_attempt_at` resta `NULL`, "Riprova" non parte mai | IR N6, CD M4, ST M14, Nit 13 | 804-812, 351, 364 | L'action chiama `redirect('/riepilogo/'+token)` fuori da ogni `try`, anche quando l'invio fallisce. `riprova(statoPrecedente, formData)` con il token in un campo nascosto; risposte `attendi`, `inviata`, `esauriti`. Elenco dei campi. Passo 3 della 10.2: tentativi a 1 e data dell'ultimo tentativo a `now()` |
-| R7 | **La mappa degli errori di RF6 è incompleta.** Con la rete staccata arrivano `EDNS` e `ESOCKET`. La scadenza di 15 s non ha un codice. Manca il caso "altro" | IR N7, CD M8, ST M11 | 636, 97, 353 | Tabella di 5 righe con il testo di ogni messaggio. `sendMail` non accetta `AbortSignal`: si usa `Promise.race` e poi `transporter.close()` |
-| R8 | **L'ambiente delle prove non è definito.** Le prove con il database scrivono sul database di sviluppo. Playwright con il `.env` della demo manda email vere con Gmail. Manca `next build`. Manca dove sta Mailpit | IR N8, CD M7, ST Nit 9 | 626-641 | Database `configuratore_test` con `test:setup`. Vitest in serie con `TRUNCATE` tra un file e l'altro. `webServer.env` verso Mailpit e il database di prova. `next build && next start`. Mailpit nel PATH oppure in `MAILPIT_BIN` |
-| R9 | **Gli script non leggono `.env`.** `tsx` e `drizzle-kit` non lo caricano | IR N9, CD M6 | 546-552 | `tsx --env-file=.env` negli script e `process.loadEnvFile()` in `drizzle.config.ts` |
-| R10 | **L'elenco dei file è incompleto e i proprietari si contraddicono.** Mancano le pagine P6, il file `'use server'`, il route handler, `vitest.config.ts`, `playwright.config.ts`, `docker-compose.yml`, `components.json`, `public/texture/`, il mockup. `public/` e `src/app/` sono di M, ma ci lavora anche N | IR N10, CD M10, ST M1, IR Nit 4 | 503-523 | Righe aggiuntive con percorso completo, responsabile e fase (ad esempio `src/app/azioni.ts`, N). Eccezioni scritte nella tabella dei ruoli |
-| R11 | **Schede e `aladdin.json` non sono allineati.** La 0018 e la riga 88 del JSON dicono "togliere le chiavi `_` prima del seed". La 0015 e la 0019 dicono ancora `runtime = 'nodejs'` e "variabile dedicata". La 0014 non cita le texture tra gli avvisi. La 0007 parla di "persona fisica" e di una sola base giuridica | IR N11, CD M1, Nit 7-8, ST M5, M16 | P1 759; schede | Strip con `z.preprocess` per le chiavi `_`, poi `.strict()`. Note datate nelle schede 0007, 0014, 0015, 0016, 0018, 0019 e 0021. Correggere la nota del JSON |
-| R12 | **`photoGroup` non ha una colonna** (errore mio). `caricaProdotto` non restituisce "lo stesso tipo" | CD M2, IR Nit 3 | 226, 516 | Colonna `photo_group` (nullabile); tipo `Omit<ProdottoFile,'schemaVersion'>` |
-| R13 | **Dipendenze incomplete**: `react-dom`, i `@types/*`, i pacchetti reali di Tailwind e di shadcn. `shadcn init` crea anche dei file | CD M5, IR Nit 5, ST Nit 3 | 533 | Lista completa. Scaffold con `create-next-app` e `shadcn init` nella fase 2; quello che installano fa parte della lista iniziale |
-| R14 | **Font nel browser.** `next/font/local` genera un nome di famiglia offuscato, quindi `font-family="Jost"` nell'SVG funziona in resvg ma non nel browser. Non è detto se l'anteprima è un SVG inline | CD M11, ST Nit 15 | 836, 316 | `@font-face` con `font-family: 'Jost'` sugli stessi TTF, oppure la famiglia passata in `opzioni`. Anteprima come SVG inline |
-| R15 | **RNF3 dice "un solo comando"**, il criterio 1 dice `npm ci` + `npm run demo` | ST M6, IR Nit 1 | 103, 586 | Allineare RNF3 |
-| R16 | **Criteri 1 e 4: dove e quando si verificano.** Nella fase 8 il tutor non c'è. Il computer della demo è indicato come uno dei portatili alla riga 14 e come un terzo computer alla riga 442 | ST M7, IR Nit 12 | 584-594, 574 | Fase 8 sul portatile che non ospita la demo, con un indirizzo di prova. Fase 9 sul computer della demo. Allineare le righe 14 e 442 |
-| R17 | **Criterio 2: non è detto quando il ripiego è ammesso.** Il terzo prodotto non è in nessuna fase prima della 6 | ST M8 | 589, 308 | Ripiego ammesso solo se il secondo prodotto supera la soglia della 9.2, punto 5. "Aladdin con la frontale e, se pronta, la diagonale" |
-| R18 | **Criterio 5 non eseguibile.** Con Mailpit una password sbagliata non dà errore. Non si sa quale stato controllare. Manca la pausa di 30 s prima di "Riprova" | ST M9 | 598 | Con Gmail, due prove separate. Si controlla `customer_status`. Si ripristina la causa, si attendono 30 s, poi "Riprova" |
-| R19 | **Terzo o quarto tentativo** (errore mio) | ST M10 | 633, 364 | "Il quarto tentativo (terzo "Riprova") è rifiutato" |
-| R20 | **Il rifiuto del server non è provato.** L'interfaccia riporta l'URL ai valori predefiniti, quindi Playwright non arriva mai a una combinazione non valida | ST M12 | 637, 593, 801 | Due righe di prova. Una Server Action chiamata con una combinazione non valida risponde `ok: false` e non crea righe. In P7: una combinazione incompatibile nell'URL torna ai valori predefiniti |
-| R21 | **"Predefinito non disattivabile" non dice cosa controlla il seed.** Un `excludes` sul predefinito crea un ciclo | ST M13, CD Nit 9, IR Nit 9 | 773 | Il seed rifiuta un predefinito che compare come bersaglio di una regola. In alternativa, si torna al primo valore attivo |
-| R22 | **"Identificatori in inglese"** contro `caricaProdotto`, `inviaRiepilogo`, `errori`, e `{group, code, messaggio}` che mescola le due lingue | ST M15 | 265, 516, 807-811 | Regola ristretta: inglese per database e file del catalogo, italiano per funzioni e file del progetto. Riga 811 in una sola lingua |
-| R23 | **`/galleria` mostra solo i materiali predefiniti**, quindi il criterio della 9.1 ("ogni materiale si riconosce") non si può controllare lì | ST M18 | 282, 642 | La galleria mostra anche una riga per ogni gruppo, con tutti i suoi valori |
-| R24 | **Criterio 7: "funzionano" non è verificabile**, e manca la prova di `--email` | ST M19 | 600, 634 | Prova di `npm run clean -- --email` (anche con le maiuscole). Il criterio 7 rimanda alla sezione 18 |
-| R25 | **"Vista frontale del mockup" è ambigua.** Il mockup ha "Esterno" e "Interno (frontale interna)" | ST M3 | 568, 292 | "La vista 'Esterno' del mockup diventa la frontale; 'Interno' si toglie; la diagonale è nuova" |
-
-## 🟢 Nit
-
-- **Script npm:**
-  - per l'email si scrive `npm run clean -- --email <indirizzo>`;
-  - mancano gli script `db:generate` e `dev`;
-  - va detto come si avvia Mailpit in sviluppo;
-  - va detto cosa confronta il controllo "migrazioni applicate";
-  - il titolo della 15.3 va cambiato in "Migrazioni e script npm".
-- **Docker:**
-  - va dato un nome al servizio Docker (`db`) e scritto il comando `psql` completo, legato alla `DATABASE_URL`;
-  - va detto dove sta `docker-compose.yml` nella fase 1, prima che esista il repository.
-- **SMTP:** con Mailpit l'opzione `auth` va omessa; `SMTP_SECURE` va convertito in booleano.
-- **Prove:**
-  - la prova del `request_id` è in Vitest nella tabella e in Playwright nella 0024;
-  - la prova del seed non tocca una regola, come chiede la 0022;
-  - nella tabella 18 la colonna "Tipo" diventa "Strumento";
-  - "come descritto" va sostituito con l'esito;
-  - la prova del PDF va dentro la tabella;
-  - in axe i livelli sono `serious` e `critical`.
-- **Fasi:**
-  - va detto chi passa `viewer` da `image` a `svg`;
-  - le fasi 6-8 non hanno un responsabile;
-  - nella fase 2 va scritto l'ordine: prima il porting, poi la prova del PDF;
-  - "scrive la scheda" va sostituito con "aggiorna la 0015".
-- **Contenuti da aggiungere:**
-  - va indicata la fonte dei TTF statici (cartella `static/` di Google Fonts);
-  - va scritto il formato di `Content-Disposition`;
-  - per un prodotto inesistente `/configura/[prodotto]` risponde `notFound()`;
-  - con `texture: null` per l'alluminio il generatore usa `color`.
-- **Riformulazioni:**
-  - la frase della riga 728 è circolare ("prese … sono prese") e "l'autore" non è definito;
-  - in P1 le voci sui codici vanno unite e le zone vanno chiamate "zone dei gruppi";
-  - in P2 la voce della riga 773 va divisa in più voci;
-  - "gestiscono male" (P14) va precisato;
-  - "regge" (P13) va precisato;
-  - "leggibile" (9.1) va precisato;
-  - le panche nella vista dal vetro sono "semplificate".
-- **Sezione 23:** mancano le righe per i cambi delle schede 0021-0024; il nome del file del mockup va scritto in P15 e nell'appendice B.
-- **Fasi nel testo:** "fase di inserimento" va scritto "fase 6", e nella riga 505 la parte "Dalla fase 2" va spostata in una colonna propria.
-- **Blocchi:** il "blocco delle funzioni" (fase 7) e il blocco dello schema (fase 4) vanno distinti nel glossario.
-
-## Sintesi per decidere
-
-- **Correzioni tecniche, molte sono errori miei:** R2, R6, R9, R11, R12, R13, R14, R19. Non richiedono decisioni nuove.
-- **Precisazioni senza vere scelte:** R3, R5, R7, R8, R10, R15, R16, R18, R20, R22-R25 e i Nit.
-- **Piccole decisioni di contratto, da prendere con Marko:**
-  - R1: i campi della geometria;
-  - R4: il formato delle regole;
-  - R17: la soglia del ripiego;
-  - R21: il comportamento con un predefinito bersaglio di una regola.
-
-  Per ciascuna ho una proposta concreta.
-
----
-
 # Stage 9: Implementation Readiness Test, round 1
 
-- **Documento:** `configuratore-saune-analisi-v6.md`, DetailedRange righe 491..892 (dalla sezione "## 15. Organizzazione del lavoro" alla fine)
-- **Contesto Goldfish:** `docs-iniziali/docs/decisioni/` (README, 0001-0020), `data/prodotti/aladdin.json`
-- **Revisori, in contesti isolati:**
-  - `egm-implementation-readiness`: completed;
-  - `egm-codebase-details`: completed;
-  - `egm-style`: completed.
+- **Documento:** `configuratore-saune-analisi-v7.md`. Copia salvata in `archivio/revisione-v7/configuratore-saune-analisi-v7-prima-dello-stage9.md`.
+- **Intervallo:** DetailedRange 547..1157 (sezioni 15–26)
+- **Standard:** `implementation-readiness-standard`, applicato da implementation-readiness e codebase-details. Style ha usato le regole della propria persona.
+- **Contesto Goldfish:**
+  - `docs-iniziali/docs/decisioni/` (0001–0030);
+  - `data/prodotti/aladdin.json`;
+  - `docs/mockup/`;
+  - `archivio/script-viste/`;
+  - `contesto-web/`.
+- **Revisori, in contesti isolati:** `egm-implementation-readiness`: completed; `egm-codebase-details`: completed; `egm-style`: completed.
+- **Revisione della v6:** `archivio/revisione-v6/implementation_readiness_report.md`
 
-**Verdetto: non pronto per l'implementazione.**
+**Esito:** il piano non è ancora pronto per partire. Dopo aver unito i doppioni restano **2 Blocker, 20 Major e 22 Nit**.
 
-Dopo aver tolto i doppioni restano:
-- 1 Blocker;
-- 16 Major;
-- 18 Nit.
+I revisori riconoscono come concreti:
+- il calendario e i ruoli;
+- le firme delle Server Action;
+- l'SQL dell'appendice C.
 
-Un Major è già risolto in parte. Due revisori su tre danno lo stesso verdetto, "non pronto". Il terzo è lo style, che non dà un verdetto.
+Le lacune si concentrano in due punti:
+- **il contratto delle viste.** È la prima PR, e dopo si cambia solo con una PR discussa;
+- **l'ambiente delle prove.** Qui c'è il rischio di mandare email vere dall'unico account Gmail.
 
-Non c'è codice applicativo. Il piano è stato confrontato con `aladdin.json`, con le schede e con il comportamento noto delle librerie citate.
+Il revisore codebase-details ha verificato sul mockup diversi punti e li ha trovati corretti:
+- i `viewBox` non quadrati;
+- `fill-rule: evenodd`;
+- l'ordine di `glass` e dell'ombra;
+- la fusione `multiply` delle texture;
+- la rotazione di `roof` e `bench`;
+- il colore di `metal`;
+- i comandi di Drizzle, Next.js, Vitest e Mailpit citati.
 
-## Controlli superati (codebase-details)
+Alcune affermazioni sul comportamento delle librerie i revisori le segnano "da verificare", perché non si potevano controllare sui file locali. Le riporto con la stessa etichetta.
 
-- I link alle schede puntano a file esistenti. Titoli e stati coincidono con il README: l'ho riverificato per 0007, 0015 e 0016, quindi il Nit dello style su questo punto non è confermato.
-- La corrispondenza tra P1-P15 e le schede (riga 676) è corretta.
-- L'appendice A coincide con `aladdin.json` su designer, tagli 45 e 60 con le misure, materiali e pedana con predefinito `none`.
-- Sono corretti `drizzle-kit generate`, `push` e `studio`, `save-exact=true`, `randomBytes(...).toString('base64url')` e `@axe-core/playwright`.
-- resvg supporta `feTurbulence` e `objectBoundingBox`.
+**Il mio controllo sui risultati.** Prima di scrivere il report ho controllato a mano tre cose:
+- IR18 è fondato: l'appendice B (r. 1138) dice che le viste di Aladdin 60 sono state "prodotte in chat dal modello 3D".
+- IR12 è fondato: P1 (r. 879) dice "il file si usa così com'è sia dal seed sia dall'interfaccia".
+- IR16 è fondato: la tabella 20.1 (r. 816, 819) scrive ancora "prova nella fase 1" come se fosse da fare, e la 20.5 (r. 973) chiede ancora di annotarne l'esito.
+
+**Correzioni del mio round 1 che hanno lasciato tracce.** Due risultati vengono da correzioni che ho applicato io nello Stage 7:
+- **IR5:** con D10 le cause sono diventate cinque, ma P8 dice ancora "una delle quattro".
+- **IR8 e IR17:** con D4 ho aggiunto la prova "vista malformata", e il ripiego non è definito in un modo che si possa provare.
 
 ---
 
 ## 🔴 Blocker
 
-### B1. Le cose da cui dipende la prova del PDF della fase 2 non hanno responsabile né fase
-- **Fonti:** implementation-readiness B1; codebase-details M2 e N5.
-- **Righe:** 499, 536-537, 772-777, 884.
-- **Problema:** la prova del PDF con l'immagine, poi lo scheletro della fase 3, richiedono quattro cose:
-  1. il generatore delle viste portato dal mockup P15 a funzione pura;
-  2. il mockup salvato in `docs/mockup/`, che oggi è solo un artifact su claude.ai;
-  3. lo schema Zod della geometria;
-  4. la `geometry` di Aladdin, che in `aladdin.json` vale `null`.
+### IR-B1. Il contratto delle viste non dice come si legge un SVG né cosa può contenere
+- **Fonte:** readiness B1, codebase M4.
+- **Dove:** 15.2 (r. 594–612), prova sul formato in sez. 18 (r. 727), `componiVista` (r. 604–612), appendice C (r. 1157).
+- **Problema:** tre parti del contratto devono leggere un SVG: la prova sul formato, il controllo delle proporzioni e `componiVista`, che gira sia nel browser sia in Node. Però:
+  - in Node non c'è `DOMParser`, e nella lista delle dipendenze non c'è un parser XML;
+  - non è definita la radice `<svg>`: quali attributi sono ammessi (`xmlns`, `viewBox`, `width`, `height`) e se è ammesso `<g>`. resvg potrebbe rifiutare un SVG senza `xmlns` (da verificare);
+  - non è detto quali comandi può usare `d`. Il mockup usa solo `M`, `L` e `Z` assoluti, ma una vista prodotta in chat può contenere curve o comandi relativi, e allora il riquadro non si calcola leggendo le coordinate una per una;
+  - non è detto cosa fa `componiVista` con un file fuori formato.
+- **Perché blocca:** è una scelta di dipendenza che lo standard non lascia a chi scrive il codice, e dopo la prima PR cambierebbe tutte le viste e la prova.
+- **Proposta:** aggiungere al formato in 15.2:
+  - radice `<svg xmlns="http://www.w3.org/2000/svg" viewBox="…">`, senza altri attributi;
+  - figli `<path …/>` diretti, senza `<g>`;
+  - `d` solo con `M`, `L`, `Z` assoluti, regola da scrivere anche nel testo della richiesta in `docs/viste.md`;
+  - lettura con un'espressione regolare in `src/lib/viste/leggiVista.ts`, senza dipendenze nuove;
+  - `componiVista` che lancia `VistaNonValida` se il file non rispetta il formato.
 
-  La tabella 15.5 non assegna nessuna di queste cose prima della fase 2. La riga 499 dà a N la trascrizione della geometria solo nella fase di inserimento dei prodotti (fase 6). Inoltre non è deciso se Zod accetta `viewer: "svg"` con `geometry: null`: se lo rifiuta, il seed fallisce sulla bozza attuale.
+### IR-B2. Le prove possono mandare email vere dall'unico account Gmail
+- **Fonte:** readiness B2, codebase M9 e M10.
+- **Dove:** 15.3 (r. 636–640), ambiente delle prove in sez. 18 (r. 744–748).
+- **Problema:**
+  - "Una prova non manda mai email vere" vale solo per Playwright. Per Vitest il documento non dice cosa contiene `.env.test`, né come lo si carica: `vitest run` non lo legge da solo, e `loadEnv` di Vite legge anche `.env`, dove ci sono le credenziali Gmail.
+  - Le prove "Vitest + database" che chiamano `inviaRiepilogo` non hanno un server SMTP: Mailpit lo avvia solo Playwright.
+  - Anche per Playwright `next start` carica `.env`. L'`env` esplicito non azzera `SMTP_USER` e `SMTP_PASSWORD` e non imposta `ENABLE_GALLERY`, quindi `/galleria` non c'è durante le prove.
+  - Per le migrazioni di prova, `drizzle.config.ts` chiama `process.loadEnvFile()`, e non è chiaro quale `DATABASE_URL` prevalga. Inoltre `configuratore_test` va creato collegandosi a un altro database, e `CREATE DATABASE` non ha `IF NOT EXISTS`.
+- **Perché blocca:** una scelta sbagliata manda email vere da un Gmail nuovo. Il blocco di quell'account è un rischio "Alto" della 20.1, senza un secondo account.
 - **Proposta:**
-  - un compito di porting del mockup per M nella fase 2, con il nome del file in `docs/mockup/`;
-  - la geometria di Aladdin a N nella fase 2 e quella del secondo prodotto nella fase 3;
-  - i campi minimi dello schema della geometria;
-  - la regola Zod "viewer = svg ⇒ geometry obbligatoria", con la bozza attuale marcata `viewer: "photo"` finché la geometria manca.
-- **Collegamento con lo Stage 8:** è lo stesso nodo di M-E, la geometria nel contratto prima del censimento. Se si sceglie di togliere la geometria dal contratto iniziale, il Blocker cambia forma ma resta: qualcuno deve comunque produrre la geometria di Aladdin prima della prova del PDF.
+  - scrivere il contenuto completo di `.env.test`: `DATABASE_URL` di prova, `SMTP_HOST=127.0.0.1`, `SMTP_PORT=1025`, `SMTP_SECURE=false`, utente e password vuoti, `MAIL_FROM` e `PROJECT_EMAIL` di prova;
+  - `vitest.config.ts` legge solo `.env.test`, per esempio con `process.loadEnvFile('.env.test')` in `setupFiles`, e si ferma se `SMTP_HOST` è diverso da `127.0.0.1`;
+  - scegliere una sola strada per l'SMTP delle prove Vitest: un server avviato dalla prova stessa, oppure Mailpit avviato a mano;
+  - `scripts/prepara-test.ts` controlla `pg_database` e crea il database se manca, poi esegue `migrate()` di `drizzle-orm/postgres-js/migrator` senza `drizzle-kit`. Stessa cosa in `avvio-demo.ts`;
+  - nell'`env` di Playwright aggiungere `SMTP_USER=''`, `SMTP_PASSWORD=''`, `ENABLE_GALLERY=true` e `PROJECT_EMAIL` di prova. Va verificato che Next non sovrascriva le variabili vuote.
 
 ---
 
 ## 🟡 Major
 
-### M1. Il formato di `aladdin.json` non coincide con quello che il documento descrive
-- **Fonti:** codebase-details M1, N1 e N2; style M5; implementation-readiness Nit sulle chiavi `_`, `.strict()`, `size` e `material.type`.
-- **Righe:** 259, 261, 700-702, 222, 506, 762.
-- **Problema:** la frase "la bozza di Aladdin segue già questo formato" (riga 702) non regge per sette motivi:
-  - il campo `_assetSources`, con gli URL `static.effe.it`, non è mai nominato. Non è deciso chi scarica texture e foto in `public/` né se vanno nel commit;
-  - non è deciso se Zod rifiuta (`.strict()`) o ignora le chiavi `_*`. "Va tolto prima del seed" vuol dire a mano, ma Marko importa il file già dalla fase 2;
-  - `schemaVersion: 1` sta al primo livello del file. La tabella `product` non ha una colonna corrispondente e non è detto cosa ne fa il seed;
-  - `material.type` ha valori in italiano (`legno`, `specchio`, `alluminio`, `gres`), contro la regola della riga 261 sugli identificatori in inglese;
-  - il formato delle chiavi di `photos` (`"45/rovere"`) non è documentato e non si sa come si estende ai prodotti di livello B;
-  - `size` è citato tra i gruppi e `mirror`/`frame` tra le zone fisse, ma nel file i tagli sono l'array `sizes`. P7 usa `size=60` come se fosse un gruppo;
-  - manca la regex dei codici. Nel file ci sono codici con trattino (`rovere-rigatino`) e codici numerici (`45`).
-- **Proposta:** una tabella di 6-8 righe "file attuale → contratto" che decida ogni punto. Per i codici, `^[a-z0-9-]+$`. Togliere la frase della riga 702 oppure renderla vera.
+### Contratto e codice
 
-### M2. Manca l'elenco dei file, con responsabile e fase
-- **Fonti:** implementation-readiness M2; codebase-details M12.
-- **Righe:** 497, 505-511.
-- **Problema:** la sezione 15.1 elenca solo cartelle. Non sono nominati:
-  - i file di configurazione: `drizzle.config.ts`, `next.config.ts`, `.npmrc`, `.gitattributes` (con il contenuto), `.env.example`, `vitest.config.ts`, `playwright.config.ts`;
-  - i file in `src/contratti/`, `src/db/` e `src/server/`;
-  - gli script e i file di prova.
-
-  Le cartelle `src/contratti/`, `data/prodotti/`, `src/fonts/`, `docs/` e quella delle prove non hanno un proprietario.
-- **Proposta:** una tabella "percorso, contenuto, responsabile, fase". Non serve un elenco completo: bastano i file del contratto e della fase 3.
-
-### M3. Gli script npm non sono definiti e "senza passaggi manuali" non regge
-- **Fonti:** implementation-readiness M3; codebase-details M13.
-- **Righe:** 520, 538, 554, 568, 436.
+**IR1. L'elenco dei file non basta come elenco dei file ammessi** (readiness M1, codebase M1)
+- **Dove:** 15.1, r. 561–585.
 - **Problema:**
-  - da un clone pulito serve `npm ci` prima di `npm run demo`: è un passaggio manuale, oppure va dentro lo script;
-  - non è definito cosa fa `db:reset` (`down -v` più migrate e seed, oppure `DROP SCHEMA`);
-  - non è definito come si applicano le migrazioni: con `drizzle-kit migrate` o con il migrator di `drizzle-orm`;
-  - non è detto cosa confronta il controllo "migrazioni applicate", ad esempio `__drizzle_migrations` con `_journal.json`;
-  - mancano nome e argomenti degli script di seed, pulizia, cancellazione per email, test e orchestrazione di demo.
-- **Proposta:** una tabella "nome in `package.json`, file, argomenti, cosa fa".
+  - Al posto dei file ci sono cartelle intere: `src/components/`, `src/lib/viste/`, `test/unit/`, `test/e2e/`, `docs/`.
+  - Manca una colonna che dica se il file si crea, si modifica o si cancella.
+  - Mancano alcuni file:
+    - `layout.tsx`, `globals.css`, `postcss.config.mjs`, la configurazione di ESLint e `.gitignore` con `.env`;
+    - il file di `componiVista` e quello delle costanti;
+    - la funzione che normalizza un URL sbagliato;
+    - le funzioni di avvio e di pulizia richiamabili dalle prove.
+  - Manca anche lo spostamento di `docs-iniziali/docs/decisioni/` in `docs/decisioni/`.
+  - Il pannello dei materiali è un componente React, ma sta in `src/lib/viste/`.
+- **Proposta:** percorsi esatti e una colonna "Azione". Le cartelle restano ammesse solo per `public/viste/<prodotto>/<taglio>/`.
 
-### M4. Le dipendenze non sono elencate e il driver del database non è scelto
-- **Fonti:** implementation-readiness M4; codebase-details M5 e M6.
-- **Righe:** 174, 469, 511, 525, 748; scheda 0015.
+**IR2. Scaffold: comando e dipendenze non sono fissati** (readiness M2 e N6, codebase M12)
+- **Dove:** 15.2, r. 614; fase 2, r. 656.
 - **Problema:**
-  - la riga 511 cita "la lista fissa delle dipendenze", che non esiste, e la riga 525 la contraddice;
-  - il driver resta "`postgres.js` o `pg`";
-  - mancano `tsx` o un equivalente per gli script, `@types/nodemailer`, `@types/pdfkit`, `@playwright/test`, Tailwind con la CLI di shadcn, e Mailpit con il modo di installarlo su Windows;
-  - `serverExternalPackages` cita solo PDFKit. `@resvg/resvg-js` è un modulo nativo e di solito va esternalizzato anche lui.
+  - `create-next-app` rifiuta probabilmente una cartella con file già presenti (da verificare).
+  - Le risposte che chiede durante l'installazione non sono decise: linter, Turbopack, alias, gestore dei pacchetti.
+  - Anche le scelte di `shadcn init` non sono decise.
+  - La lista "esatta" delle dipendenze è probabilmente superata, per esempio `tw-animate-css`, il pacchetto unico `radix-ui` ed ESLint (da verificare).
+  - Non è detto quali componenti shadcn si aggiungono.
 - **Proposta:**
-  - una lista con i nomi dei pacchetti;
-  - scegliere `postgres.js`, già usato nell'esempio della riga 469;
-  - `serverExternalPackages: ['pdfkit', '@resvg/resvg-js']` già nella PR del contratto.
+  - scrivere il comando completo, eseguito in una cartella temporanea da cui poi si copiano i file;
+  - fissare le opzioni di `shadcn init`;
+  - elencare i componenti: `dialog`, `button`, `radio-group`, `checkbox`, `input`, `label`;
+  - dichiarare che la lista definitiva delle dipendenze è il `package.json` prodotto nella PR del contratto.
 
-### M5. La sezione 18 non ha casi di prova concreti
-- **Fonti:** implementation-readiness M5; codebase-details, lacuna del piano di prova; style M7 e Nit "poche prove" (riga 592).
-- **Righe:** 566, 592-596; casi citati alle righe 403, 449, 723.
+**IR3. Lo schema Drizzle e lo schema Zod non hanno tipi né campi obbligatori** (readiness M3)
+- **Dove:** 15.2, r. 590–593.
+- **Problema:** mancano:
+  - i nomi delle colonne di `configuration` per email, data e versione dell'informativa, data di creazione;
+  - il tipo di `zones`;
+  - il collegamento tra valore e materiale, e cosa succede alle righe collegate quando se ne cancella una (`onDelete`);
+  - quali colonne sono `NOT NULL`;
+  - quali campi di `ProdottoFile` sono obbligatori e quali facoltativi;
+  - quali tipi di materiale richiedono una `texture`.
+- **Proposta:** una tabella con colonna, tipo, nullabile e vincolo, in 15.2 o in un nuovo 8.3. Aggiungere una riga per ogni campo di `ProdottoFile`, con obbligatorio o facoltativo e il valore predefinito.
+
+**IR4. `valida` non può segnalare un prodotto inesistente, e manca la funzione per gli URL sbagliati** (readiness M4)
+- **Dove:** P8, r. 915–921; sez. 18, r. 725; P7, r. 903.
 - **Problema:**
-  - "poche prove automatiche", senza un elenco;
-  - non sono prove i casi limite che il documento cita: `valuta` sui tre tipi di regola, `request_id` duplicato, due "Riprova" in contemporanea, terzo tentativo rifiutato, pulizia con una riga retrodatata, snapshot con un codice rimosso, seed, URL non validi;
-  - non c'è la mappa degli errori di RF6: `ECONNECTION`, `EAUTH`, `ETIMEDOUT`, `EENVELOPE`;
-  - non è detto se la prova "un PDF per prodotto" legge dai file o dal database;
-  - non è detto come Playwright avvia Mailpit né quale API legge (ad esempio `GET /api/v1/messages`);
-  - manca `npx playwright install`;
-  - il criterio 5 dice "messaggio chiaro" senza il testo atteso né il modo di rendere sbagliata la password.
-- **Proposta:** una tabella "caso, livello (unità/flusso), file, esito atteso", di 10-15 righe.
-
-### M6. Le zone interne non si vedono nelle due viste esterne
-- **Fonti:** implementation-readiness M6.
-- **Righe:** decisione C28 (viste frontale e diagonale, solo esterne); zone `int`, `furn`, `floor`.
-- **Problema:** con viste solo esterne, essenza interna, arredi e pedana in gres non compaiono nell'immagine. Scegliere il gres non cambia l'anteprima né il PDF.
-- **Proposta, da decidere:** una delle tre strade:
-  - dichiarare che quelle scelte compaiono solo nell'elenco;
-  - aggiungere un riquadro o una vista dell'interno;
-  - mostrare l'interno attraverso il vetro della porta nella vista frontale.
-
-  È una decisione di design, non una correzione.
-
-### M7. Le interfacce del server non sono specificate
-- **Fonti:** implementation-readiness M7; codebase-details M4.
-- **Righe:** 743, 748.
-- **Problema:**
-  - mancano le firme della Server Action e del Route Handler, con gli errori restituiti;
-  - non è definito il comportamento con un token sconosciuto;
-  - non è definita la serializzazione di `multi` nell'URL;
-  - manca il tipo di ritorno di `valuta`;
-  - "entrambi con `runtime = 'nodejs'`" non funziona: in un file `'use server'` si possono esportare solo funzioni async, quindi l'export lì rompe la build. Va nei file `page.tsx` e `route.ts`, e `nodejs` è già il predefinito.
+  - `valida(config, prodotto)` riceve già il prodotto, quindi non può dire che il prodotto non esiste.
+  - `valida` restituisce solo errori, e da questi non si può ottenere una configurazione corretta.
+  - Non ci sono i testi degli avvisi.
 - **Proposta:**
-  - le firme in TypeScript, 4-6 righe;
-  - una riga per ogni caso d'errore;
-  - indicare i file in cui va l'export di `runtime`, oppure toglierlo.
+  - `valida(config, catalogo)`;
+  - una nuova funzione `normalizza(query, catalogo) → { config, avvisi }`;
+  - testi fissati, per esempio "Il valore «x» non esiste: è stato scelto «y»".
 
-### M8. Variabili d'ambiente senza nome; `/galleria` è spenta proprio nella demo
-- **Fonti:** implementation-readiness M8; codebase-details M7 e M8; style Nit riga 741.
-- **Righe:** 463, 594, 741, 753, 787.
+**IR5. Le cause dell'invio non sono definite fino in fondo** (readiness M5; nasce in parte dalla mia correzione D10)
+- **Dove:** P8, r. 909–913; appendice C, r. 1150.
 - **Problema:**
-  - `.env.example` non è elencato; l'unica variabile nominata è `DATABASE_URL`;
-  - mancano i nomi della variabile dell'email del progetto e di quella di `/galleria`, e le variabili SMTP (host, porta, secure, utente, password);
-  - manca il passaggio da Mailpit (`127.0.0.1:1025`, senza TLS e senza autenticazione) a Gmail (465 o 587);
-  - la demo gira con `next start`, quindi `NODE_ENV=production`. Se `/galleria` è legata allo sviluppo, è spenta proprio quando la riga 594 la usa come materiale di riserva.
-- **Proposta:** l'elenco di `.env.example` e una variabile esplicita per `/galleria`, attiva nella demo.
-
-### M9. Fasi senza scaffold e responsabili mancanti
-- **Fonti:** implementation-readiness M9.
-- **Righe:** tabella 15.5.
-- **Problema:**
-  - nessuna fase crea lo scaffold del progetto;
-  - il passaggio dell'interfaccia dal file al database non è assegnato;
-  - il modulo dello scheletro non ha un responsabile;
-  - le fasi 5, 9 e 10 non hanno responsabile;
-  - lo spostamento delle schede in `docs/` non è in nessuna fase.
-- **Proposta:** completare la tabella 15.5 con una riga per lo scaffold e un responsabile per ogni fase.
-
-### M10. Lo snapshot non contiene il nome del prodotto
-- **Fonti:** codebase-details M9.
-- **Righe:** 250, 403, 759.
-- **Problema:** l'oggetto dell'email e l'intestazione del PDF usano il nome ("sauna Aladdin"), ma lo snapshot ha solo `product: "aladdin"`. Se il prodotto esce dal catalogo, "Riprova" e "Scarica il PDF" non hanno il nome.
-- **Proposta:** aggiungere `productName` allo snapshot con `schemaVersion: 1`, prima del blocco dello schema JSONB nella fase 4.
-
-### M11. Non è specificato come la foto riempie una zona
-- **Fonti:** codebase-details M10.
-- **Righe:** 765, 768 (P13).
-- **Problema:**
-  - con `objectBoundingBox` va scelto `preserveAspectRatio`: con `none` la venatura si deforma (le foto sono 1394 × 902), con `xMidYMid slice` la foto viene ritagliata;
-  - non è deciso se una zona fatta di più forme usa un riquadro per forma oppure uno per tutta la zona.
-- **Proposta:** due righe che fissano le due scelte.
-
-### M12. I file dei font non sono indicati
-- **Fonti:** codebase-details M11; implementation-readiness Nit sui pesi in P14.
-- **Righe:** 554, 770.
-- **Problema:**
-  - Jost e IBM Plex Sans si distribuiscono anche come font variabili;
-  - PDFKit incorpora solo l'istanza predefinita di un font variabile, e resvg supporta poco gli assi di variazione;
-  - mancano i nomi dei TTF statici, i pesi usati e il modo di trovarne il percorso a runtime.
+  - P8 dice "una delle quattro di RF6", ma dopo D10 le cause sono cinque.
+  - Le cause non hanno un codice da usare nel tipo.
+  - Non è detto cosa contiene `customer_error`.
+  - Mancano i testi degli errori di validazione e la chiave sotto cui finisce un errore della configurazione.
+  - I nomi dei gruppi possono coincidere con i campi del modulo.
+  - Manca la formula di `puoRiprovare`.
 - **Proposta:**
-  - elencare i file, ad esempio `Jost-Regular.ttf`, `Jost-Medium.ttf`, `IBMPlexSans-Regular.ttf`, `IBMPlexSans-SemiBold.ttf`;
-  - trovare il percorso con `path.join(process.cwd(), 'src/fonts', …)`.
+  - `causa: 'non-raggiungibile' | 'accesso-rifiutato' | 'tempo-scaduto' | 'indirizzo-rifiutato' | 'imprevisto'`;
+  - `customer_error` uguale a `"<causa>:<codice>"`;
+  - una tabella dei messaggi di validazione, con la chiave `config` per gli errori della configurazione;
+  - lo schema Zod rifiuta i gruppi chiamati come i campi del modulo;
+  - `puoRiprovare = customer_status === 'failed' && customer_attempts < 3`.
 
-### M13. P1-P15 sono dette "definitive", ma alcune sono condizionate
-- **Fonti:** style M3; collegato a M-F dello Stage 8.
-- **Righe:** 676 e le righe di P3 e di P12-P15.
-- **Problema:** P3, P13 e P12-P15 dipendono da prove o da fonti non ancora disponibili. "Definitive" rende più difficile cambiarle e contraddice gli stati delle schede ("da verificare nella fase 3").
-- **Proposta:** "decise; quelle con una condizione sono indicate", con la condizione scritta accanto a ciascuna.
+**IR6. `componiVista`: costanti senza valori, e l'opzione `dataUri` non si può realizzare** (readiness M6, codebase M5, M6 e N5)
+- **Dove:** 15.2, r. 603–612; P13, r. 938–944.
+- **Problema:**
+  - I valori ci sono già nel mockup (r. 618), ma il documento non li riporta: scurimento `color-mix` al 0, 6, 13, 21, 30 e 40%; bordo 1.2 con giunzioni `round`; `glass` #e4eef0 con opacità .1; `stove` #3a3a3c; ombra #000 .28 con sfocatura 24; pattern 900×582; `floor` senza materiale #cfcdc8.
+  - Questi numeri valgono per un `viewBox` largo 2000, mentre il contratto lascia il `viewBox` libero.
+  - Nel mockup la stufa ha sei livelli d'ombra, ma la 9.3 dice "colore pieno".
+  - Una funzione pura che gira anche nel browser non può leggere i file JPG per farne data URI.
+  - Non è detto che cosa restituisce la funzione.
+- **Proposta:**
+  - scrivere i valori in 15.2, con la nota "presi dal mockup";
+  - imporre una larghezza di 2000 nel contratto, oppure scalare i valori in proporzione;
+  - il chiamante sul server passa già i data URI, e l'opzione si toglie;
+  - `stove` usa `data-shade`;
+  - riusare `SH` e `mix()` da `archivio/script-viste/prova-genera.mjs` (r. 68, 135), ma non i suoi colori del vetro.
 
-### M14. Contraddizione sul tempo avanzato: rifinitura o pianta
-- **Fonti:** style M6.
-- **Righe:** 546, 800, 833.
-- **Problema:** le righe 546 e 833 destinano il tempo avanzato alla rifinitura, la riga 800 alla vista in pianta.
-- **Proposta:** scegliere una sola destinazione.
+**IR7. La conversione delle viste del mockup non dice con quale strumento si fa** (readiness M7, codebase M11)
+- **Dove:** appendice C, r. 1157; r. 571; fase 2.
+- **Problema:**
+  - Le viste stanno nell'oggetto `AVIEW` alla riga 618 dell'HTML: si possono estrarre con `JSON.parse`.
+  - Non è detto se la conversione si fa a mano, in chat o con uno script.
+  - La Pianta non ha il poligono dell'ombra, quindi la regola deve dire "se c'è".
+  - Non è detto se anche `glass` riceve `fill-rule="evenodd"`, come nel mockup.
+- **Proposta:** uno script usa e getta `scripts/converti-mockup.ts`, eseguito una volta e poi archiviato. Correggere i due dettagli.
 
-### M15. Il criterio 2 non si può verificare
-- **Fonti:** style M8.
-- **Righe:** 557.
-- **Problema:** "possibilmente con un interno diverso" non dice quando il criterio è soddisfatto.
-- **Proposta:** renderlo obbligatorio oppure toglierlo.
+**IR8. Il codice degli script non si può provare così com'è descritto** (readiness M8, codebase M7)
+- **Dove:** sez. 18, r. 729 e 732–735; 15.3.
+- **Problema:**
+  - Il seed, l'avvio e la pulizia sono script, ma le prove devono importare funzioni.
+  - Il seed di prova deve poter usare un'altra cartella e poi ripristinare il catalogo.
+  - Il server SMTP "muto" non è descritto.
+  - Con quel server scatta prima `greetingTimeout` (circa 10 s), quindi la scadenza di 15 s non viene mai provata.
+  - La prova dura più del `testTimeout` predefinito di Vitest, che è 5 s.
+- **Proposta:**
+  - le funzioni da esportare: `seed(db, cartella)`, `segnaPendingFailed(db)`, `pulisci(db, {email})`;
+  - i file di prova in `test/fixtures/`;
+  - il server muto come `net.createServer`;
+  - le scadenze come parametri del modulo di invio, con valori brevi nelle prove;
+  - `testTimeout` fissato in `vitest.config.ts`.
 
-### M16. Parole sbagliate o vecchie
-- **Fonti:** style M2.
-- **Righe:** 670; scheda 0007.
-- **Problema:** alla riga 670 c'è "Tutor e tutor", e la scheda 0007 dice ancora "valutatore".
-- **Proposta:** correzione meccanica.
+**IR11. Lo schema Zod condiviso con il browser controlla file su disco** (codebase M3)
+- **Dove:** r. 593 e 602.
+- **Problema:** i controlli "i tre file esistono" e "le zone delle viste hanno un materiale" leggono il disco. Lo schema però lo usa anche l'interfaccia, dove `fs` non c'è.
+- **Proposta:** una funzione solo server, `src/server/controllaViste.ts`, chiamata dal seed e dalla prova.
 
-### Già risolto in parte: generazione del `request_id`
-- **Fonti:** implementation-readiness M1; style M4; codebase-details M3.
-- **Stato:** le righe 683 e 728 sono corrette dopo lo Stage 8 e la nota della scheda 0017 lo precisa.
-- **Resta:**
-  - il corpo della 0017, alla riga 16, dice ancora "generato dal client". È il problema M-H dello Stage 8: il corpo e la nota della scheda si contraddicono;
-  - non è detto quando il server rigenera il `request_id`, ad esempio dopo un invio riuscito o quando il modulo si ricarica.
+**IR12. P1 contraddice la fase 3** (codebase M2)
+- **Dove:** r. 879.
+- **Problema:** P1 dice "il file si usa così com'è sia dal seed sia dall'interfaccia". La scheda 0022 e la sez. 8.2 dicono invece che dalla fine della fase 3 l'interfaccia legge solo dal database.
+- **Proposta:** "l'interfaccia importa i file solo fino alla fase 3".
+
+**IR13. `transporter.close()` probabilmente non interrompe un invio già partito (da verificare)** (codebase M8)
+- **Dove:** appendice C, r. 1147–1148.
+- **Problema:** senza pool, `close()` non chiude la connessione aperta da `send()`. L'email può quindi partire dopo che la riga è già `failed`, e "Riprova" manderebbe un doppione.
+- **Proposta:** verificarlo sulla versione fissata di Nodemailer. Poi due strade: dichiararlo come rischio accettato in 10.3, oppure usare `pool: true` con `maxConnections: 1`.
+
+### Calendario e criteri
+
+**IR9. La fase 2 non ha un ordine interno né un criterio di fine** (readiness M9)
+- **Dove:** 15.5, r. 653–664.
+- **Problema:** la prova del PDF di N dipende da `componiVista` e dalle viste convertite, che fa M nella stessa fase. Nessuna fase dice quando è conclusa.
+- **Proposta:** un ordine per mezze giornate nella fase 2, e per ogni fase una riga "fatta quando: `npm run build` e `npm test` passano, più…".
+
+**IR10. Il terzo prodotto e la variante di Yoku S non sono scelti** (readiness M10; Stage 6 S5)
+- **Dove:** 15.5, r. 666; criterio 2.
+- **Proposta:** nominare il terzo prodotto, oppure dare una regola per sceglierlo entro la fase 5. Per Yoku S, "taglio 60, variante del suo file FBX".
+
+**IR14. La regola del ritardo si contraddice** (style M1)
+- **Dove:** 15.5, r. 651.
+- **Problema:** la riga dice "non c'è margine" e subito dopo "il margine sono i tagli". Il quarto taglio poi non riguarda la fase 6.
+- **Proposta:** il ritardo si toglie dalla fase 6 con i tagli 1–3; il taglio 4 vale se le fasi 3–5 superano il loro tetto.
+
+**IR15. Gli ordinali dei tagli sono ambigui** (style M2)
+- **Dove:** r. 670–671.
+- **Problema:** non è chiaro chi siano "il secondo prodotto" e "i prodotti dopo il primo". Se il primo è Aladdin, il taglio 3 toglie la Pianta a Yoku S.
+- **Proposta:** usare i nomi dei prodotti.
+
+**IR16. La fase 1 risulta "fatta" senza esiti scritti** (style M3)
+- **Dove:** r. 655, 816, 819, 973.
+- **Problema:** i rischi della 20.1 citano ancora "prova nella fase 1" come una cosa da fare, e la 20.5 chiede ancora di annotarne l'esito.
+- **Proposta:** date ed esiti nella riga della fase 1, oppure "fatta, esiti da registrare in `docs/prove.md`". Nei rischi, "provato nella fase 1".
+
+**IR17. La soglia della prova sulla scadenza non si può misurare** (style M4; collegato a IR8)
+- **Dove:** r. 732.
+- **Problema:** "circa 15 secondi più il PDF" non dà un numero da verificare.
+- **Proposta:** un numero preciso, misurato con le scadenze brevi di IR8.
+
+**IR18. Il criterio 2 non dice da dove vengono le viste di Aladdin** (style M5)
+- **Dove:** r. 686.
+- **Problema:** non si capisce se Aladdin 60 convertito dal mockup basta per il criterio.
+- **Proposta:** "Aladdin (60 convertito dal mockup, prodotto in chat dal modello 3D come dice l'appendice B; 45 prodotto in chat) e Yoku S …".
+
+### Storico
+
+**IR19. La colonna v6 della 23.2 rimanda a sezioni che ora dicono altro** (style M6)
+- **Dove:** r. 1061, 1069, 1081, 1086.
+- **Proposta:** una nota sopra la tabella, oppure togliere i numeri di sezione dalla colonna v6. Il blocco si può anche spostare in `archivio/`, come propongono Stage 5 N1 e Stage 8 Z8-1.
+
+**IR20. La prima tabella della 23.1 descrive le viste in uno stato intermedio** (style M7)
+- **Dove:** r. 1021.
+- **Problema:** dice "generate da uno script", e la correzione sta nella tabella successiva.
+- **Proposta:** nella prima tabella lo stato finale: viste prodotte in chat.
 
 ---
 
 ## 🟢 Nit
 
-1. **Riga 892:** c'è una riga orfana in fondo all'appendice B, che appartiene alla tabella della sezione 23. La segnalano tutti e tre i revisori; lo style la classifica Major. È una correzione meccanica.
-2. **Riga 580:** dice timeout di 10 s, mentre la nota della 0017 dice 15 s. Lo stesso errore è alla riga 11 del corpo della 0017.
-3. **Riga 586:** "messaggio onesto" va sostituito con il testo del messaggio.
-4. **Riga 703:** "errori chiari" va sostituito con un esempio di messaggio.
-5. **Riga 812:** l'aforisma sulla slide va tolto.
-6. **Riga 596:** frase da riformulare (style).
-7. **Righe 764 e 768:** dicono "due strade", poi compare una terza.
-8. **Riga 685:** la formulazione di P6 è da allineare al dettaglio.
-9. **Riga 845:** "Motivi veri" va sostituito con "Motivi".
-10. **Riga 887:** "più curata" non dice in che modo.
-11. **Riga 730 (P5):**
-    - `number` usa l'`id`, quindi non riparte da 1 ogni anno: va detto esplicitamente;
-    - manca il fuso orario dell'anno, UTC o Europe/Rome.
-12. **Riga 743 (P7):**
-    - non è definito cosa succede con una chiave `multi` assente;
-    - non è definito `default_value` per un gruppo `multi`;
-    - non è definito cosa succede con un valore predefinito disattivato da una regola;
-    - "Nessuna pedana" compare nelle `lines`.
-13. **Secondo prodotto:** Aladdin 45 è un taglio dello stesso prodotto e non vale come secondo prodotto.
-14. **Fase 8:** contraddizione con il computer della demo.
-15. **`drizzle-kit studio`** apre un sito esterno (`local.drizzle.studio`): va detto, oppure va indicata un'alternativa.
-16. **Prove di accessibilità:** axe esclude `/informativa` senza motivo.
-17. **Riga 607:** quando l'analisi si sposta in `docs/analisi.md`, i link relativi alle schede e a `data/` si rompono.
-18. **Fuori range, errore mio dello Stage 7:**
-    - la riga 377 dice "le prime tre voci sono bloccanti, le ultime tre sono avvisi", ma le voci sono cinque;
-    - alla riga 203 la voce sulle texture non è classificata.
-
-**Non confermato:** lo style segnalava che gli stati di 0007, 0015 e 0016 nella tabella dell'analisi sono diversi dal README. Li ho confrontati: coincidono. Il finding è scartato.
+| Voce | Fonte | Dove | In breve |
+|---|---|---|---|
+| IN1 | readiness N1 | r. 633 | Scrivere `db:reset` per intero. Dopo `down -v` serve di nuovo `npm run test:setup` (codebase N7). |
+| IN2 | readiness N2 | r. 634, 638 | Codici di uscita di `check`; `spawn` con `shell: true` su Windows in `avvio-demo.ts`. |
+| IN3 | readiness N3 | r. 602 | `viewsFrom` deve puntare a un taglio che ha i propri tre file: niente catene. |
+| IN4 | readiness N4 | sez. 18 | Prove mancanti: Route Handler del PDF (404 e 200) e `npm run check` con il database spento. |
+| IN5 | readiness N5 | r. 1147 | `.catch` vuoto sulla promessa che perde `Promise.race`; il risultato in ritardo non aggiorna la riga. |
+| IN6 | readiness N6, codebase N2 | r. 747–748 | Versione di Mailpit; nel `webServer` di Playwright `url`, `timeout` (180 s) e le opzioni `--smtp` e `--listen`. |
+| IN7 | codebase N1 | r. 1147 | I timeout predefiniti di Nodemailer non sono tutti "di minuti" (da verificare). |
+| IN8 | codebase N3 | r. 913 | Da Next 15 `params` è una Promise; per il PDF usare `new Uint8Array(buffer)` (da verificare). |
+| IN9 | codebase N4 | r. 1154 | `check` può confrontare gli hash delle migrazioni con `readMigrationFiles`. |
+| IN10 | codebase N6 | r. 879 | Chiavi `_` solo al primo livello; con Zod 4 si usa `z.strictObject` (da verificare). |
+| IN11 | codebase N8 | scheda 0015 | "Come è stato verificato" cita ancora `feTurbulence`. |
+| IN12 | style N1 | r. 602 | Frase con tre controlli: dividerla in sotto-punti. |
+| IN13 | style N2 | r. 616 | Mailpit e `next.config.ts` non sono dipendenze di sviluppo: punti separati. |
+| IN14 | style N3 | r. 555 | Intestazione della colonna: "Cartelle e file". |
+| IN15 | style N4 | r. 674 | "Davvero" è superfluo. |
+| IN16 | style N5 | r. 715 | "Messaggio onesto" è un giudizio. |
+| IN17 | style N6 | r. 728 | "SVG atteso" non dice come si confronta il risultato. |
+| IN18 | style N7 | r. 887 | "Unico punto in cui si discosta dal sito" non è vero (vedi anche Stage 5 N-b). |
+| IN19 | style N8 | r. 1001–1010 | Tono persuasivo nella sez. 22; "fedeltà al prodotto" non è ancora misurata. |
+| IN20 | style N9 | r. 1134, 1138 | "Molto più povero" è un giudizio; la nota storica va nella sez. 23. |
+| IN21 | style N10 | r. 959–965 | La 20.4 "Domande per il tutor" ripete la 20.2, e le domande sono tutte chiuse. |
+| IN22 | style N10 | r. 1147 | "Circa 10 secondi": scrivere 10 000 ms. |
 
 ---
 
-## Tabella di tracciabilità
+## Da chiudere prima della PR del contratto (fase 2)
 
-| Voce consolidata | implementation-readiness | codebase-details | style |
+Secondo il revisore readiness:
+- **prima della PR del contratto:** IR-B1, IR3, IR4, IR5, IR6 e IR11, che riguardano la PR unica della 15.2;
+- **prima della prima prova "Vitest + database":** IR-B2 e IR8;
+- **durante la fase 2:** gli altri.
+
+Lo Stage 8 (Z8-1) suggeriva di congelare il documento e chiudere le correzioni dentro la PR del contratto. È coerente con questa divisione: i Blocker riguardano proprio quella PR.
+
+---
+
+## Matrice di tracciabilità
+
+| Voce | readiness | codebase | style |
 |---|---|---|---|
-| B1 | B1 | M2, N5 | — |
-| M1 | Nit (`_`, strict, `size`, `material.type`) | M1, N1, N2 | M5 |
-| M2 | M2 | M12 | — |
-| M3 | M3 | M13 | — |
-| M4 | M4 | M5, M6 | — |
-| M5 | M5 | lacuna sulle prove | M7, Nit 592 |
-| M6 | M6 | — | — |
-| M7 | M7 | M4 | — |
-| M8 | M8 | M7, M8 | Nit 741 |
-| M9 | M9 | — | — |
-| M10 | — | M9 | — |
-| M11 | — | M10 | — |
-| M12 | Nit sui font | M11 | — |
-| M13 | — | — | M3 |
-| M14 | — | — | M6 |
-| M15 | — | — | M8 |
-| M16 | — | — | M2 |
-| `request_id` (in parte risolto) | M1 | M3 | M4 |
-| Nit 1 | Nit 892 | N7 | M1 |
-| Nit 2 | Nit 10 s/15 s | — | Nit 580 |
-| Nit 3-10 | — | — | Nit |
-| Nit 11 | Nit sul fuso orario | N4 | Nit 730 |
-| Nit 12 | Nit sul predefinito e su `multi` | N3 | — |
-| Nit 13-16 | Nit | — | — |
-| Nit 17 | — | N6 | — |
-| Nit 18 | — | fuori range | — |
-| Scartato | — | stati confermati | Nit sulla tabella delle schede |
-
-## Sintesi per decidere
-
-- **Correzioni meccaniche:**
-  - Nit 1, 2, 18;
-  - M16;
-  - il corpo della 0017 alla riga 16.
-- **Contenuto da aggiungere senza nuove decisioni**, cioè elenchi e tabelle che fissano cose già implicite: M2, M3, M5, M7, M8, M9, M10, M12.
-- **Decisioni che spettano a te e a Marko:**
-  - B1: chi produce la geometria di Aladdin e quando; si lega a M-E dello Stage 8;
-  - M1: chiavi `_`, lingua di `material.type`, `schemaVersion`;
-  - M4: il driver;
-  - M6: le zone interne nelle viste esterne;
-  - M11: la resa della foto;
-  - M13 e M14.
+| IR-B1 | B1 | M4 | — |
+| IR-B2 | B2 | M9, M10 | — |
+| IR1 | M1 | M1 | — |
+| IR2 | M2, N6 | M12 | — |
+| IR3 | M3 | — | — |
+| IR4 | M4 | — | — |
+| IR5 | M5 | — | — |
+| IR6 | M6 | M5, M6, N5 | — |
+| IR7 | M7 | M11 | — |
+| IR8 | M8 | M7 | — |
+| IR9 | M9 | — | — |
+| IR10 | M10 | — | — |
+| IR11 | — | M3 | — |
+| IR12 | — | M2 | — |
+| IR13 | — | M8 | — |
+| IR14–IR20 | — | — | M1–M7 |
+| IN1–IN6 | N1–N6 | N2, N7 | — |
+| IN7–IN11 | — | N1, N3, N4, N6, N8 | — |
+| IN12–IN22 | — | — | N1–N10 |

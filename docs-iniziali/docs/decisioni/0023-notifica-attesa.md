@@ -1,6 +1,6 @@
 # 0023. La notifica al progetto si attende prima della risposta
 
-- **Stato:** Accettata
+- **Stato:** Sostituita da [0030](./0030-invii-in-parallelo-riprova-semplice.md)
 - **Sostituisce:** in parte la [0017](./0017-email-nodemailer-gmail.md), solo per il momento in cui si invia la notifica
 
 ## Contesto

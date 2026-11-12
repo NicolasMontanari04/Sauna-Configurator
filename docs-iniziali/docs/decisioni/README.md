@@ -20,14 +20,17 @@ Una scheda per ogni scelta. Se una scelta cambia, non si modifica la vecchia: si
 | [0014](./0014-docker-solo-database.md) | Solo PostgreSQL in Docker, applicazione fuori dal container | Accettata |
 | [0015](./0015-pdf-pdfkit-resvg.md) | PDF: impaginazione con PDFKit, immagine convertita con resvg | Accettata (da confermare con la prova) |
 | [0016](./0016-generatore-famiglie-layout.md) | Generatore delle viste come funzione pura, per famiglie di layout | Sostituita da 0025 (restano validi i font e l'opzione `flat`) |
-| [0017](./0017-email-nodemailer-gmail.md) | Email: Nodemailer con Gmail, stati nella riga, Mailpit in sviluppo | Accettata; in parte sostituita da 0023 e 0026 |
+| [0017](./0017-email-nodemailer-gmail.md) | Email: Nodemailer con Gmail, stati nella riga, Mailpit in sviluppo | Accettata; in parte sostituita da 0023, 0026 e 0030 |
 | [0018](./0018-catalogo-file-database-derivato.md) | Catalogo come file JSON, database derivato | Accettata; in parte sostituita da 0022 e 0027 |
 | [0019](./0019-nextjs-server-action-zod-shadcn.md) | Next.js con Server Action e Route Handler, Zod, shadcn/ui | Accettata; in parte sostituita da 0026 |
 | [0020](./0020-regole-compatibilita-condivise.md) | Regole di compatibilità condivise tra interfaccia e server | Sostituita da 0027 |
 | [0021](./0021-viste-frontale-diagonale.md) | Viste esterne: frontale e diagonale | Sostituita da 0025 |
-| [0022](./0022-seed-sincronizzazione-catalogo.md) | Seed come sincronizzazione completa, catalogo letto dal database | Accettata |
-| [0023](./0023-notifica-attesa.md) | La notifica al progetto si attende prima della risposta | Accettata |
+| [0022](./0022-seed-sincronizzazione-catalogo.md) | Seed come sincronizzazione completa, catalogo letto dal database | Accettata; in parte sostituita da 0028 |
+| [0023](./0023-notifica-attesa.md) | La notifica al progetto si attende prima della risposta | Sostituita da 0030 |
 | [0024](./0024-request-id-dal-server.md) | Il request_id lo genera il server, nel modulo | Sostituita da 0026 |
-| [0025](./0025-viste-pronte-da-modello-3d.md) | Viste SVG pronte, generate da uno script a partire dal modello 3D | Accettata (texture e confronto con le foto da verificare nella fase 2) |
+| [0025](./0025-viste-pronte-da-modello-3d.md) | Viste SVG pronte, generate da uno script a partire dal modello 3D | Accettata; in parte sostituita da 0029 |
 | [0026](./0026-pagina-unica-come-il-mockup.md) | Pagina unica a passaggi, invio in una finestra di dialogo | Accettata |
 | [0027](./0027-niente-regole-ne-optional.md) | Niente regole di compatibilità né optional; pedana obbligatoria | Accettata |
+| [0028](./0028-seed-svuota-e-ricarica.md) | Il seed svuota e ricarica il catalogo in una transazione | Accettata |
+| [0029](./0029-viste-prodotte-in-chat.md) | Viste prodotte in chat a partire dai file dell'Area Pro, nel formato del contratto | Accettata |
+| [0030](./0030-invii-in-parallelo-riprova-semplice.md) | Le due email partono in parallelo; "Riprova" senza attese | Accettata |
