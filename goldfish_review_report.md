@@ -1,4 +1,4 @@
-Status: resolved (auto accept; IR10: il terzo prodotto resta da scegliere durante lo sviluppo, nessuna regola inserita; IN11 sulla scheda 0015 non ancora applicato)
+Status: resolved (auto accept; IR10: il terzo prodotto resta da scegliere durante lo sviluppo, nessuna regola inserita; IN11 applicato alla scheda 0015; `valida(config, catalogo)` allineato anche nella scheda 0027)
 
 # Goldfish Annotated Review Report (Stage 9, round 1)
 

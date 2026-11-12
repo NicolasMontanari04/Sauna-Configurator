@@ -9,7 +9,7 @@ La 0020 prevedeva tre tipi di regola di compatibilità, una funzione `valuta` co
 ## Decisione
 - **Nessuna regola di compatibilità:** escono dal progetto la tabella `option_rule`, il campo `rules` dei file, i tre tipi di regola e le scelte disattivate.
 - **Nessun optional e nessun gruppo a scelta multipla:** ogni gruppo ha una sola scelta, obbligatoria, con un valore predefinito.
-- **Resta la validazione sul server:** la funzione `valida(config, prodotto)` controlla che il prodotto e il taglio esistano, che ogni gruppo appartenga al prodotto, che ogni valore appartenga al suo gruppo e che ogni gruppo abbia un valore. Una configurazione non valida, ad esempio da un URL modificato a mano, è rifiutata.
+- **Resta la validazione sul server:** la funzione `valida(config, catalogo)`, che riceve l'elenco dei prodotti, controlla che il prodotto e il taglio esistano, che ogni gruppo appartenga al prodotto, che ogni valore appartenga al suo gruppo e che ogni gruppo abbia un valore. Una configurazione non valida, ad esempio da un URL modificato a mano, è rifiutata.
 - **Pedana obbligatoria:** dove il catalogo propone una pedana, una delle finiture proposte è sempre selezionata. Il valore "Nessuna pedana" non esiste.
 
 ## Motivi

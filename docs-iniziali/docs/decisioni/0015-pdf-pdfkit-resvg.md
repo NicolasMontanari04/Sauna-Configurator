@@ -23,7 +23,7 @@ Il riepilogo è un PDF di una pagina, inviato per email e scaricabile, con l'imm
 - Il PDF non è accessibile (scheda 0009): il testo del riepilogo si ripete nel corpo dell'email.
 
 ## Come è stato verificato
-Da completare con la prova della fase 2: Aladdin 60 con Wengé, gres e specchio; confronto a vista con il browser; controllo degli accenti, delle quote e dei filtri `feTurbulence` usati dal mockup.
+Da completare con la prova della fase 2: Aladdin 60 con Wengé, gres e specchio; confronto a vista con il browser su quattro punti: texture presenti, pattern e fusioni resi come nel browser, ombra a terra sfumata, accenti corretti nel testo del PDF (analisi, sezione 11).
 
 ## Ripiego
 - Se un effetto non regge in resvg: la stessa funzione con `flat: true`, a colori pieni.

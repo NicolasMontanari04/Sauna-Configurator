@@ -255,7 +255,7 @@ La tabella `configuration` contiene:
 - `customer_status` e `project_status`, di tipo `pgEnum` con valori `pending`, `sent`, `failed`;
 - per l'invio al cliente: ultimo errore, numero di tentativi, data dell'ultimo tentativo (`customer_error`, `customer_attempts`, `customer_last_attempt_at`); per la notifica, che non si rimanda (sezione 10.3), solo l'ultimo errore (`project_error`).
 
-Tutte le colonne sono `NOT NULL`, tranne quelle indicate come nullabili e `customer_error`, `project_error` e `customer_last_attempt_at`. Le tabelle figlie del catalogo usano `ON DELETE CASCADE` verso il prodotto e il gruppo; il seed le svuota comunque tutte insieme (scheda 0028). Nello schema Zod un campo è facoltativo solo se qui è nullabile; `texture` può essere `null` (P13).
+Tutte le colonne sono `NOT NULL`, tranne quelle indicate come nullabili e `customer_error`, `project_error` e `customer_last_attempt_at`. Le tabelle figlie del catalogo usano `ON DELETE CASCADE` verso il prodotto e il gruppo; il seed le svuota comunque tutte insieme (scheda 0028). Nello schema Zod un campo è facoltativo solo se qui è nullabile; `texture` può essere `null` (P13). Fanno eccezione le colonne `attributes`: nel file la chiave si può omettere, lo schema Zod la porta a `{}` (`.default({})`) e la colonna è `NOT NULL DEFAULT '{}'`; il file di Aladdin non la contiene.
 
 Non ci sono tabelle per prezzi, promozioni o IVA.
 
@@ -351,7 +351,8 @@ La vista dall'interno è scartata. Nel PDF vanno l'esterno in grande e la fronta
 - Sopra il colore stende la texture del materiale, fusa con l'ombreggiatura (P13). La texture di `roof` e `bench` è ruotata di 90 gradi.
 - Le zone a colore fisso non hanno texture: `stove` ha un colore fisso, scurito per livello d'ombra come le altre zone, `glass` è trasparente (opacità 0,1) e si disegna sopra tutto il resto, `shadow` è l'ombra a terra, nera, semitrasparente e sfumata.
 - **Zone senza materiale nel catalogo.** `floor` e `metal` possono non avere un materiale, perché il sito non sempre lo indica (Yoku S non ha pedana né metalli dichiarati). In quel caso prendono un colore neutro fisso, senza texture, come il pavimento senza pedana del mockup, e il pannello Materiali non le elenca. Non si inventa un materiale.
-- `opzioni` contiene il prefisso degli `id` dei pattern, `flat` (solo colori, senza texture) e il modo di includere le texture: percorsi di `public/` nel browser, data URI sul server.
+- `opzioni` contiene il prefisso degli `id` dei pattern e `flat` (solo colori, senza texture). Il modo di includere le texture non è un'opzione: `texture` di ogni materiale è già l'URL da usare, cioè un percorso di `public/` nel browser e un data URI preparato dal server per il PDF (firma nella sezione 15.2).
+- I materiali per zona li calcola `materialiPerZona(prodotto, selections)`, una funzione pura usata sia dal browser sia dal server: per ogni gruppo assegna alle sue `zones` il materiale del valore scelto, poi aggiunge `fixedZones` (sezione 15.2).
 - L'anteprima è un SVG inline nella pagina, non un `<img>`, così le texture si caricano da `public/`. Più viste nella stessa pagina non si sovrappongono perché ogni vista ha il suo prefisso.
 - Il server passa al configuratore le viste del prodotto aperto insieme al catalogo: cambiare materiale o taglio non richiede altre richieste; cambiare prodotto legge le sue viste da `public/viste/` (sezione 9.2, punto 8).
 - **Pedana.** Nelle viste la finitura della pedana colora tutto il pavimento interno, non un riquadro di 120 × 120 cm, come nelle viste di Aladdin 60 del mockup. È una semplificazione accettata.
@@ -574,7 +575,7 @@ Il formato delle viste (sezione 15.2) è il punto di contatto tra i due: la prod
 | `src/contratti/catalogo.ts`, `src/contratti/configurazione.ts`, `src/contratti/valida.ts`, `src/contratti/normalizza.ts`, `src/contratti/viste.ts` | Contratto (sezione 15.2) | Entrambi | 2 |
 | `public/viste/<prodotto>/<taglio>/ext.svg`, `front.svg`, `plan.svg` | Viste prodotte in chat (sezione 9.1); quelle di Aladdin 60 convertite dal mockup con `scripts/converti-mockup.ts` (appendice C) | M | dalla 2 |
 | `scripts/converti-mockup.ts` | Script usa e getta che converte le viste del mockup (appendice C) | M | 2 |
-| `src/lib/viste/componiVista.ts`, `src/lib/viste/leggiVista.ts`, `src/lib/viste/costanti.ts` | Composizione, lettura delle viste e costanti (sezione 15.2) | M | 2-3 |
+| `src/lib/viste/componiVista.ts`, `src/lib/viste/materialiPerZona.ts`, `src/lib/viste/leggiVista.ts`, `src/lib/viste/costanti.ts` | Composizione, materiali per zona, lettura delle viste e costanti (sezione 15.2) | M | 2-3 |
 | `src/db/catalogo.ts` | `caricaCatalogo()`: ricompone i prodotti dal database, con il tipo `Prodotto` (sezione 15.2) | N | 3 |
 | `src/app/page.tsx`, `src/components/` | Pagina unica, passaggi, viste, pannello dei materiali, finestre di invio e dell'informativa (P6) | M | 3-4 |
 | `src/app/galleria/page.tsx` | Pagina interna di controllo | M | 3 |
@@ -603,7 +604,7 @@ All'inizio si prepara **una sola pull request** con:
   - radice `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2000 H">`, senza altri attributi: la larghezza è sempre 2000, come nel mockup, e cambia solo l'altezza `H`;
   - figli `<path …/>` diretti, senza `<g>`; in `d` solo i comandi assoluti `M`, `L` e `Z`, come nel mockup. La regola sta anche nel testo della richiesta in `docs/viste.md`;
   - lettura con un'espressione regolare in `src/lib/viste/leggiVista.ts`, senza parser XML né dipendenze nuove. La usano la prova sul formato, il controllo delle proporzioni e `componiVista`; un file fuori formato fa lanciare `VistaNonValida`;
-  - solo elementi `<path>`, con gli attributi `d`, `fill-rule`, `data-zone` e `data-shade`; nessun altro attributo, quindi nessun colore, `stroke`, opacità o filtro;
+  - solo elementi `<path>`, con gli attributi `d`, `fill-rule`, `data-zone` e `data-shade`; nessun altro attributo, quindi nessun colore, `stroke`, opacità o filtro. `fill-rule` è facoltativo e ammette solo il valore `evenodd`; `componiVista` lo copia così com'è sui poligoni che disegna;
   - zone che prendono un materiale: `ext`, `roof`, `int`, `bench`, `floor`, `mirror`, `metal`; zone a colore fisso: `stove`, `glass`, `shadow`;
   - `data-shade` da 0 a 5, su ogni path tranne `glass` e `shadow`, che non ce l'hanno;
   - i path `glass` vengono dopo tutti gli altri, i path `shadow` prima di tutti gli altri;
@@ -617,7 +618,7 @@ All'inizio si prepara **una sola pull request** con:
   - `stove` `#3a3a3c`, scurita per livello come le altre zone;
   - `glass` `#e4eef0` con opacità 0,1;
   - `shadow` `#000` con opacità 0,28 e sfocatura gaussiana 24;
-  - `floor` senza materiale `#cfcdc8`; `metal` senza materiale con il colore del mockup;
+  - `floor` senza materiale `#cfcdc8`; `metal` senza materiale `#8a8d91`, il valore di `--metal` nel mockup;
   - pattern della texture di 900 × 582, ruotato di 90 gradi per `roof` e `bench`;
 - la firma della composizione:
 
@@ -630,6 +631,16 @@ All'inizio si prepara **una sola pull request** con:
   ```
 
   `texture` è già l'URL da usare: un percorso di `public/` nella pagina, un data URI preparato dal server nel PDF. La funzione restituisce l'SVG completo, pronto per la pagina o per resvg;
+- la funzione che prepara `materiali`, in `src/lib/viste/materialiPerZona.ts`, pura e usata dalla pagina, dalla galleria e dal PDF:
+
+  ```ts
+  materialiPerZona(
+    prodotto: Prodotto,
+    selections: Record<string /* gruppo */, string /* valore */>
+  ): Record<string /* zona */, { color: string; texture: string | null }>
+  ```
+
+  Per ogni gruppo assegna a ciascuna delle sue `zones` il materiale del valore scelto, poi aggiunge le zone di `fixedZones`. Una zona senza materiale non compare nel risultato: `componiVista` la disegna con il colore neutro se è `floor` o `metal` (sezione 9.3). Il server sostituisce `texture` con il data URI prima di chiamare `componiVista`;
 - la lista iniziale delle dipendenze, tutte con versione esatta (P10):
   - lo scaffold si fa nella fase 2 con `create-next-app` nella versione fissata, in una cartella temporanea da cui si copiano i file, perché il repository contiene già dei file. Risposte: TypeScript sì, ESLint sì, Tailwind sì, cartella `src/` sì, App Router sì, alias `@/*`, npm; una domanda non elencata prende la risposta predefinita. Poi `shadcn init` con le risposte predefinite e `shadcn add dialog button radio-group checkbox input label`;
   - la lista definitiva è il `package.json` della PR del contratto; questi sono i pacchetti attesi. Quelli installati dallo scaffold: `next`, `react`, `react-dom`, `tailwindcss`, `@tailwindcss/postcss`, `clsx`, `tailwind-merge`, `class-variance-authority`, `lucide-react`, i pacchetti `@radix-ui/*` dei componenti aggiunti, `typescript`, `@types/react`, `@types/react-dom`, `@types/node`;
@@ -749,6 +760,7 @@ Il risultato atteso: o l'email arriva, o lo stesso PDF è già sullo schermo con
   | `normalizza` con codici sconosciuti | Vitest | configurazione predefinita e un avviso per ogni codice |
   | Schema Zod: il file di Aladdin passa; un file con un codice non valido, uno con un predefinito che non è tra i valori, uno con una chiave sconosciuta, uno con una zona sia in un gruppo sia in `fixedZones` | Vitest | il primo passa; gli altri falliscono con l'errore Zod sul campo |
   | Formato delle viste: ogni file in `public/viste/` ha la radice ammessa, solo `<path>` diretti con gli attributi ammessi e i soli comandi `M`, `L`, `Z` in `d` e una `data-zone` ammessa; `data-shade` da 0 a 5 su ogni path tranne `glass` e `shadow`; `glass` dopo tutti gli altri path e `shadow` prima; ogni taglio ha i suoi file o un `viewsFrom` valido; ogni zona a materiale delle viste, tranne `floor` e `metal`, prende un materiale dal prodotto; rapporto tra i lati di Pianta e Frontale entro il 5% delle misure del taglio (sezione 9.2, punto 7) | Vitest | nessun file fuori formato |
+  | `materialiPerZona`: zone dei gruppi, `fixedZones`, zona senza materiale assente dal risultato | Vitest | mappa attesa per Aladdin |
   | `componiVista`: colori per zona e ombra in `fill` e `stroke`, rotazione della texture di `roof` e `bench`, vetro trasparente, ombra a terra, `floor` senza materiale, `flat`, prefisso degli `id`, materiale senza texture | Vitest | SVG atteso |
   | Seed dopo aver aggiunto, modificato e tolto un valore in un file | Vitest + database | dopo il seed il catalogo è uguale ai file e le configurazioni salvate non cambiano (scheda 0028) |
   | Doppio invio con lo stesso `request_id`; due invii con `request_id` diversi | Vitest + database | una sola riga nel primo caso, con esito `in-corso` se il primo invio è ancora `pending`; due righe nel secondo (schede 0026 e 0030) |
@@ -1185,4 +1197,8 @@ Il corpo del documento fissa comportamenti e garanzie; qui c'è il modo di otten
 - **Migrazioni applicate (sezione 15.3).** `npm run check` confronta il numero di righe di `drizzle.__drizzle_migrations` con il numero di voci di `drizzle/meta/_journal.json`.
 - **Runtime (P8).** PDFKit e resvg non girano nel runtime Edge. `nodejs` è già il predefinito: nessun file esporta `runtime`, e un file `'use server'` non potrebbe farlo, perché può esportare solo funzioni async.
 - **Font sul server (P14).** Il percorso è `path.join(process.cwd(), 'src/fonts', nome)`.
+- **Pagine dinamiche (sezione 10.1).** `/` legge `searchParams`, quindi Next.js la genera a ogni richiesta. `/galleria` non li legge e `next build` la genererebbe una volta sola, con il catalogo e `ENABLE_GALLERY` del momento della build: il file esporta `export const dynamic = 'force-dynamic'` e risponde `notFound()` se la galleria non è attiva (P6).
+- **Viste di un altro prodotto (sezione 9.3).** Il browser le legge con `fetch('/viste/<prodotto>/<taglio>/<vista>.svg')`; il server le legge da disco con `path.join(process.cwd(), 'public/viste', …)`.
+- **Mailpit già avviato (sezione 18).** Il `globalSetup` di Vitest avvia Mailpit solo se la porta 1025 non risponde già, e chiude solo il processo che ha avviato; in Playwright il `webServer` di Mailpit ha `reuseExistingServer: true`. Così le prove girano anche con il Mailpit dello sviluppo acceso.
+- **Alias nelle prove (sezione 18).** `vitest.config.ts` dichiara in `resolve.alias` lo stesso alias `@` → `src` di `tsconfig.json`, che Vitest non legge da solo.
 - **Conversione delle viste del mockup (sezione 9.1).** Si fa con lo script usa e getta `scripts/converti-mockup.ts`, eseguito una volta nella fase 2: legge l'oggetto `AVIEW` del mockup con `JSON.parse` e scrive i tre file, con la radice `<svg xmlns=… viewBox=…>` della sezione 15.2. Ogni `<path class="<zona><ombra>">` diventa `<path data-zone="<zona>" data-shade="<ombra>">` con lo stesso `d` e `fill-rule="evenodd"`, e `class="glass"` diventa `data-zone="glass"` con `fill-rule="evenodd"`, senza `data-shade`; i path con `fill="url(#atx_…)"` (la seconda passata della texture) si tolgono; il `<polygon>` dell'ombra, dove c'è (non nella Pianta), diventa un `<path data-zone="shadow">`, con il `d` ricavato dai `points` (`M` sul primo punto, `L` sugli altri, `Z` in fondo), e resta il primo elemento; lo `<style>` e le `<defs>` si tolgono. Il `viewBox` resta quello originale.
