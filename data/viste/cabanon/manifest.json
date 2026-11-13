@@ -1,0 +1,221 @@
+{
+  "schemaVersion": 2,
+  "setId": "cabanon",
+  "label": "Cabanon Garden",
+  "sourceModel": "Cabanon Garden (DWG Area Pro); deck ricostruiti dai PDF e dai render del sito",
+  "views": [
+    {
+      "id": "ext",
+      "label": "Esterno",
+      "description": "Vista esterna isometrica"
+    },
+    {
+      "id": "int3d",
+      "label": "Interno 3D",
+      "description": "Esterno isometrico senza le pareti frontali, la porta e il tetto della sauna; con il deck resta la pergola"
+    },
+    {
+      "id": "int",
+      "label": "Interno",
+      "description": "Vista frontale attraverso la porta vetrata"
+    },
+    {
+      "id": "plan",
+      "label": "Pianta",
+      "description": "Pianta senza tetto"
+    }
+  ],
+  "optionGroups": [
+    {
+      "id": "ext",
+      "label": "Rivestimento esterno",
+      "options": [
+        {
+          "id": "mattone",
+          "label": "Mattone",
+          "gradienti": {
+            "g": "<stop offset=\"0.000\" stop-color=\"rgb(112,10,2)\"/><stop offset=\"0.077\" stop-color=\"rgb(120,18,3)\"/><stop offset=\"0.154\" stop-color=\"rgb(135,34,6)\"/><stop offset=\"0.231\" stop-color=\"rgb(148,48,8)\"/><stop offset=\"0.308\" stop-color=\"rgb(158,56,10)\"/><stop offset=\"0.385\" stop-color=\"rgb(163,61,10)\"/><stop offset=\"0.462\" stop-color=\"rgb(161,60,10)\"/><stop offset=\"0.538\" stop-color=\"rgb(168,66,12)\"/><stop offset=\"0.615\" stop-color=\"rgb(170,68,12)\"/><stop offset=\"0.692\" stop-color=\"rgb(169,68,12)\"/><stop offset=\"0.769\" stop-color=\"rgb(157,56,9)\"/><stop offset=\"0.846\" stop-color=\"rgb(141,41,7)\"/><stop offset=\"0.923\" stop-color=\"rgb(124,22,4)\"/><stop offset=\"1.000\" stop-color=\"rgb(111,10,2)\"/>"
+          }
+        },
+        {
+          "id": "muschio",
+          "label": "Muschio",
+          "gradienti": {
+            "g": "<stop offset=\"0.000\" stop-color=\"rgb(63,69,54)\"/><stop offset=\"0.077\" stop-color=\"rgb(72,79,61)\"/><stop offset=\"0.154\" stop-color=\"rgb(89,97,76)\"/><stop offset=\"0.231\" stop-color=\"rgb(104,114,89)\"/><stop offset=\"0.308\" stop-color=\"rgb(114,125,97)\"/><stop offset=\"0.385\" stop-color=\"rgb(119,131,102)\"/><stop offset=\"0.462\" stop-color=\"rgb(118,129,100)\"/><stop offset=\"0.538\" stop-color=\"rgb(124,136,106)\"/><stop offset=\"0.615\" stop-color=\"rgb(127,140,108)\"/><stop offset=\"0.692\" stop-color=\"rgb(126,138,108)\"/><stop offset=\"0.769\" stop-color=\"rgb(113,124,96)\"/><stop offset=\"0.846\" stop-color=\"rgb(96,105,82)\"/><stop offset=\"0.923\" stop-color=\"rgb(76,84,65)\"/><stop offset=\"1.000\" stop-color=\"rgb(62,68,53)\"/>"
+          }
+        },
+        {
+          "id": "cemento",
+          "label": "Cemento",
+          "gradienti": {
+            "g": "<stop offset=\"0.000\" stop-color=\"rgb(89,90,95)\"/><stop offset=\"0.077\" stop-color=\"rgb(98,99,104)\"/><stop offset=\"0.154\" stop-color=\"rgb(115,116,121)\"/><stop offset=\"0.231\" stop-color=\"rgb(131,132,137)\"/><stop offset=\"0.308\" stop-color=\"rgb(141,142,147)\"/><stop offset=\"0.385\" stop-color=\"rgb(146,147,153)\"/><stop offset=\"0.462\" stop-color=\"rgb(144,145,150)\"/><stop offset=\"0.538\" stop-color=\"rgb(152,153,158)\"/><stop offset=\"0.615\" stop-color=\"rgb(154,155,160)\"/><stop offset=\"0.692\" stop-color=\"rgb(153,154,159)\"/><stop offset=\"0.769\" stop-color=\"rgb(140,141,146)\"/><stop offset=\"0.846\" stop-color=\"rgb(123,124,129)\"/><stop offset=\"0.923\" stop-color=\"rgb(103,104,109)\"/><stop offset=\"1.000\" stop-color=\"rgb(88,89,94)\"/>"
+          }
+        }
+      ]
+    },
+    {
+      "id": "int",
+      "label": "Boiserie interna",
+      "options": [
+        {
+          "id": "aspenT",
+          "label": "Aspen termotrattato",
+          "texture": "doghe-aspenT.jpg"
+        },
+        {
+          "id": "termoScuro",
+          "label": "Legno termotrattato scuro",
+          "texture": "doghe-scuro.jpg"
+        }
+      ]
+    }
+  ],
+  "sizes": [
+    {
+      "id": "garden",
+      "label": "Garden",
+      "viste": "garden",
+      "deck": "none"
+    },
+    {
+      "id": "gardenM",
+      "label": "Garden + deck Medium",
+      "viste": "gardenM",
+      "deck": "M"
+    },
+    {
+      "id": "gardenL",
+      "label": "Garden + deck Large",
+      "viste": "gardenL",
+      "deck": "L"
+    }
+  ],
+  "notAvailable": [
+    {
+      "optionId": "terrace",
+      "label": "Terrace",
+      "reason": "modello non fornito"
+    },
+    {
+      "optionId": "terraceS",
+      "label": "Terrace + deck Small",
+      "reason": "modello non fornito"
+    }
+  ],
+  "decks": [
+    {
+      "id": "none",
+      "label": "Senza deck"
+    },
+    {
+      "id": "M",
+      "label": "Deck Medium (230 × 102 cm)"
+    },
+    {
+      "id": "L",
+      "label": "Deck Large (230 × 220 cm)"
+    }
+  ],
+  "notes": [
+    "Una sola porta vetrata (lato +y), come nel render ufficiale.",
+    "I deck sono ricostruzioni dai PDF e dai render del sito: numero e passo delle doghe, altezze e posizione degli schermi del deck Large sono stime."
+  ],
+  "files": [
+    {
+      "taglio": "garden",
+      "vista": "ext",
+      "path": "garden/ext.svg",
+      "width": 1015,
+      "height": 1099.9,
+      "bytes": 138696
+    },
+    {
+      "taglio": "garden",
+      "vista": "int",
+      "path": "garden/int.svg",
+      "width": 728.9,
+      "height": 742,
+      "bytes": 44140
+    },
+    {
+      "taglio": "garden",
+      "vista": "int3d",
+      "path": "garden/int3d.svg",
+      "width": 1015,
+      "height": 1099.9,
+      "bytes": 88148
+    },
+    {
+      "taglio": "garden",
+      "vista": "plan",
+      "path": "garden/plan.svg",
+      "width": 722.2,
+      "height": 722.2,
+      "bytes": 55940
+    },
+    {
+      "taglio": "gardenL",
+      "vista": "ext",
+      "path": "gardenL/ext.svg",
+      "width": 1477.2,
+      "height": 1321.6,
+      "bytes": 162471
+    },
+    {
+      "taglio": "gardenL",
+      "vista": "int",
+      "path": "gardenL/int.svg",
+      "width": 728.9,
+      "height": 743.5,
+      "bytes": 51098
+    },
+    {
+      "taglio": "gardenL",
+      "vista": "int3d",
+      "path": "gardenL/int3d.svg",
+      "width": 1477.2,
+      "height": 1321.6,
+      "bytes": 111963
+    },
+    {
+      "taglio": "gardenL",
+      "vista": "plan",
+      "path": "gardenL/plan.svg",
+      "width": 722.8,
+      "height": 1382.2,
+      "bytes": 60847
+    },
+    {
+      "taglio": "gardenM",
+      "vista": "ext",
+      "path": "gardenM/ext.svg",
+      "width": 1226.9,
+      "height": 1203.4,
+      "bytes": 154188
+    },
+    {
+      "taglio": "gardenM",
+      "vista": "int",
+      "path": "gardenM/int.svg",
+      "width": 728.9,
+      "height": 743.5,
+      "bytes": 48843
+    },
+    {
+      "taglio": "gardenM",
+      "vista": "int3d",
+      "path": "gardenM/int3d.svg",
+      "width": 1226.9,
+      "height": 1203.4,
+      "bytes": 103667
+    },
+    {
+      "taglio": "gardenM",
+      "vista": "plan",
+      "path": "gardenM/plan.svg",
+      "width": 722.8,
+      "height": 1028.2,
+      "bytes": 57411
+    }
+  ]
+}

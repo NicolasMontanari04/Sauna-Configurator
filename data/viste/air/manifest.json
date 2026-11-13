@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 2,
+  "setId": "air",
+  "label": "Air",
+  "sourceModel": "Air 80 (DWG Area Pro)",
+  "views": [
+    {
+      "id": "ext",
+      "label": "Esterno",
+      "description": "Vista esterna isometrica"
+    },
+    {
+      "id": "int",
+      "label": "Interno",
+      "description": "Vista frontale attraverso il vetro"
+    },
+    {
+      "id": "plan",
+      "label": "Pianta",
+      "description": "Pianta senza tetto"
+    }
+  ],
+  "optionGroups": [
+    {
+      "id": "wood",
+      "label": "Legno",
+      "options": [
+        {
+          "id": "aspenN",
+          "label": "Aspen naturale",
+          "texture": "aspenN.jpg"
+        },
+        {
+          "id": "aspenT",
+          "label": "Aspen termotrattato",
+          "texture": "aspenT.jpg"
+        }
+      ]
+    }
+  ],
+  "sizes": [
+    {
+      "id": "60",
+      "label": "Air 60",
+      "viste": "80",
+      "riusaDa": "80"
+    },
+    {
+      "id": "80",
+      "label": "Air 80",
+      "viste": "80"
+    },
+    {
+      "id": "120",
+      "label": "Air 120",
+      "viste": "80",
+      "riusaDa": "80"
+    }
+  ],
+  "notes": [
+    "Interno identico tra le misure della famiglia: le immagini si riusano e cambia solo la scala (assunzione).",
+    "Le immagini hanno proporzioni diverse tra le viste: nel visualizzatore usare object-fit: contain su un contenitore a rapporto fisso."
+  ],
+  "files": [
+    {
+      "taglio": "80",
+      "vista": "ext",
+      "path": "80/ext.svg",
+      "width": 1185.8,
+      "height": 1207.5,
+      "bytes": 81839
+    },
+    {
+      "taglio": "80",
+      "vista": "int",
+      "path": "80/int.svg",
+      "width": 941.4,
+      "height": 818.1,
+      "bytes": 37517
+    },
+    {
+      "taglio": "80",
+      "vista": "plan",
+      "path": "80/plan.svg",
+      "width": 941.4,
+      "height": 759.8,
+      "bytes": 29518
+    }
+  ]
+}

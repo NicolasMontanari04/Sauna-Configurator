@@ -1,6 +1,6 @@
 # 0029. Viste prodotte in chat a partire dai file dell'Area Pro, nel formato del contratto
 
-- **Stato:** Accettata
+- **Stato:** Accettata; sostituita in parte da [0031](./0031-viste-a-marcature-e-texture-dalle-foto.md) (formato, zone, nomi delle viste, script nel repository)
 - **Sostituisce:** in parte la [0025](./0025-viste-pronte-da-modello-3d.md), solo per chi produce le viste, per i file di partenza e per le zone; restano validi i file SVG pronti per taglio, le quattro viste, `componiVista`, le viste del PDF e la foto ufficiale come ripiego
 
 ## Contesto

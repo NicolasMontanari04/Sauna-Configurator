@@ -1,0 +1,130 @@
+{
+  "schemaVersion": 2,
+  "setId": "aladdin",
+  "label": "Aladdin (angolo sinistro)",
+  "sourceModel": "Aladdin 45 / 60 Angolo Sinistro (DWG Area Pro)",
+  "views": [
+    {
+      "id": "ext",
+      "label": "Esterno",
+      "description": "Vista esterna isometrica"
+    },
+    {
+      "id": "int",
+      "label": "Interno",
+      "description": "Vista frontale attraverso la porta vetrata"
+    },
+    {
+      "id": "plan",
+      "label": "Pianta",
+      "description": "Pianta senza tetto"
+    }
+  ],
+  "optionGroups": [
+    {
+      "id": "wood",
+      "label": "Legno",
+      "options": [
+        {
+          "id": "rovere",
+          "label": "Rovere",
+          "texture": "rovere.jpg"
+        },
+        {
+          "id": "wenge",
+          "label": "Wengé",
+          "texture": "wenge.jpg"
+        }
+      ]
+    },
+    {
+      "id": "floor",
+      "label": "Pedana in gres",
+      "options": [
+        {
+          "id": "none",
+          "label": "Senza pedana",
+          "texture": null
+        },
+        {
+          "id": "moka",
+          "label": "Gres Moka",
+          "texture": "moka.jpg"
+        },
+        {
+          "id": "light",
+          "label": "Gres Light",
+          "texture": "light.jpg"
+        },
+        {
+          "id": "siena",
+          "label": "Gres Siena",
+          "texture": "siena.jpg"
+        }
+      ]
+    }
+  ],
+  "sizes": [
+    {
+      "id": "45",
+      "label": "Aladdin 45 (180 cm)",
+      "viste": "45"
+    },
+    {
+      "id": "60",
+      "label": "Aladdin 60 (200 cm)",
+      "viste": "60"
+    }
+  ],
+  "notes": [],
+  "files": [
+    {
+      "taglio": "45",
+      "vista": "ext",
+      "path": "45/ext.svg",
+      "width": 761.2,
+      "height": 927.8,
+      "bytes": 49342
+    },
+    {
+      "taglio": "45",
+      "vista": "int",
+      "path": "45/int.svg",
+      "width": 580.1,
+      "height": 670,
+      "bytes": 19834
+    },
+    {
+      "taglio": "45",
+      "vista": "plan",
+      "path": "45/plan.svg",
+      "width": 580.1,
+      "height": 514.6,
+      "bytes": 14880
+    },
+    {
+      "taglio": "60",
+      "vista": "ext",
+      "path": "60/ext.svg",
+      "width": 803.7,
+      "height": 947.8,
+      "bytes": 49342
+    },
+    {
+      "taglio": "60",
+      "vista": "int",
+      "path": "60/int.svg",
+      "width": 640,
+      "height": 670,
+      "bytes": 19834
+    },
+    {
+      "taglio": "60",
+      "vista": "plan",
+      "path": "60/plan.svg",
+      "width": 640,
+      "height": 514.6,
+      "bytes": 14840
+    }
+  ]
+}

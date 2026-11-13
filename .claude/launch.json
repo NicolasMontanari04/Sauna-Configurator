@@ -1,0 +1,15 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "demo-viste",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "C:\\Users\\nikko\\AppData\\Local\\Temp\\claude\\3c6f689d83b9d708\\dd610bce-e92b-4c35-b026-6cc87c8018c8\\scratchpad\\serve.mjs",
+        "C:\\Users\\nikko\\Desktop\\UNIVERSITÀ\\Tirocinio\\Sauna-Configurator",
+        "C:\\Users\\nikko\\AppData\\Local\\Temp\\claude\\3c6f689d83b9d708\\dd610bce-e92b-4c35-b026-6cc87c8018c8\\scratchpad"
+      ],
+      "port": 5181
+    }
+  ]
+}

@@ -24,3 +24,5 @@ $RECYCLE.BIN/
 
 # Built Visual Studio Code Extensions
 *.vsix
+# Vecchi pacchetti di viste (una combinazione per file), sostituiti da data/viste
+data/vecchieViste/

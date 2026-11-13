@@ -28,9 +28,10 @@ Una scheda per ogni scelta. Se una scelta cambia, non si modifica la vecchia: si
 | [0022](./0022-seed-sincronizzazione-catalogo.md) | Seed come sincronizzazione completa, catalogo letto dal database | Accettata; in parte sostituita da 0028 |
 | [0023](./0023-notifica-attesa.md) | La notifica al progetto si attende prima della risposta | Sostituita da 0030 |
 | [0024](./0024-request-id-dal-server.md) | Il request_id lo genera il server, nel modulo | Sostituita da 0026 |
-| [0025](./0025-viste-pronte-da-modello-3d.md) | Viste SVG pronte, generate da uno script a partire dal modello 3D | Accettata; in parte sostituita da 0029 |
+| [0025](./0025-viste-pronte-da-modello-3d.md) | Viste SVG pronte, generate da uno script a partire dal modello 3D | Accettata; in parte sostituita da 0029 e 0031 |
 | [0026](./0026-pagina-unica-come-il-mockup.md) | Pagina unica a passaggi, invio in una finestra di dialogo | Accettata |
 | [0027](./0027-niente-regole-ne-optional.md) | Niente regole di compatibilità né optional; pedana obbligatoria | Accettata |
 | [0028](./0028-seed-svuota-e-ricarica.md) | Il seed svuota e ricarica il catalogo in una transazione | Accettata |
-| [0029](./0029-viste-prodotte-in-chat.md) | Viste prodotte in chat a partire dai file dell'Area Pro, nel formato del contratto | Accettata |
+| [0029](./0029-viste-prodotte-in-chat.md) | Viste prodotte in chat a partire dai file dell'Area Pro, nel formato del contratto | Accettata; in parte sostituita da 0031 |
 | [0030](./0030-invii-in-parallelo-riprova-semplice.md) | Le due email partono in parallelo; "Riprova" senza attese | Accettata |
+| [0031](./0031-viste-a-marcature-e-texture-dalle-foto.md) | Viste a marcature dai pacchetti prodotti in chat, texture dalle foto, primi prodotti Air, Air Corner, Aladdin e Cabanon | Accettata |

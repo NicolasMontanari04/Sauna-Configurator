@@ -1,6 +1,6 @@
 # 0025. Viste SVG pronte, generate da uno script a partire dal modello 3D
 
-- **Stato:** Accettata; sostituita in parte da [0029](./0029-viste-prodotte-in-chat.md) (chi produce le viste, file di partenza, zone)
+- **Stato:** Accettata; sostituita in parte da [0029](./0029-viste-prodotte-in-chat.md) (chi produce le viste, file di partenza, zone) e da [0031](./0031-viste-a-marcature-e-texture-dalle-foto.md) (Frontale diventa Interno, Interno 3D di Cabanon, viste del PDF)
 - **Sostituisce:** la [0010](./0010-grafica-svg-da-parametri.md), la [0016](./0016-generatore-famiglie-layout.md) e la [0021](./0021-viste-frontale-diagonale.md), tranne che per i font (P14) e per l'opzione `flat`, che restano validi
 
 ## Contesto

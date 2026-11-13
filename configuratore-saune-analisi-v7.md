@@ -1,6 +1,6 @@
 # Configuratore di saune: analisi e scelte tecniche (v7)
 
-Questa versione sostituisce la v6, conservata come storico in `archivio/` insieme alla v5 e al brainstorm EGM (`concepts_brief.md`). Dove i testi sono in contrasto vale quanto scritto qui. Le modifiche rispetto alla v6 sono nella sezione 23.1: riguardano le viste, la forma dell'interfaccia, le regole di compatibilità e il calendario. La revisione del 2026-11-12 ha cambiato viste, seed, invio e calendario (sezione 23.1, schede 0028–0030).
+Questa versione sostituisce la v6, conservata come storico in `archivio/` insieme alla v5 e al brainstorm EGM (`concepts_brief.md`). Dove i testi sono in contrasto vale quanto scritto qui. Le modifiche rispetto alla v6 sono nella sezione 23.1: riguardano le viste, la forma dell'interfaccia, le regole di compatibilità e il calendario. La revisione del 2026-11-12 ha cambiato viste, seed, invio e calendario (sezione 23.1, schede 0028–0030). Il 2026-11-13, con le viste prodotte davvero, sono cambiati prodotti di partenza, formato delle viste e texture (sezione 23.1, scheda 0031).
 
 ---
 
@@ -17,12 +17,12 @@ Questa versione sostituisce la v6, conservata come storico in `archivio/` insiem
 
 ## 2. Obiettivo e decisioni prese
 
-**Problema.** Sul sito effe.it ogni sauna ha una foto per versione, e le scelte che non cambiano la versione non hanno una foto. Per Yoku S, ad esempio, le 12 foto mostrano misure e varianti, ma non quale dei due legni esterni si sceglie (appendice A.2). Le scelte di un prodotto stanno inoltre in parti diverse della pagina (versioni, materiali, pedana), e il cliente non ha un riepilogo da conservare. Il tirocinio deve dimostrare che un configuratore web:
-- mostra in un solo posto, con viste coerenti tra i prodotti, anche le combinazioni che sul sito non hanno una foto;
+**Problema.** Sul sito effe.it ogni sauna ha una foto per versione, cioè un'immagine dall'esterno, e alcune scelte non hanno una foto: la pedana di Aladdin, la boiserie interna di Cabanon. Non si vede com'è la sauna dentro né come occupa lo spazio in pianta. Le scelte di un prodotto stanno inoltre in parti diverse della pagina (versioni, materiali, pedana), e il cliente non ha un riepilogo da conservare. Il tirocinio deve dimostrare che un configuratore web:
+- mostra in un solo posto, con viste coerenti tra i prodotti (esterno, interno, pianta), l'effetto di ogni scelta, comprese quelle che sul sito non hanno una foto;
 - salva la configurazione e manda al cliente un riepilogo;
 - poggia su scelte tecniche motivate.
 
-Per Aladdin le quattro combinazioni di taglio ed essenza hanno già una foto ufficiale: il suo contributo è l'anteprima della pedana e il riepilogo. Le combinazioni senza foto le mostra Yoku S (criterio 2, sezione 16). Un prodotto al livello B (foto e campioni, sezione 9.2) è un ripiego e non risponde al problema.
+I prodotti di partenza sono Air, Air Corner, Aladdin e Cabanon (scheda 0031). Per Air e Aladdin ogni combinazione di taglio e legno ha già una foto ufficiale: il loro contributo sono le viste Interno e Pianta, la pedana di Aladdin e il riepilogo. Cabanon mostra in più la boiserie con la vista Interno 3D. Un prodotto al livello B (foto e campioni, sezione 9.2) è un ripiego per i prodotti futuri e non risponde al problema; oggi nessun prodotto è al livello B.
 
 **Soluzione.** Il progetto realizza un configuratore web, in **Next.js + React**, per le saune del catalogo effe.it. Il cliente sceglie modello, taglio e materiali e vede un'anteprima che cambia in tempo reale. Con il pulsante "Ricevi il riepilogo" la configurazione viene salvata nel database, il cliente riceve per email il **riepilogo in PDF** e l'email del progetto riceve una notifica. **La configurazione si salva solo insieme alla richiesta del riepilogo**: non esiste un salvataggio senza email.
 
@@ -43,7 +43,7 @@ Ogni decisione ha la sua scheda nel [registro delle decisioni](docs-iniziali/doc
 | Privacy | Presa visione dell'informativa; conservazione 12 mesi con scadenza in una colonna; cancellazione su richiesta | 0007 |
 | Cookie | Nessun cookie e nessuna risorsa esterna caricata nel browser | 0008 |
 | Accessibilità | WCAG 2.1 livello AA sul configuratore e sulle sue finestre di dialogo, usabile da tastiera; il PDF per ora non deve essere accessibile | 0009 |
-| Grafica | Viste SVG pronte per prodotto e taglio, prodotte in chat dai file dell'Area Pro (FBX, DWG o SKP) nel formato del contratto, con le texture del catalogo; foto ufficiale con i campioni dei materiali dove le viste mancano | 0025 (sostituisce 0010, 0016, 0021), 0029 (sostituisce in parte 0025) |
+| Grafica | Viste SVG pronte per prodotto, taglio e vista, prodotte in chat dai file dell'Area Pro e convertite nel formato a marcature, con le texture ricavate dalle foto dei campioni di effe.it; foto ufficiale con i campioni dei materiali come ripiego per i prodotti futuri | 0025 (sostituisce 0010, 0016, 0021), 0029 e 0031 (sostituiscono in parte 0025 e 0029) |
 | Lingua | Solo italiano | 0011 |
 | Migrabilità | Regole di progetto che non precludono un database online (sezione 13) | 0012 |
 | Git | Organizzazione del repository | 0013 |
@@ -53,7 +53,7 @@ Ogni decisione ha la sua scheda nel [registro delle decisioni](docs-iniziali/doc
 - Database, ORM ed esecuzione: MySQL, SQLite, MongoDB, SQL puro, Prisma, applicazione in Docker, Supabase (sezioni 6 e 7).
 - Applicazione: Vite con un backend separato; solo Route Handler (API REST); stato nei segmenti del percorso (0019); route separate con una pagina di conferma (0026).
 - Catalogo: solo nel database con un'interfaccia di amministrazione; solo nei file, senza database; file TypeScript o YAML (0018).
-- Viste: generatore a parametri; ricalco di immagini renderizzate altrove; 3D in tempo reale (0025); script nel repository che legge il modello FBX (0029).
+- Viste: generatore a parametri; ricalco di immagini renderizzate altrove; 3D in tempo reale (0025); script nel repository che legge il modello FBX (0029); traduzione dei pacchetti nel formato a zone, un SVG per combinazione (0031).
 - Regole di compatibilità e optional: motore delle regole provato su un catalogo finto (0027).
 - Email: servizi transazionali (Resend, SendGrid, Mailgun); notifica in copia nascosta (0017); notifica inviata dopo l'email al cliente (0030).
 - PDF: `@react-pdf/renderer`, jsPDF, Playwright o Puppeteer, conversione dell'immagine nel browser (0015, sezione 11).
@@ -69,15 +69,16 @@ Le esclusioni (prezzi, intelligenza artificiale nell'applicazione, 3D, applicazi
 | **Effe / effe.it** | L'azienda produttrice e il suo sito, da cui provengono catalogo, immagini e texture |
 | **Prodotto** (o modello) | Una sauna del catalogo, ad esempio Aladdin. Nel codice si usa sempre `product` |
 | **Taglio** | Una misura del prodotto, con codice ed etichetta, ad esempio Aladdin 60 (200 × 160 × 210 cm, larghezza × profondità × altezza). Nel codice `size` |
-| **Versione** | Una combinazione con una propria foto ufficiale sul sito: per Aladdin taglio ed essenza ("Aladdin Rovere 60"), per Yoku S taglio e variante ("Yoku S Door 60") |
+| **Versione** | Una combinazione con una propria foto ufficiale sul sito: per Aladdin taglio ed essenza ("Aladdin Rovere 60"), per Cabanon il taglio ("Cabanon Garden") |
 | **Gruppo di opzioni** | Una scelta da fare, ad esempio Essenza o Pedana in gres. Ogni gruppo ha una sola scelta, obbligatoria |
 | **Valore di opzione** | Una delle alternative di un gruppo, ad esempio Rovere rigatino |
-| **Essenza** | Il legno a scelta della sauna (per Yoku S solo quello esterno). Nel codice il gruppo si chiama `wood` |
+| **Essenza** | Il legno a scelta della sauna, per Air e Aladdin. Nel codice il gruppo si chiama `wood`; per Cabanon i gruppi sono il rivestimento esterno (`ext`) e la boiserie interna (`int`) |
 | **Pedana** | Il piano a pavimento in gres che il catalogo propone per alcuni prodotti. Dove c'è, una finitura è sempre selezionata |
-| **Materiale** | Legno, alluminio, gres o specchio, con colore e texture |
-| **Zona** | Una parte della vista che prende colore e texture da un materiale (`ext`, `roof`, `int`, `bench`, `floor`, `mirror`, `metal`) o che ha un colore fisso (`stove`, `glass`, `shadow`) |
-| **Vista** | Uno dei quattro modi di guardare la configurazione: Esterno (prospettiva a tre quarti), Frontale, Pianta, Materiali (pannello dei campioni) |
-| **Produzione delle viste** | Le viste SVG di un taglio si producono in chat a partire dai suoi file dell'Area Pro, nel formato del contratto; la procedura è in `docs/viste.md` (sezione 9) |
+| **Materiale** | Legno, alluminio, gres, ondulino o specchio. Nel catalogo ha nome e tipo; texture e colori stanno nel manifest delle viste |
+| **Manifest** | Il file `manifest.json` delle viste di un prodotto: gruppi e opzioni con la loro texture o i loro gradienti, tagli con la cartella delle viste, file con le misure (sezione 15.2) |
+| **Marcatura** | Un attributo `data-…` nel file base di una vista che dice cosa cambia con le scelte: presenza di un elemento, valore di un attributo, texture di un pattern, colori di un gradiente (sezione 15.2) |
+| **Vista** | Uno dei modi di guardare la configurazione: Esterno (isometrico), Interno (la parete frontale vista di fronte, con l'interno visibile dal vetro), Pianta, per Cabanon anche Interno 3D (l'esterno senza pareti frontali, porta e tetto della sauna), più il pannello Materiali (campioni) |
+| **Produzione delle viste** | Le viste SVG di un taglio si producono in chat a partire dai suoi file dell'Area Pro; gli script di `scripts/viste/` le convertono nel formato a marcature e applicano le correzioni note (sezione 9) |
 | **Snapshot** | La copia delle scelte, con le loro etichette, salvata nella riga della configurazione |
 | **Area Pro** | L'area riservata di effe.it con i file 3D e 2D (DWG, FBX, SKP) |
 | **Tutor** | Il referente del tirocinio: ha dato le indicazioni sul progetto e valuta la demo. Le indicazioni citate nel documento sono state date a voce, non per iscritto |
@@ -88,7 +89,7 @@ Le esclusioni (prezzi, intelligenza artificiale nell'applicazione, 3D, applicazi
 | **Livello A / livello B** | I due modi di mostrare un prodotto: A con le viste SVG prodotte dai file dell'Area Pro, B con la foto ufficiale e i campioni dei materiali (sezione 9.2). Nella tabella `product` sono `viewer: "svg"` e `viewer: "image"` |
 | **Contratto condiviso** | Tipi, schemi, funzioni comuni e formato delle viste, fissati all'inizio in una sola pull request (sezione 15.2) |
 | **valida** | La funzione pura che controlla che una configurazione esista nel catalogo: prodotto, taglio, gruppi e valori (sezione 10.1) |
-| **componiVista** | La funzione pura che applica colori e texture dei materiali a una vista; la usano il browser e il server (sezione 9.3) |
+| **componiVista** | La funzione pura che applica le scelte alle marcature di una vista (texture, gradienti, elementi presenti); la usano il browser e il server (sezione 9.3) |
 | **token** | Il codice casuale di una configurazione salvata, usato da "Riprova" e da "Scarica il PDF" (sezione 8.1) |
 | **request_id** | Il codice generato dal client a ogni apertura della finestra di invio, contro le righe doppie (sezione 10.2) |
 | **Fase** | Una delle dieci tappe del lavoro, numerate da 1 a 10 (sezione 15.5) |
@@ -103,7 +104,7 @@ Le esclusioni (prezzi, intelligenza artificiale nell'applicazione, 3D, applicazi
 
 **Funzionali**
 - **RF1.** Il cliente sceglie prodotto, taglio e materiali. Ogni gruppo ha esattamente un valore scelto.
-- **RF2.** L'anteprima si aggiorna a ogni scelta e offre quattro viste: Esterno, Frontale, Pianta, Materiali. Un prodotto al livello B ne offre due, Foto e Materiali (sezione 9.2).
+- **RF2.** L'anteprima si aggiorna a ogni scelta e offre le viste Esterno, Interno, Pianta e Materiali; Cabanon anche Interno 3D. Un prodotto al livello B ne offrirebbe due, Foto e Materiali (sezione 9.2).
 - **RF3.** Il server rifiuta una configurazione non valida (prodotto, taglio o valore inesistente), anche se arriva da un URL modificato a mano.
 - **RF4.** Lo stato delle scelte sta nell'URL, che si può copiare e condividere.
 - **RF5.** "Ricevi il riepilogo" salva la configurazione, invia al cliente il PDF e notifica l'email del progetto.
@@ -234,14 +235,14 @@ La scelta non è vincolante: le migrazioni generate sono file SQL e restano util
 
 | Tabella | Contenuto |
 |---|---|
-| `product` | `code`, `name`, `designer`, `description`, `viewer` (`svg` o `image`), `default_size`, `fixed_zones` JSONB (zona → materiale), `photos` JSONB (versione → percorso), `photo_group` (codice del gruppo che cambia la foto, nullabile), `source` JSONB |
-| `product_size` | prodotto, `code`, `label`, `width_cm`, `depth_cm`, `height_cm`, `views_from` (codice del taglio di cui riusa le viste, nullabile; sezione 9.2), `attributes` JSONB; unico per (prodotto, `code`) |
-| `material` | `code` unico in tutto il catalogo, `name`, `type` (`wood`, `aluminium`, `ceramic`, `mirror`), `color`, `texture` |
-| `option_group` | prodotto, `code`, `label`, `step`, `zones` (`text[]`), `default_value`; unico per (prodotto, `code`) |
+| `product` | `code`, `name`, `designer`, `description`, `viewer` (`svg` o `image`), `default_size`, `fixed_materials` (`text[]`, i materiali fissi elencati nel pannello Materiali, ad esempio specchio e alluminio di Aladdin), `photos` JSONB (versione → percorso), `photo_group` (codice del gruppo che cambia la foto, nullabile), `source` JSONB |
+| `product_size` | prodotto, `code`, `label`, `width_cm`, `depth_cm`, `height_cm`, `attributes` JSONB; unico per (prodotto, `code`). Quale cartella di viste usa un taglio lo dice il manifest (`viste`, `riusaDa`; sezione 9.2) |
+| `material` | `code` unico in tutto il catalogo, `name`, `type` (`wood`, `aluminium`, `ceramic`, `mirror`, `cladding`). Texture e colori stanno nel manifest delle viste (scheda 0031) |
+| `option_group` | prodotto, `code`, `label`, `step`, `default_value`; unico per (prodotto, `code`) |
 | `option_value` | gruppo, `code`, `label`, materiale collegato (`material_code`, chiave esterna verso `material.code`, `ON DELETE RESTRICT`), `attributes` JSONB; unico per (gruppo, `code`) |
 | `configuration` | vedi sotto |
 
-Non c'è una tabella delle regole e i gruppi non hanno un tipo: ogni gruppo è a scelta singola e obbligatoria (scheda 0027). I file delle viste non stanno nel database: si trovano per convenzione in `public/viste/<prodotto>/<taglio>/` (sezione 9).
+Non c'è una tabella delle regole e i gruppi non hanno un tipo: ogni gruppo è a scelta singola e obbligatoria (scheda 0027). I file delle viste e i manifest non stanno nel database: si trovano in `public/viste/<prodotto>/` (sezione 9). I codici dei gruppi, dei valori e dei tagli sono gli stessi `id` del manifest (scheda 0031).
 
 La tabella `configuration` contiene:
 - `id`; il `number` della configurazione (formato `AAAA-NNNNNN`, P5 nella sezione 20.3) non è una colonna, ma si calcola in lettura dall'anno di creazione e dall'`id`;
@@ -255,7 +256,7 @@ La tabella `configuration` contiene:
 - `customer_status` e `project_status`, di tipo `pgEnum` con valori `pending`, `sent`, `failed`;
 - per l'invio al cliente: ultimo errore, numero di tentativi, data dell'ultimo tentativo (`customer_error`, `customer_attempts`, `customer_last_attempt_at`); per la notifica, che non si rimanda (sezione 10.3), solo l'ultimo errore (`project_error`).
 
-Tutte le colonne sono `NOT NULL`, tranne quelle indicate come nullabili e `customer_error`, `project_error` e `customer_last_attempt_at`. Le tabelle figlie del catalogo usano `ON DELETE CASCADE` verso il prodotto e il gruppo; il seed le svuota comunque tutte insieme (scheda 0028). Nello schema Zod un campo è facoltativo solo se qui è nullabile; `texture` può essere `null` (P13). Fanno eccezione le colonne `attributes`: nel file la chiave si può omettere, lo schema Zod la porta a `{}` (`.default({})`) e la colonna è `NOT NULL DEFAULT '{}'`; il file di Aladdin non la contiene.
+Tutte le colonne sono `NOT NULL`, tranne quelle indicate come nullabili e `customer_error`, `project_error` e `customer_last_attempt_at`. Le tabelle figlie del catalogo usano `ON DELETE CASCADE` verso il prodotto e il gruppo; il seed le svuota comunque tutte insieme (scheda 0028). Nello schema Zod un campo è facoltativo solo se qui è nullabile. Fanno eccezione le colonne `attributes`: nel file la chiave si può omettere, lo schema Zod la porta a `{}` (`.default({})`) e la colonna è `NOT NULL DEFAULT '{}'`; il file di Aladdin non la contiene.
 
 Non ci sono tabelle per prezzi, promozioni o IVA.
 
@@ -278,7 +279,7 @@ Le etichette sono quelle del catalogo; per il taglio si aggiungono le misure. Lo
 
 Convenzioni:
 - **Nomi delle colonne.** Seguono i campi dei file JSON (P1), passando dal camelCase del JSON allo snake_case; `default` diventa `default_value` perché è una parola riservata in SQL.
-- **Significato dei campi.** `step` è il passaggio in cui compare il gruppo (1 = Misure, 2 = Materiali; il taglio sta sempre in Misure), `zones` sono le zone della vista a cui il gruppo applica il materiale, `default_value` è il valore predefinito.
+- **Significato dei campi.** `step` è il passaggio in cui compare il gruppo (1 = Misure, 2 = Materiali; il taglio sta sempre in Misure), `default_value` è il valore predefinito. Il legame con le viste è il codice: il gruppo `wood` del catalogo è il gruppo `wood` del manifest.
 - **Lingua dei nomi.** Colonne del database, campi dei file del catalogo e chiavi che li riprendono nei tipi (`group`, `value`) sono in inglese; funzioni, file e cartelle del progetto sono in italiano; le etichette mostrate al cliente sono in italiano.
 
 Tipi, chiavi e vincoli definitivi si fissano nel contratto condiviso (sezione 15.2) e poi si documentano in `docs/modello-dati.md`.
@@ -298,71 +299,73 @@ Dopo ogni modifica a un file si rilancia il seed (lo fa anche `npm run demo`). I
 
 ### 9.1 Obiettivo e scelta
 
-**Obiettivo:** immagini grafiche di qualità, non 3D in tempo reale: i modelli 3D dell'Area Pro non possono entrare nel repository. Un'anteprima è accettabile se ogni materiale scelto si riconosce dalla sua texture e se forma e proporzioni corrispondono alla foto ufficiale della versione. Per un taglio che riusa le viste di un altro (`viewsFrom`, sezione 9.2) si confronta con la foto solo la forma: le proporzioni sono quelle del taglio di origine, e lo dichiara la nota "illustrazione del taglio …". Il controllo si fa a vista nella pagina `/galleria` (sezione 18).
+**Obiettivo:** immagini grafiche di qualità, non 3D in tempo reale: i modelli 3D dell'Area Pro non possono entrare nel repository. Un'anteprima è accettabile se ogni materiale scelto si riconosce dalla sua texture e se forma e proporzioni corrispondono alla foto ufficiale della versione. Per un taglio che riusa le viste di un altro (`riusaDa`, sezione 9.2) si confronta con la foto solo la forma: le proporzioni sono quelle del taglio di origine, e lo dichiara la nota "illustrazione del taglio …". Il controllo si fa a vista nella pagina `/galleria` (sezione 18).
 
-**Scelta: viste SVG pronte, prodotte in chat a partire dai file dell'Area Pro** (schede 0025 e 0029). Le viste non si disegnano nell'applicazione: si producono prima, una volta per taglio, e l'applicazione ne cambia solo colori e texture. Il riferimento di qualità sono le viste di Aladdin 60 del mockup: texture del legno fusa con l'ombra, pedana che cambia materiale.
+**Scelta: viste SVG pronte, prodotte in chat a partire dai file dell'Area Pro e convertite nel formato a marcature** (schede 0025, 0029 e 0031). Le viste non si disegnano nell'applicazione: si producono prima, una volta per taglio, e l'applicazione cambia solo ciò che dipende dalle scelte.
 
-Il configuratore mostra quattro viste, come il mockup per Aladdin 60:
-- **Esterno:** la sauna in prospettiva a tre quarti, con il fronte, un fianco e il tetto;
-- **Frontale:** la parete frontale vista di fronte, con l'interno visibile attraverso il vetro;
+Il configuratore mostra queste viste:
+- **Esterno:** la sauna in isometria, con il fronte, un fianco e il tetto;
+- **Interno:** la parete frontale vista di fronte, con l'interno visibile attraverso il vetro (nelle versioni precedenti si chiamava Frontale);
 - **Pianta:** la sauna vista dall'alto, senza il tetto;
-- **Materiali:** un pannello con i campioni dei materiali scelti e la zona a cui si applicano.
+- **Interno 3D**, solo per Cabanon: l'esterno senza le due pareti frontali, la porta, la soglia e il tetto della sauna, come lo schema dei materiali di effe.it; mostra la boiserie, che dall'esterno non si vede. Gli altri prodotti non ce l'hanno (scelta dell'autore, scheda 0031);
+- **Materiali:** un pannello con i campioni dei materiali scelti e di quelli fissi.
 
-La vista dall'interno è scartata. Nel PDF vanno l'esterno in grande e la frontale più piccola (P12).
+Nel PDF vanno l'esterno in grande e l'interno più piccolo (P12).
 
-**Come si producono.** Per ogni taglio:
-1. si carica in chat un file dell'Area Pro del taglio (FBX, DWG o SKP), come autorizzato dal tutor (sezione 9.4);
-2. si chiedono le tre viste (esterno, frontale, pianta) nel formato del contratto (sezione 15.2): poligoni con la zona e un livello d'ombra da 0 a 5, senza colori né stili;
-3. i tre file si salvano in `public/viste/<prodotto>/<taglio>/`;
-4. la prova automatica sul formato e il confronto con la foto ufficiale in `/galleria` decidono se la vista entra nel repository.
+**Prodotti di partenza** (scheda 0031): Air (tagli 60, 80, 120), Air Corner (80 Corner, 105 Corner), Aladdin (45, 60) e Cabanon Garden (senza deck, con deck Medium, con deck Large). Terrace e deck Small di Cabanon mancano, perché non c'è il modello. Yoku S è messo da parte: si inserisce solo se avanza tempo, con la stessa procedura.
 
-`docs/viste.md` conserva, per ogni taglio, il testo della richiesta, il file di partenza e l'esito dei controlli, insieme al servizio, al modello e alla data della chat. La fonte delle viste è il file SVG nel repository: la chat non dà lo stesso risultato due volte, quindi `docs/viste.md` serve a rifare il lavoro, non a riottenere lo stesso file. L'applicazione non contiene uno script delle viste: lo script provato il 2026-11-12 su un secondo prodotto è archiviato in `archivio/script-viste/` e non fa parte della procedura.
+**Come si producono.** Per ogni prodotto:
+1. si carica in chat un file dell'Area Pro (finora DWG; vanno bene anche FBX o SKP), come autorizzato dal tutor (sezione 9.4), insieme alle foto e ai PDF del sito che servono a ricostruire ciò che il file non contiene (i deck di Cabanon);
+2. la chat consegna un pacchetto con un SVG per ogni combinazione di taglio, vista e materiali (114 file in tutto per i quattro prodotti);
+3. `scripts/viste/converti-pacchetti.mjs` confronta le combinazioni e scrive **un SVG base per taglio e vista**, con le marcature di ciò che cambia, e il **manifest** del prodotto (formato nella sezione 15.2);
+4. `correggi-viste.mjs` applica le correzioni note, `vista-interna-cabanon.mjs` ricava l'Interno 3D di Cabanon dall'esterno, `materiali.mjs` scrive nei manifest le texture e i gradienti presi dalle foto dei campioni;
+5. `verifica.mjs` ricompone ogni combinazione dei pacchetti e la confronta con l'originale; il confronto con le foto in `/galleria` decide se la vista resta nel repository.
 
-**Alternative** (motivi nelle schede 0025 e 0029)
+I pacchetti originali restano fuori dal repository (`data/vecchieViste/`, esclusa da git); nel repository entrano i file base, i manifest, le texture e gli script. La procedura, il formato e le correzioni note sono in `docs/viste.md` (oggi `data/viste/README.md`). La chat non dà lo stesso risultato due volte: la fonte delle viste è il file nel repository, e gli script lo rifanno sempre uguale a partire dai pacchetti.
+
+**Texture dalle foto.** Le foto dei campioni scaricate da effe.it stanno in `public/viste/texture/originali/`. `texture-dalle-foto.ps1` ne ricava texture quadrate di 512 px ripetibili senza giunte: ritaglio centrale, luce uniformata riga per riga, bordi sfumati; per le doghe della boiserie di Cabanon misura il passo delle tavole sulla foto e ne affianca due. Scrive anche il colore medio di ogni foto (`medie.json`), da cui `materiali.mjs` ricava i gradienti dell'ondulino di Cabanon e `correzioni.mjs` il colore alluminio della struttura. Lo specchio di Aladdin resta un gradiente.
+
+**Alternative** (motivi nelle schede 0025, 0029 e 0031)
 - *Generatore a parametri:* ripetibile senza file 3D, ma la resa è schematica.
 - *Script nel repository che legge l'FBX:* ripetibile, ma richiede regole per ogni modello, non legge i DWG e la resa non era al livello del mockup.
-- *Formato del mockup così com'è:* due formati da mantenere, perché resvg non supporta classi CSS e `color-mix()`.
-- *Ricalco di un'immagine renderizzata altrove:* non ripetibile e file dieci volte più pesanti.
+- *Formato a zone della scheda 0029:* tradurre i pacchetti avrebbe voluto dire rifarli e perdere i pattern in prospettiva.
+- *Un SVG per combinazione, come nei pacchetti:* 31,7 MB invece di 4 MB, e un file nuovo per ogni materiale aggiunto.
 - *3D in tempo reale nel browser:* escluso, perché i modelli non possono entrare nel repository.
 
-**Stato.** Le viste di Aladdin 60 del mockup sono state prodotte in chat (scheda 0029) e sono il riferimento di qualità. Le viste dei nuovi tagli si producono in chat a partire dai file FBX e DWG; il metodo non è ancora stato misurato su un taglio completo, ed è un rischio accettato: se non funziona o supera il limite del punto 6 della sezione 9.2, il prodotto passa al livello B. Le viste di Aladdin 60 usano però classi CSS, variabili CSS e `color-mix()`, che resvg non supporta, e pesano fino a 305 KB l'una. Restano da fare:
-- la conversione nel formato del contratto, una sola volta: `class="ext2"` diventa `data-zone="ext" data-shade="2"`; lo stile e i path della texture si tolgono, perché li ricostruisce `componiVista`;
-- le viste di Aladdin 45;
-- il confronto di ogni vista con la foto ufficiale, anche per escludere che sia specchiata;
-- la misura del tempo che serve per produrre e controllare le viste di un taglio.
+**Stato.** Il 2026-11-13 le viste dei quattro prodotti sono prodotte, convertite e verificate: 114 combinazioni su 114 ricomposte uguali agli originali corretti, confronto a vista con le foto e la brochure di effe.it. Restano da fare: lo spostamento da `data/viste/` a `public/viste/` (fase 2), la prova con resvg (sezione 11) e i file del catalogo di Air, Air Corner e Cabanon.
 
 ### 9.2 Livelli di resa, limiti e come si riduce il rischio
 
-1. **Serve un file dell'Area Pro del taglio** (FBX, DWG o SKP). L'inventario dei file disponibili per ogni prodotto e taglio, con formato e variante, va in `docs/catalogo-inventario.md` e si compila prima della fase 6 (sezione 20.5). Dal sito risulta che Yoku S 60 ha DWG, FBX e SKP, mentre il 45 e il 105 hanno solo "File 3D" e "File 2D" senza formato; nessun file dice a quale variante si riferisce.
-2. **Il livello di resa è del prodotto, non del taglio.** `viewer` è una colonna di `product`: in un prodotto al livello A ogni taglio ha le sue tre viste o un `viewsFrom` valido. Un taglio che non ha file dell'Area Pro riusa le viste di un altro taglio (punto 4) o resta fuori.
-3. **Un file descrive un taglio e una sola variante.** Se il catalogo propone varianti che cambiano la forma (ad esempio Door, Glass e Shelf di Yoku S), si inserisce quella del file disponibile e le altre restano fuori. La variante è una sola per tutto il prodotto e fa parte del suo nome nel file (ad esempio "Yoku S Door", con i tagli "Yoku S Door 60"), così compare nell'interfaccia, nel PDF e nell'email; un taglio il cui file è di un'altra variante resta fuori.
-4. **Riuso delle viste tra tagli.** Un taglio senza file può usare le viste di un altro taglio dello stesso prodotto (`viewsFrom` nel file, `views_from` nel database), con la nota visibile "illustrazione del taglio …". È ammesso solo se la forma è la stessa, cioè la stessa disposizione di porta, vetro, panche e stufa; il disegno mantiene le proporzioni del taglio di origine, e le misure mostrate restano quelle del taglio scelto. Dove esistono i file di entrambi i tagli, si producono le viste di entrambi. Un taglio senza file e di forma diversa non si inserisce.
+1. **Serve un file dell'Area Pro del taglio** (FBX, DWG o SKP). L'inventario dei file disponibili per ogni prodotto e taglio, con formato e variante, va in `docs/catalogo-inventario.md`.
+2. **Il livello di resa è del prodotto, non del taglio.** `viewer` è una colonna di `product`: in un prodotto al livello A ogni taglio ha le sue viste, direttamente o con `riusaDa`. Un taglio che non ha file dell'Area Pro riusa le viste di un altro taglio (punto 4) o resta fuori.
+3. **Un file descrive un taglio e una sola variante.** Se il catalogo propone varianti che cambiano la forma, si inserisce quella del file disponibile e le altre restano fuori; la variante fa parte del nome del prodotto. Oggi riguarda Cabanon, di cui c'è solo Garden: Terrace resta fuori.
+4. **Riuso delle viste tra tagli.** Un taglio senza file può usare le viste di un altro taglio dello stesso prodotto (`viste` e `riusaDa` nel manifest), con la nota visibile "illustrazione del taglio …". È ammesso solo se la forma è la stessa; il disegno mantiene le proporzioni del taglio di origine, e le misure mostrate restano quelle del taglio scelto. Oggi Air 60 e Air 120 riusano Air 80, Air 105 Corner riusa Air 80 Corner.
 5. **Due livelli di resa:**
-   - **Livello A:** viste SVG prodotte dai file dell'Area Pro;
-   - **Livello B:** foto ufficiale della versione, con accanto il pannello dei campioni e l'etichetta "anteprima fotografica, materiali indicati a lato". Le viste sono due, Foto e Materiali: Esterno, Frontale e Pianta non ci sono. Nel PDF vanno la foto e i campioni. È un ripiego: non risponde al problema della sezione 2.
-6. **Regola di decisione.** Se produrre e controllare le viste di un taglio richiede più di 4 ore di lavoro di una persona, anche in più sessioni, tutto il prodotto passa al livello B, con la foto ufficiale. Per Yoku S, che è il prodotto che risponde al problema (sezione 2), il passaggio al livello B rende la consegna parziale e si dichiara.
-7. **Controllo.** Ogni vista passa la prova sul formato e si confronta con la foto ufficiale nella pagina `/galleria` prima di entrare nel repository. La prova controlla anche le proporzioni: il riquadro dei poligoni della Pianta, esclusa `shadow`, deve avere il rapporto `width_cm / depth_cm` del taglio da cui la vista è prodotta, e quello della Frontale il rapporto `width_cm / height_cm`, con una tolleranza del 5%. Per ogni taglio `docs/viste.md` annota un elemento asimmetrico, come il lato della porta o della stufa, da controllare sulla foto per escludere una vista specchiata.
-8. **Peso delle viste.** Una vista può pesare centinaia di KB. La pagina riceve solo le viste del prodotto aperto; quelle di un altro prodotto si leggono da `public/viste/` quando lo si sceglie. In chat si chiede di semplificare i poligoni, con un obiettivo indicativo di 150 KB per vista; il peso non è un criterio di accettazione.
+   - **Livello A:** viste SVG prodotte dai file dell'Area Pro. Tutti e quattro i prodotti di partenza sono al livello A;
+   - **Livello B:** foto ufficiale della versione, con accanto il pannello dei campioni e l'etichetta "anteprima fotografica, materiali indicati a lato". Le viste sono due, Foto e Materiali. Nel PDF vanno la foto e i campioni. È un ripiego per i prodotti futuri: non risponde al problema della sezione 2, e oggi nessun prodotto lo usa.
+6. **Regola di decisione**, per i prodotti futuri (ad esempio Yoku S). Se produrre, convertire e controllare le viste di un taglio richiede più di 4 ore di lavoro di una persona, anche in più sessioni, tutto il prodotto passa al livello B, con la foto ufficiale.
+7. **Controllo.** Ogni vista passa la prova sul formato (sezione 18) e `verifica.mjs`, e si confronta con la foto ufficiale nella pagina `/galleria`. Per ogni taglio `docs/viste.md` annota le differenze note rispetto al sito, ad esempio Aladdin 45, che nel DWG misura 180 × 160 cm e sul sito 180 × 140 cm.
+8. **Peso delle viste.** I file base pesano da 15 a 135 KB; le texture sono JPG di 512 px. La pagina riceve solo le viste del prodotto aperto; quelle di un altro prodotto si leggono da `public/viste/` quando lo si sceglie.
 
 ### 9.3 Anteprima in tempo reale
 
-- Una **funzione pura** `componiVista(svg, materiali, opzioni) → stringa SVG`, senza DOM, è usata sia dal browser sia dal server (sezione 11). Riceve il testo di una vista e, per ogni zona, il materiale scelto.
-- La resa è quella delle viste di Aladdin 60 del mockup. Per ogni poligono calcola il colore dal `color` del materiale, scurito secondo `data-shade` (0, 6, 13, 21, 30, 40 per cento di nero), e lo scrive in `fill` e in `stroke`, con un bordo sottile dello stesso colore che copre le fessure tra poligoni vicini. I colori si calcolano in JavaScript: nell'SVG non ci sono fogli di stile né variabili CSS.
-- Sopra il colore stende la texture del materiale, fusa con l'ombreggiatura (P13). La texture di `roof` e `bench` è ruotata di 90 gradi.
-- Le zone a colore fisso non hanno texture: `stove` ha un colore fisso, scurito per livello d'ombra come le altre zone, `glass` è trasparente (opacità 0,1) e si disegna sopra tutto il resto, `shadow` è l'ombra a terra, nera, semitrasparente e sfumata.
-- **Zone senza materiale nel catalogo.** `floor` e `metal` possono non avere un materiale, perché il sito non sempre lo indica (Yoku S non ha pedana né metalli dichiarati). In quel caso prendono un colore neutro fisso, senza texture, come il pavimento senza pedana del mockup, e il pannello Materiali non le elenca. Non si inventa un materiale.
-- `opzioni` contiene il prefisso degli `id` dei pattern e `flat` (solo colori, senza texture). Il modo di includere le texture non è un'opzione: `texture` di ogni materiale è già l'URL da usare, cioè un percorso di `public/` nel browser e un data URI preparato dal server per il PDF (firma nella sezione 15.2).
-- I materiali per zona li calcola `materialiPerZona(prodotto, selections)`, una funzione pura usata sia dal browser sia dal server: per ogni gruppo assegna alle sue `zones` il materiale del valore scelto, poi aggiunge `fixedZones` (sezione 15.2).
-- L'anteprima è un SVG inline nella pagina, non un `<img>`, così le texture si caricano da `public/`. Più viste nella stessa pagina non si sovrappongono perché ogni vista ha il suo prefisso.
-- Il server passa al configuratore le viste del prodotto aperto insieme al catalogo: cambiare materiale o taglio non richiede altre richieste; cambiare prodotto legge le sue viste da `public/viste/` (sezione 9.2, punto 8).
-- **Pedana.** Nelle viste la finitura della pedana colora tutto il pavimento interno, non un riquadro di 120 × 120 cm, come nelle viste di Aladdin 60 del mockup. È una semplificazione accettata.
+- Una **funzione pura** `componiVista(svg, scelte, gruppi, href, opzioni) → stringa SVG`, senza DOM, è usata sia dal browser sia dal server (sezione 11). Riceve il testo di un file base, le scelte (`{ wood: "wenge", floor: "moka" }`) e i gruppi del manifest (firma nella sezione 15.2). Esiste già in `scripts/viste/componi.mjs` e si porta in `src/lib/viste/`.
+- **Cosa fa.** Toglie gli elementi con `data-se` non soddisfatto, scrive gli attributi `data-per-…` con il valore della scelta, mette nei `<pattern>` con `data-materiale` la texture dell'opzione scelta e nei `<linearGradient>` con `data-materiale` i suoi colori, mette nei `<pattern>` con `data-texture` la texture fissa. Forme, ombre e bordi sono già nel file base: la funzione non calcola colori.
+- **Texture in prospettiva.** Ogni faccia ha il suo pattern con una `patternTransform`, quindi la foto del campione segue il piano della faccia; un quadrato di 256 unità corrisponde a circa 55 cm sulle pareti.
+- **Materiali fissi.** Specchio e alluminio di Aladdin, struttura e deck di Cabanon in colore Alluminio sono già nel file base: non dipendono dalle scelte.
+- `href(idTexture)` dice come includere le texture: un percorso di `public/viste/texture/` nel browser, un data URI preparato dal server per il PDF.
+- **Id unici.** L'anteprima è un SVG inline nella pagina, non un `<img>`. Più viste nella stessa pagina condividono gli id dei pattern e dei gradienti, quindi `componiVista` mette davanti a ogni id un prefisso diverso a ogni chiamata, oppure quello passato in `opzioni.prefisso`.
+- Il server passa al configuratore le viste e il manifest del prodotto aperto insieme al catalogo: cambiare materiale o taglio non richiede altre richieste; cambiare prodotto legge le sue viste da `public/viste/` (sezione 9.2, punto 8).
+- **Pedana di Aladdin.** È disegnata come riquadro di 120 × 120 × 5 cm sotto la stufa, con la posizione stimata dalle foto; c'è solo nelle viste in cui si vede.
+- **Pavimento di Cabanon.** È a listelli da parete a parete, sempre in Aspen termotrattato qualunque boiserie si scelga, come nella brochure di effe.it: con la boiserie cambiano le doghe delle pareti e le panche.
 - **Quote.** Larghezza, profondità e altezza del taglio si mostrano come testo accanto alla vista, non dentro l'SVG: così restano corrette anche quando un taglio riusa le viste di un altro.
+- **Proporzioni.** Le viste hanno proporzioni diverse tra loro: il contenitore ha un rapporto fisso con `object-fit: contain`, e `width`/`height` del manifest riservano lo spazio. Il testo alternativo è nell'`alt`, ad esempio «Aladdin 60, Wengé, pedana Moka, vista esterna».
 
 ### 9.4 Uso delle immagini
 
-Il tutor ha autorizzato a voce l'uso di ciò che è visibile sul sito; non c'è un'autorizzazione scritta. Le foto si copiano in `public/` e non si richiamano dal sito, per rispettare la regola sulle risorse esterne. I file dell'Area Pro (DWG, FBX, SKP, schede di preinstallazione) non entrano nel repository. Il tutor ha autorizzato a mettere nel repository le viste ricavate da quei file, purché i file nativi restino fuori.
+Il tutor ha autorizzato a voce l'uso di ciò che è visibile sul sito; non c'è un'autorizzazione scritta. Le foto, comprese quelle dei campioni da cui si ricavano le texture, si copiano in `public/` e non si richiamano dal sito, per rispettare la regola sulle risorse esterne. I file dell'Area Pro (DWG, FBX, SKP, schede di preinstallazione) non entrano nel repository. Il tutor ha autorizzato a mettere nel repository le viste ricavate da quei file, purché i file nativi restino fuori.
 
-**File dell'Area Pro in chat.** Produrre le viste in chat vuol dire caricare i file dell'Area Pro su un servizio esterno. Il tutor lo ha autorizzato (riferito dall'autore il 2026-11-12); l'autorizzazione è annotata anche nella scheda 0029. Nel repository continuano a entrare solo le viste prodotte, non i file nativi.
+**File dell'Area Pro in chat.** Produrre le viste in chat vuol dire caricare i file dell'Area Pro su un servizio esterno. Il tutor lo ha autorizzato (riferito dall'autore il 2026-11-12); l'autorizzazione è annotata anche nella scheda 0029. Nel repository continuano a entrare solo le viste prodotte, non i file nativi né i pacchetti originali della chat.
 
 ---
 
@@ -377,7 +380,7 @@ Il tutor ha autorizzato a voce l'uso di ciò che è visibile sul sito; non c'è 
   - nel browser: pagina e configuratore (`src/app/`, `src/components/`) e composizione delle viste (`src/lib/viste/`);
   - nel server Next.js: Server Action per l'invio e "Riprova", Route Handler per il PDF (P8). Usano Zod e `valida` (`src/contratti/`), Drizzle verso PostgreSQL (`src/db/`), `componiVista` con resvg per l'immagine, PDFKit per il PDF e Nodemailer per le email (`src/server/`);
   - in Docker: PostgreSQL, con il catalogo caricato dai file e le configurazioni salvate;
-  - fuori dall'applicazione: la produzione delle viste in chat (sezione 9.1), i cui file entrano in `public/viste/`.
+  - fuori dall'applicazione: la produzione delle viste in chat e gli script di `scripts/viste/` che le convertono (sezione 9.1); i file base, i manifest e le texture entrano in `public/viste/`.
 
   Le route sono tre (P6): `/`, il configuratore; `/riepilogo/[token]/pdf`, il PDF rigenerato dalla riga salvata; `/galleria`, il controllo visivo delle viste, attivo nella demo. Il dettaglio va in `docs/architettura.md`.
 
@@ -423,7 +426,7 @@ Il `request_id`, generato dal client a ogni apertura della finestra (scheda 0026
 
 ### 10.4 Contenuto del PDF e dell'email
 
-Il PDF contiene l'immagine del prodotto con le scelte fatte (viste esterna e frontale convertite, oppure foto con i campioni dei materiali, oppure versione a colori pieni), il numero e la data della configurazione e l'elenco di prodotto, taglio e materiali, con lo stesso contenuto della schermata di riepilogo. Lo stesso elenco compare anche nel corpo dell'email, così il contenuto è leggibile anche se il PDF non è accessibile.
+Il PDF contiene l'immagine del prodotto con le scelte fatte (viste Esterno e Interno convertite, oppure foto con i campioni dei materiali, oppure versione a colori pieni), il numero e la data della configurazione e l'elenco di prodotto, taglio e materiali, con lo stesso contenuto della schermata di riepilogo. Lo stesso elenco compare anche nel corpo dell'email, così il contenuto è leggibile anche se il PDF non è accessibile.
 
 ### 10.5 Affidabilità dell'invio
 
@@ -433,9 +436,9 @@ Il PDF contiene l'immagine del prodotto con le scelte fatte (viste esterna e fro
   - numero di prodotti caricati;
   - `transporter.verify()` verso Gmail;
   - una conversione di prova di Aladdin;
-  - presenza delle texture e dei file delle viste.
+  - presenza delle texture, dei manifest e dei file delle viste.
 
-  Le prime due voci (database e migrazioni, prodotti caricati) sono bloccanti; le altre tre (Gmail, conversione di prova, texture e viste) sono avvisi (sezione 7). "Presenza dei file delle viste" vuol dire che ogni taglio di un prodotto con `viewer: "svg"` ha i suoi tre file, oppure quelli del taglio indicato da `viewsFrom`. "Numero di prodotti caricati" dà FAIL se è diverso dal numero di file in `data/prodotti/`.
+  Le prime due voci (database e migrazioni, prodotti caricati) sono bloccanti; le altre tre (Gmail, conversione di prova, texture e viste) sono avvisi (sezione 7). "Presenza dei file delle viste" vuol dire che ogni prodotto con `viewer: "svg"` ha il suo manifest, che ogni taglio e ogni gruppo e valore del catalogo vi compaiono con lo stesso codice, che ogni file elencato nel manifest esiste e che ogni texture citata è in `public/viste/texture/`. "Numero di prodotti caricati" dà FAIL se è diverso dal numero di file in `data/prodotti/`.
 - **Un solo account SMTP.** Il progetto usa un solo account Gmail. Se Google lo blocca, l'invio reale non si può fare e resta solo "Scarica il PDF": è un **rischio accettato**, perché un secondo account andrebbe creato, provato e mantenuto per un caso che la prova della fase 1 rende meno probabile.
 - I guasti realistici, provati nella fase 1 e da riprovare nella prova generale (fase 9):
   1. la rete dell'università o della sede blocca SMTP in uscita (porte 465/587);
@@ -454,27 +457,27 @@ L'email scritta due volte intercetta gli errori di battitura, ma non un indirizz
 
 ## 11. PDF e conversione dell'immagine
 
-**Problema.** Per mettere nel PDF un'immagine SVG con texture bisogna prima trasformarla in PNG. I convertitori lato server si comportano diversamente dal browser su `<pattern>`, `<image href>`, fusioni e filtri. I percorsi relativi delle texture (`/texture/rovere.jpg`) sul server non si risolvono.
+**Problema.** Per mettere nel PDF un'immagine SVG con texture bisogna prima trasformarla in PNG. I convertitori lato server si comportano diversamente dal browser su `<pattern>` con `patternTransform`, `<image href>` e gradienti. I percorsi relativi delle texture (`/viste/texture/rovere.jpg`) sul server non si risolvono.
 
 **Decisione: conversione sul server con `@resvg/resvg-js`**, partendo dalla configurazione già validata.
 - La stessa funzione che compone l'anteprima, `componiVista`, produce la stringa SVG a partire dai file delle viste (sezione 9.3).
-- Le texture si incorporano come data URI. Le viste non contengono testo: misure ed etichette le scrive PDFKit, con i font del progetto.
+- Le texture JPG si incorporano come data URI, con `href` di `componiVista`. Il `<title>` delle viste non si disegna: misure ed etichette le scrive PDFKit, con i font del progetto.
 
 **Motivi**
 - Il PDF si rigenera dalla riga salvata, quindi "Riprova", "Scarica il PDF" e `npm run check` usano lo stesso codice senza chiedere l'immagine al browser. L'elenco delle scelte viene dallo snapshot; l'immagine si ridisegna con il catalogo attuale. Se le scelte salvate non si risolvono più nel catalogo attuale (prodotto, taglio, valore o materiale rimosso o cambiato, vista mancante), il PDF esce con il solo elenco delle scelte. Una prova automatica lo verifica con uno snapshot che cita un codice rimosso.
 - Il server non accetta immagini dal client, quindi non servono controlli su tipo e dimensione e non si incontra il limite di 1 MB del corpo delle Server Action.
 - `@resvg/resvg-js` ha binari già pronti per Windows, senza dipendenze di sistema.
-- Le differenze attese rispetto allo schermo riguardano `<pattern>`, fusioni (`mix-blend-mode`) e la sfocatura dell'ombra a terra; la prova le verifica.
+- Le viste non usano fusioni, filtri, classi né variabili CSS: le differenze attese rispetto allo schermo riguardano solo i `<pattern>` in prospettiva con le immagini JPG e i gradienti; la prova le verifica.
 
 **Alternative**
-- *Conversione nel browser:* il client disegna l'SVG in un canvas ed esporta un PNG. Il PDF coincide con lo schermo, ma il server dovrebbe fidarsi di un'immagine del client e il PDF non si potrebbe rigenerare. Resta la seconda opzione se la prova mostra che manca una texture o che pattern e fusioni non sono resi come nel browser.
+- *Conversione nel browser:* il client disegna l'SVG in un canvas ed esporta un PNG. Il PDF coincide con lo schermo, ma il server dovrebbe fidarsi di un'immagine del client e il PDF non si potrebbe rigenerare. Resta la seconda opzione se la prova mostra che manca una texture o che pattern e gradienti non sono resi come nel browser.
 - *Playwright o Puppeteer* con `page.pdf()`: il PDF coincide con la resa di Chromium, ma richiede un browser headless sul server (Chromium, centinaia di MB) e un processo in più da gestire. Scartato.
 
-**Ripiego, deciso fin d'ora:** la stessa funzione con l'opzione `flat: true` sostituisce i pattern con il colore pieno di `material.color` e toglie le fusioni e la sfocatura dell'ombra.
+**Ripiego, deciso fin d'ora:** la stessa funzione con l'opzione `flat: true` sostituisce l'immagine di ogni pattern con il colore medio della foto del campione (`texture/originali/medie.json`); ombre e bordi restano quelli del file base.
 
 **Impaginazione: PDFKit** (scheda [0015](docs-iniziali/docs/decisioni/0015-pdf-pdfkit-resvg.md)). Il PDF è una pagina A4 con l'immagine PNG prodotta da resvg e l'elenco delle scelte. PDFKit scrive il PDF in memoria, incorpora i font del progetto, gli stessi dell'interfaccia (la prova controlla gli accenti, ad esempio in "Wengé"), e va a capo da solo nei testi lunghi. Ripiego se PDFKit non funziona dentro Next.js: `pdf-lib`.
 
-**Prova** (mezza giornata, fase 2): Aladdin 60 con Wengé, gres e specchio, con le viste convertite dal mockup, confrontato con il browser su quattro punti (texture presenti, pattern e fusioni resi come nel browser, ombra a terra sfumata, accenti corretti nel testo del PDF), con PDFKit e resvg insieme. Il risultato si aggiunge alla scheda 0015, nella sezione "Come è stato verificato".
+**Prova** (mezza giornata, fase 2): Aladdin 60 con Wengé e pedana Moka e Cabanon Garden con deck Large, Muschio e Legno termotrattato scuro, viste Esterno e Interno, confrontati con il browser su quattro punti (texture JPG presenti, pattern in prospettiva resi come nel browser, gradienti dell'ondulino e dello specchio, accenti corretti nel testo del PDF), con PDFKit e resvg insieme. Il risultato si aggiunge alla scheda 0015, nella sezione "Come è stato verificato".
 
 ---
 
@@ -557,13 +560,13 @@ Ogni area ha un responsabile: verifica il lavoro di quell'area su entrambi i por
 
 | | Nicolas (N): dati e server | Marko (M): interfaccia e viste |
 |---|---|---|
-| Cartelle e file | `docker-compose.yml`, `drizzle/`, `src/db/`, `src/server/`, `scripts/`, `src/app/azioni.ts`, `src/app/riepilogo/[token]/pdf/route.ts`, `public/texture/`, `public/foto/` | `src/app/` (tranne i due file di N), `src/components/`, `src/lib/viste/`, `public/viste/`, stili |
-| Responsabilità | database, seed, invio email, PDF e sua impaginazione, conservazione dei dati, controllo preliminare | configuratore, accessibilità, produzione delle viste in chat e loro conversione, composizione delle viste |
-| Prodotti | file dei prodotti in `data/prodotti/`, texture e foto | viste di ogni taglio e confronto con le foto ufficiali |
+| Cartelle e file | `docker-compose.yml`, `drizzle/`, `src/db/`, `src/server/`, `scripts/`, `src/app/azioni.ts`, `src/app/riepilogo/[token]/pdf/route.ts`, `public/foto/` | `src/app/` (tranne i due file di N), `src/components/`, `src/lib/viste/`, `public/viste/`, `scripts/viste/`, stili |
+| Responsabilità | database, seed, invio email, PDF e sua impaginazione, conservazione dei dati, controllo preliminare | configuratore, accessibilità, produzione delle viste in chat, script di conversione, texture, composizione delle viste |
+| Prodotti | file dei prodotti in `data/prodotti/` e foto | viste e manifest di ogni prodotto, texture, confronto con le foto ufficiali |
 
-Il formato delle viste (sezione 15.2) è il punto di contatto tra i due: la produzione in chat lo rispetta, la prova sul formato lo controlla, `componiVista` lo consuma nel browser e nel PDF.
+Il formato delle viste e il manifest (sezione 15.2) sono il punto di contatto tra i due: gli script li producono, la prova sul formato li controlla, `componiVista` li consuma nel browser e nel PDF, e i codici del catalogo devono coincidere con quelli del manifest.
 
-**File iniziali.** Tutti i file si creano, tranne il mockup, già presente, e le schede, che si spostano da `docs-iniziali/docs/decisioni/` a `docs/decisioni/`. Le sole cartelle senza un elenco di file sono `public/viste/<prodotto>/<taglio>/`, `public/texture/`, `public/foto/`, `src/components/`, che segue i componenti del mockup, e `test/`.
+**File iniziali.** Tutti i file si creano, tranne il mockup, le viste e gli script delle viste, già presenti, e le schede, che si spostano da `docs-iniziali/docs/decisioni/` a `docs/decisioni/`. Le sole cartelle senza un elenco di file sono `public/viste/<prodotto>/<taglio>/`, `public/viste/texture/`, `public/foto/`, `src/components/`, che segue i componenti del mockup, e `test/`.
 
 | Percorso | Contenuto | Responsabile | Fase |
 |---|---|---|---|
@@ -573,15 +576,16 @@ Il formato delle viste (sezione 15.2) è il punto di contatto tra i due: la prod
 | `vitest.config.ts`, `playwright.config.ts`, `.env.test` | Configurazione delle prove (sezione 18) | N | 2 |
 | `components.json`, `src/lib/utils.ts` | Creati da `shadcn init` | M | 2 |
 | `src/contratti/catalogo.ts`, `src/contratti/configurazione.ts`, `src/contratti/valida.ts`, `src/contratti/normalizza.ts`, `src/contratti/viste.ts` | Contratto (sezione 15.2) | Entrambi | 2 |
-| `public/viste/<prodotto>/<taglio>/ext.svg`, `front.svg`, `plan.svg` | Viste prodotte in chat (sezione 9.1); quelle di Aladdin 60 convertite dal mockup con `scripts/converti-mockup.ts` (appendice C) | M | dalla 2 |
-| `scripts/converti-mockup.ts` | Script usa e getta che converte le viste del mockup (appendice C) | M | 2 |
-| `src/lib/viste/componiVista.ts`, `src/lib/viste/materialiPerZona.ts`, `src/lib/viste/leggiVista.ts`, `src/lib/viste/costanti.ts` | Composizione, materiali per zona, lettura delle viste e costanti (sezione 15.2) | M | 2-3 |
+| `public/viste/<prodotto>/manifest.json`, `public/viste/<prodotto>/<cartella>/ext.svg`, `int.svg`, `plan.svg`, `int3d.svg` (solo Cabanon) | Viste e manifest (sezioni 9.1 e 15.2), oggi in `data/viste/`, da spostare | M | già presenti, spostate nella 2 |
+| `public/viste/texture/<id>.jpg`, `public/viste/texture/originali/` | Texture e foto dei campioni con `medie.json` (sezione 9.1) | M | già presenti, spostate nella 2 |
+| `scripts/viste/componi.mjs`, `converti-pacchetti.mjs`, `correggi-viste.mjs`, `correzioni.mjs`, `pavimento-cabanon.mjs`, `vista-interna-cabanon.mjs`, `materiali.mjs`, `texture-dalle-foto.ps1`, `verifica.mjs` | Conversione dei pacchetti, correzioni, Interno 3D di Cabanon, materiali, texture, verifica (sezione 9.1, appendice C) | M | già presenti; i percorsi passano a `public/viste/` nella 2 |
+| `src/lib/viste/componiVista.ts` | `componiVista` e `fileTexture` portati da `scripts/viste/componi.mjs` in TypeScript (sezione 15.2) | M | 2 |
 | `src/db/catalogo.ts` | `caricaCatalogo()`: ricompone i prodotti dal database, con il tipo `Prodotto` (sezione 15.2) | N | 3 |
 | `src/app/page.tsx`, `src/components/` | Pagina unica, passaggi, viste, pannello dei materiali, finestre di invio e dell'informativa (P6) | M | 3-4 |
 | `src/app/galleria/page.tsx` | Pagina interna di controllo | M | 3 |
 | `src/app/azioni.ts` (`'use server'`) | `inviaRiepilogo`, `riprova` (P8) | N | 3-4 |
 | `src/app/riepilogo/[token]/pdf/route.ts` | Route Handler del PDF | N | 3 |
-| `public/texture/`, `public/foto/<prodotto>/` | Texture e foto copiate dal sito (sezione 9.4) | N | 2 |
+| `public/foto/<prodotto>/` | Foto ufficiali copiate dal sito, per la galleria e il livello B (sezione 9.4) | N | 2 |
 | `docs/mockup/configuratore-saune-mockup.html` | Mockup di riferimento (P15) | M | già presente |
 | `src/server/pdf.ts`, `src/server/email.ts`, `src/server/invio.ts` | PDF, email, flusso dell'invio | N | 2-4 |
 | `src/server/seed.ts`, `src/server/avvio.ts`, `src/server/pulizia.ts`, `src/server/controllaViste.ts` | Funzioni chiamate dagli script e dalle prove (sezione 18) | N | 3-5 |
@@ -598,49 +602,28 @@ All'inizio si prepara **una sola pull request** con:
 - la funzione `valida(config, catalogo)`, con i controlli strutturali, e la funzione `normalizza(query, catalogo)`, che corregge un URL sbagliato (sezione 10.1);
 - lo schema Drizzle con i vincoli di unicità;
 - lo schema Zod dei file in `data/prodotti/` (formato JSON, P1), a partire dal file di Aladdin;
-- il **formato delle viste**:
-  - un file per vista in `public/viste/<prodotto>/<taglio>/`, con i nomi `ext.svg`, `front.svg`, `plan.svg`;
-  - altezza del `viewBox` libera (quelli di Aladdin 60 non sono quadrati): la pagina e il PDF adattano la vista allo spazio;
-  - radice `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2000 H">`, senza altri attributi: la larghezza è sempre 2000, come nel mockup, e cambia solo l'altezza `H`;
-  - figli `<path …/>` diretti, senza `<g>`; in `d` solo i comandi assoluti `M`, `L` e `Z`, come nel mockup. La regola sta anche nel testo della richiesta in `docs/viste.md`;
-  - lettura con un'espressione regolare in `src/lib/viste/leggiVista.ts`, senza parser XML né dipendenze nuove. La usano la prova sul formato, il controllo delle proporzioni e `componiVista`; un file fuori formato fa lanciare `VistaNonValida`;
-  - solo elementi `<path>`, con gli attributi `d`, `fill-rule`, `data-zone` e `data-shade`; nessun altro attributo, quindi nessun colore, `stroke`, opacità o filtro. `fill-rule` è facoltativo e ammette solo il valore `evenodd`; `componiVista` lo copia così com'è sui poligoni che disegna;
-  - zone che prendono un materiale: `ext`, `roof`, `int`, `bench`, `floor`, `mirror`, `metal`; zone a colore fisso: `stove`, `glass`, `shadow`;
-  - `data-shade` da 0 a 5, su ogni path tranne `glass` e `shadow`, che non ce l'hanno;
-  - i path `glass` vengono dopo tutti gli altri, i path `shadow` prima di tutti gli altri;
-  - nessuno sfondo, nessun `<style>`, nessuna variabile CSS, nessun testo, nessun riferimento esterno;
-- i controlli sui prodotti:
-  - nello schema Zod, che nessuna zona stia sia in un gruppo sia in `fixedZones`;
-  - in `controllaViste(prodotto)`, in `src/server/controllaViste.ts`, solo server perché legge i file, chiamato dal seed e dalla prova sul formato: ogni taglio di un prodotto con `viewer: "svg"` ha i suoi tre file o un `viewsFrom` che punta a un taglio con i propri tre file, senza catene; ogni zona a materiale presente nelle sue viste, tranne `floor` e `metal` (sezione 9.3), prende un materiale da un gruppo o da `fixedZones` (il contrario non serve: un gruppo può nominare zone che le viste non hanno);
-- le costanti in `src/lib/viste/costanti.ts`, prese dal mockup e valide per la larghezza 2000:
-  - scurimento dei livelli d'ombra 0–5 con il nero al 0, 6, 13, 21, 30 e 40%;
-  - bordo di 1,2 con giunzioni `round`, dello stesso colore del riempimento;
-  - `stove` `#3a3a3c`, scurita per livello come le altre zone;
-  - `glass` `#e4eef0` con opacità 0,1;
-  - `shadow` `#000` con opacità 0,28 e sfocatura gaussiana 24;
-  - `floor` senza materiale `#cfcdc8`; `metal` senza materiale `#8a8d91`, il valore di `--metal` nel mockup;
-  - pattern della texture di 900 × 582, ruotato di 90 gradi per `roof` e `bench`;
-- la firma della composizione:
+- il **formato delle viste**, già usato dai file di `data/viste/` e descritto in `docs/viste.md` (scheda 0031):
+  - per ogni prodotto una cartella `public/viste/<prodotto>/` con `manifest.json` e una sottocartella per ogni taglio che ha viste proprie; nella sottocartella un file per vista: `ext.svg`, `int.svg`, `plan.svg`, e per Cabanon `int3d.svg`;
+  - radice `<svg xmlns="http://www.w3.org/2000/svg" viewBox="…" width="…" height="…" role="img" data-set data-taglio data-vista>` e un `<title>`; `viewBox` libero;
+  - un elemento per riga: le marcature si leggono riga per riga, senza parser XML né dipendenze nuove;
+  - elementi ammessi: `<defs>`, `<pattern>` con una `<image>`, `<linearGradient>` con i suoi `<stop>`, `<polygon>`, `<rect>`, `<title>`; nessuno `<style>`, classe, variabile CSS, `color-mix()`, filtro, testo disegnato o riferimento esterno, tranne l'`href` delle immagini, che `componiVista` riscrive;
+  - marcature: `data-se="<gruppo>:<valori>"` (l'elemento c'è solo con quei valori), `data-per-<attributo>="<gruppo>:<valore>=<x>,…"` (valore dell'attributo secondo la scelta), `data-materiale="<gruppo>"` su `<pattern>` (texture dell'opzione scelta; senza texture il pattern si toglie) o su `<linearGradient>` (gli `<stop>` dai `gradienti` dell'opzione), `data-texture="<file>"` su `<pattern>` (texture fissa), `display="none"` (elemento nascosto nel file grezzo, che mostra la prima opzione di ogni gruppo);
+  - marcature di lavoro degli script, ignorate da `componiVista`: `data-colori="alluminio"` sulla radice e `data-pavimento` su un poligono, che impediscono di applicare due volte una correzione;
+- il **manifest** (`schemaVersion: 2`): `views` (id ed etichetta di ogni vista), `optionGroups` (gruppi con `id`, `label` e `options`, ognuna con `id`, `label` e `texture` oppure `gradienti`), `sizes` (`id`, `label`, `viste` cioè la cartella, `riusaDa` se le viste sono di un altro taglio), `files` (percorso, `width` e `height` di ogni vista), `notes`. Le etichette mostrate al cliente sono quelle del catalogo, non quelle del manifest;
+- i controlli sui prodotti, in `controllaViste(prodotto, manifest)`, in `src/server/controllaViste.ts`, solo server perché legge i file, chiamato dal seed e dalla prova sul formato: per ogni prodotto con `viewer: "svg"` il manifest esiste; ogni taglio del catalogo è in `sizes` del manifest; ogni gruppo e ogni valore del catalogo sono in `optionGroups` con lo stesso codice, e viceversa, tranne le opzioni del manifest che il catalogo non propone (ad esempio `none` della pedana di Aladdin, scheda 0027); ogni file di `files` esiste; ogni texture citata esiste in `public/viste/texture/`; ogni marcatura nomina un gruppo e valori del manifest;
+- la firma della composizione, portata da `scripts/viste/componi.mjs`:
 
   ```ts
   componiVista(
-    svg: string,
-    materiali: Record<string /* zona */, { color: string; texture: string | null }>,
-    opzioni: { prefisso: string; flat?: boolean }
+    svg: string,                                   // testo del file base
+    scelte: Record<string /* gruppo */, string /* valore */>,
+    gruppi: Manifest['optionGroups'],
+    href: (texture: string) => string,             // URL nel browser, data URI nel PDF
+    opzioni?: { prefisso?: string; flat?: boolean }
   ): string
   ```
 
-  `texture` è già l'URL da usare: un percorso di `public/` nella pagina, un data URI preparato dal server nel PDF. La funzione restituisce l'SVG completo, pronto per la pagina o per resvg;
-- la funzione che prepara `materiali`, in `src/lib/viste/materialiPerZona.ts`, pura e usata dalla pagina, dalla galleria e dal PDF:
-
-  ```ts
-  materialiPerZona(
-    prodotto: Prodotto,
-    selections: Record<string /* gruppo */, string /* valore */>
-  ): Record<string /* zona */, { color: string; texture: string | null }>
-  ```
-
-  Per ogni gruppo assegna a ciascuna delle sue `zones` il materiale del valore scelto, poi aggiunge le zone di `fixedZones`. Una zona senza materiale non compare nel risultato: `componiVista` la disegna con il colore neutro se è `floor` o `metal` (sezione 9.3). Il server sostituisce `texture` con il data URI prima di chiamare `componiVista`;
+  Restituisce l'SVG completo, pronto per la pagina o per resvg. Senza `prefisso` ne genera uno nuovo a ogni chiamata; con `''` lascia gli id del file. Un gruppo o un valore sconosciuto fa lanciare un errore. `flat` è il ripiego della sezione 11;
 - la lista iniziale delle dipendenze, tutte con versione esatta (P10):
   - lo scaffold si fa nella fase 2 con `create-next-app` nella versione fissata, in una cartella temporanea da cui si copiano i file, perché il repository contiene già dei file. Risposte: TypeScript sì, ESLint sì, Tailwind sì, cartella `src/` sì, App Router sì, alias `@/*`, npm; una domanda non elencata prende la risposta predefinita. Poi `shadcn init` con le risposte predefinite e `shadcn add dialog button radio-group checkbox input label`;
   - la lista definitiva è il `package.json` della PR del contratto; questi sono i pacchetti attesi. Quelli installati dallo scaffold: `next`, `react`, `react-dom`, `tailwindcss`, `@tailwindcss/postcss`, `clsx`, `tailwind-merge`, `class-variance-authority`, `lucide-react`, i pacchetti `@radix-ui/*` dei componenti aggiunti, `typescript`, `@types/react`, `@types/react-dom`, `@types/node`;
@@ -684,12 +667,12 @@ La consegna è il 26 novembre 2026. Il lavoro parte dal via libera del tutor, ch
 
 | Fase | Giorni | Lavoro |
 |---|---|---|
-| 1. Prove delle parti incerte | fatta | Account Gmail, password per le app e invii di prova; Docker con il solo database su entrambi i portatili; script delle viste provato su un modello FBX il 2026-11-12, poi sostituito dalla produzione in chat (scheda 0029); esiti e date da registrare in `docs/prove.md` (sezione 20.5) |
-| 2. Contratto, viste e prova del PDF | 2 | Entrambi: repository, scaffold Next.js e file iniziali (sezione 15.1), spostamento di analisi e schede in `docs/`, PR del contratto (sezione 15.2). M: conversione delle viste di Aladdin 60 dal mockup, viste di Aladdin 45 prodotte in chat, confronto con le foto, prova sul formato. N: texture e foto in `public/`, prova PDF e conversione (sezione 11) con esterno e frontale; esito nella scheda 0015. Ordine: primo giorno, mattina, scaffold e PR del contratto (entrambi); primo giorno, pomeriggio, M converte Aladdin 60 e scrive `componiVista`, N copia texture e foto; secondo giorno, N fa la prova del PDF con le viste convertite, M produce Aladdin 45 in chat e fa la prova sul formato |
-| 3. Scheletro completo | 1,5 | Pagina unica con i quattro passaggi e le quattro viste, catalogo letto dal database, seed con validazione (svuota e ricarica, scheda 0028), scheletro dall'inizio alla fine con un prodotto (pulsante → riga → email con PDF in Mailpit). Prima verifica con tastiera e axe |
+| 1. Prove delle parti incerte | fatta | Account Gmail, password per le app e invii di prova; Docker con il solo database su entrambi i portatili; script delle viste provato su un modello FBX il 2026-11-12, poi sostituito dalla produzione in chat (scheda 0029); viste di Air, Air Corner, Aladdin e Cabanon prodotte in chat, convertite e verificate il 2026-11-13 (scheda 0031); esiti e date da registrare in `docs/prove.md` (sezione 20.5) |
+| 2. Contratto, viste e prova del PDF | 2 | Entrambi: repository, scaffold Next.js e file iniziali (sezione 15.1), spostamento di analisi e schede in `docs/`, PR del contratto (sezione 15.2). M: spostamento di viste e texture da `data/viste/` a `public/viste/` con i percorsi degli script, `componiVista` in TypeScript con `flat`, prova sul formato. N: foto in `public/`, prova PDF e conversione (sezione 11) con Esterno e Interno; esito nella scheda 0015. Ordine: primo giorno, mattina, scaffold e PR del contratto (entrambi); primo giorno, pomeriggio, M sposta le viste e porta `componiVista`, N copia le foto; secondo giorno, N fa la prova del PDF, M scrive la prova sul formato e `controllaViste` |
+| 3. Scheletro completo | 1,5 | Pagina unica con i quattro passaggi e le viste (sezione 9.1), catalogo letto dal database, seed con validazione (svuota e ricarica, scheda 0028), scheletro dall'inizio alla fine con un prodotto (pulsante → riga → email con PDF in Mailpit). Prima verifica con tastiera e axe |
 | 4. Invio reale e finestre | 1 | Invio reale con stati, invii in parallelo e "Riprova" (scheda 0030), scadenze, `npm run check`. Finestra di invio, informativa, errori e focus. **Schema bloccato alla fine della fase** |
 | 5. Flusso completo | 1 | Flusso completo su entrambi i portatili. Pulizia e cancellazione. Verifica axe |
-| 6. Inserimento dei prodotti | 2 | Un taglio alla volta, nell'ordine fissato qui sotto, con la regola di decisione della sezione 9.2 |
+| 6. Inserimento dei prodotti | 2 | File del catalogo dei prodotti le cui viste sono già pronte, nell'ordine fissato qui sotto; poi, se avanza tempo, prodotti nuovi con la regola di decisione della sezione 9.2 |
 | 7. Blocco delle funzioni | 0,5 | Da qui niente funzioni nuove. Restano ammessi dati dei prodotti, viste, rifinitura grafica e correzioni fino alla prova generale. Tag `demo-rc1` |
 | 8. Prove finali | 1 | Prove della lista di accettazione (sezione 16) sul portatile che non ospiterà la demo, con un indirizzo di prova; avvio da clone pulito |
 | 9. Prova generale | 1 | Criterio 1 ripetuto sul portatile della demo; prova sulla rete della sede, se possibile, con l'invio vero; registrazione del flusso (sezione 17) |
@@ -697,12 +680,12 @@ La consegna è il 26 novembre 2026. Il lavoro parte dal via libera del tutor, ch
 
 Una fase è finita quando il suo lavoro è nel ramo principale e `npm run build` e `npm test` passano sui due portatili.
 
-**Ordine nella fase 6.** Prima Yoku S 60, nella variante del suo file FBX (appendice A.2), con le viste prodotte in chat (il prodotto che risponde al problema, sezione 2). Poi il terzo prodotto, con la foto ufficiale: non è ancora scelto, si decide durante lo sviluppo e si registra in `docs/catalogo-inventario.md`. Solo dopo si aggiungono altri tagli o prodotti.
+**Ordine nella fase 6.** Le viste dei quattro prodotti sono già pronte (sezione 9.1): la fase 6 scrive i loro file del catalogo, con i codici del manifest, e li controlla in `/galleria`. Prima Cabanon (l'unico con l'Interno 3D e due gruppi di materiali), poi Air e Air Corner. Aladdin è già nella fase 3. Solo dopo, se avanza tempo, si aggiunge un prodotto nuovo, ad esempio Yoku S (appendice A.2), con la procedura della sezione 9.1.
 
 **Se il tempo non basta**, si taglia in quest'ordine, e ogni taglio si dichiara nella consegna:
-1. i prodotti oltre i tre minimi;
-2. i tagli di Yoku S oltre il primo;
-3. la vista Pianta di Yoku S (la consegna diventa parziale rispetto al criterio 2);
+1. i prodotti oltre i quattro di partenza;
+2. Air Corner;
+3. Air (restano Aladdin e Cabanon, sotto il minimo di 3: la consegna diventa parziale rispetto al criterio 2);
 4. le prove Playwright oltre il flusso completo.
 
 Le fasi 8, 9 e 10 non si accorciano: sono le uniche che dicono se la demo funziona.
@@ -716,15 +699,11 @@ Il tempo che avanza va alla rifinitura delle viste, non a funzioni nuove. I prod
 Tutti obbligatori, verificati nelle prove finali (fase 8) sul portatile che non ospiterà la demo; il criterio 1 si ripete sul portatile della demo nella prova generale (fase 9). Una consegna che non li soddisfa tutti è parziale.
 
 1. Su ciascuno dei due portatili, partendo da un clone pulito con `.env` copiato, `npm ci` e `npm run demo` portano l'applicazione in funzione in meno di 10 minuti, senza altri passaggi manuali.
-2. Almeno **3 prodotti**:
-   - Aladdin e Yoku S con le viste prodotte dai file dell'Area Pro (per Aladdin 60 valgono quelle del mockup, prodotte in chat dal modello 3D e convertite; Esterno, Frontale e Pianta per almeno un taglio ciascuno), e almeno uno dei due con più di un taglio. Yoku S mostra le combinazioni che sul sito non hanno una foto (sezione 2);
-   - il terzo può usare la foto ufficiale con il pannello dei materiali: è un ripiego e non conta come risposta al problema.
-
-   Ogni taglio che riusa le viste di un altro lo dichiara nell'interfaccia (sezione 9.2). Se Yoku S resta al livello B, la consegna è parziale rispetto a questo criterio.
-3. Ogni prodotto ha almeno un taglio e un'essenza; gli altri gruppi ci sono dove il catalogo li documenta. Ogni scelta cambia l'anteprima nelle viste in cui la zona è visibile. Un URL modificato a mano con un prodotto, un taglio o un valore inesistente torna ai predefiniti con un avviso, e una richiesta di invio con una configurazione non valida è rifiutata dal server.
+2. Almeno **3 prodotti** al livello A, tra Air, Air Corner, Aladdin e Cabanon, con le viste Esterno, Interno e Pianta per ogni taglio (Cabanon anche Interno 3D) e almeno uno con più di un taglio. Ogni taglio che riusa le viste di un altro lo dichiara nell'interfaccia (sezione 9.2).
+3. Ogni prodotto ha almeno un taglio e un gruppo di materiali (l'essenza, o rivestimento e boiserie per Cabanon); gli altri gruppi ci sono dove il catalogo li documenta. Ogni scelta cambia l'anteprima nelle viste in cui la zona è visibile. Un URL modificato a mano con un prodotto, un taglio o un valore inesistente torna ai predefiniti con un avviso, e una richiesta di invio con una configurazione non valida è rifiutata dal server.
 4. Si inserisce un indirizzo (nella fase 8 uno di prova, nella demo quello del tutor) e si preme il pulsante. Entro 60 secondi:
    - c'è la riga nel database con entrambi gli stati `sent`, mostrata con `docker compose exec db psql -U postgres -d configuratore`, senza dipendere dalla rete;
-   - l'email arriva con il PDF (vista esterna e frontale, oppure foto, oppure versione a colori pieni, ed elenco delle scelte) e con lo stesso elenco nel corpo;
+   - l'email arriva con il PDF (viste Esterno e Interno, oppure versione a colori pieni, ed elenco delle scelte) e con lo stesso elenco nel corpo;
    - la notifica arriva nella casella del progetto.
 5. Con l'account Gmail, in due prove separate: (a) `SMTP_PASSWORD` sbagliata in `.env`; (b) rete staccata. In entrambe: `customer_status = failed`, uno dei messaggi di RF6 (sezione 10.3) e "Scarica il PDF" funzionante. Nella prova (b), senza chiudere la finestra, si ricollega la rete e "Riprova" invia senza creare una seconda riga.
 6. Il flusso intero funziona solo con la tastiera, comprese le due finestre di dialogo; axe riporta 0 violazioni `serious` o `critical` sulla pagina, in ogni passaggio e con ciascuna finestra aperta.
@@ -758,10 +737,10 @@ Il risultato atteso: o l'email arriva, o lo stesso PDF è già sullo schermo con
   |---|---|---|
   | `valida` con prodotto, taglio, gruppo o valore inesistente, o con un gruppo senza valore | Vitest | errore strutturale |
   | `normalizza` con codici sconosciuti | Vitest | configurazione predefinita e un avviso per ogni codice |
-  | Schema Zod: il file di Aladdin passa; un file con un codice non valido, uno con un predefinito che non è tra i valori, uno con una chiave sconosciuta, uno con una zona sia in un gruppo sia in `fixedZones` | Vitest | il primo passa; gli altri falliscono con l'errore Zod sul campo |
-  | Formato delle viste: ogni file in `public/viste/` ha la radice ammessa, solo `<path>` diretti con gli attributi ammessi e i soli comandi `M`, `L`, `Z` in `d` e una `data-zone` ammessa; `data-shade` da 0 a 5 su ogni path tranne `glass` e `shadow`; `glass` dopo tutti gli altri path e `shadow` prima; ogni taglio ha i suoi file o un `viewsFrom` valido; ogni zona a materiale delle viste, tranne `floor` e `metal`, prende un materiale dal prodotto; rapporto tra i lati di Pianta e Frontale entro il 5% delle misure del taglio (sezione 9.2, punto 7) | Vitest | nessun file fuori formato |
-  | `materialiPerZona`: zone dei gruppi, `fixedZones`, zona senza materiale assente dal risultato | Vitest | mappa attesa per Aladdin |
-  | `componiVista`: colori per zona e ombra in `fill` e `stroke`, rotazione della texture di `roof` e `bench`, vetro trasparente, ombra a terra, `floor` senza materiale, `flat`, prefisso degli `id`, materiale senza texture | Vitest | SVG atteso |
+  | Schema Zod: il file di Aladdin passa; un file con un codice non valido, uno con un predefinito che non è tra i valori, uno con una chiave sconosciuta | Vitest | il primo passa; gli altri falliscono con l'errore Zod sul campo |
+  | Formato delle viste: ogni file in `public/viste/` ha la radice ammessa, solo gli elementi ammessi, un elemento per riga, nessuno stile, classe, filtro o testo; ogni marcatura nomina un gruppo e valori del manifest; `controllaViste` passa per ogni prodotto (codici di catalogo e manifest uguali, file e texture presenti, sezione 15.2) | Vitest | nessun file fuori formato |
+  | `componiVista`: `data-se` con e senza il valore, `data-per-…`, texture dell'opzione in un pattern, pattern tolto con un'opzione senza texture, gradienti, `data-texture` fissa, prefisso degli `id` e `url(#…)`, gruppo o valore sconosciuto, `flat` | Vitest | SVG atteso |
+  | Ricomposizione delle combinazioni dei pacchetti (`node scripts/viste/verifica.mjs`), da rifare dopo ogni modifica agli script | Node | tutte identiche agli originali corretti (114 su 114 il 2026-11-13) |
   | Seed dopo aver aggiunto, modificato e tolto un valore in un file | Vitest + database | dopo il seed il catalogo è uguale ai file e le configurazioni salvate non cambiano (scheda 0028) |
   | Doppio invio con lo stesso `request_id`; due invii con `request_id` diversi | Vitest + database | una sola riga nel primo caso, con esito `in-corso` se il primo invio è ancora `pending`; due righe nel secondo (schede 0026 e 0030) |
   | Due "Riprova" in parallelo; "Riprova" su una riga `sent`; quarto tentativo; token sconosciuto | Vitest + database | un solo invio e l'altro rifiutato con `in-corso`; `inviata`; `esauriti`; `inesistente` |
@@ -786,7 +765,7 @@ Il risultato atteso: o l'email arriva, o lo stesso PDF è già sullo schermo con
   - Il server SMTP muto è un `net.createServer` che accetta la connessione e non scrive niente. Il modulo di invio riceve le scadenze come parametro: 15 000 ms nell'applicazione, 1000 ms nelle prove, con i timeout di Nodemailer più lunghi della scadenza, così scatta la scadenza complessiva.
   - `playwright.config.ts` avvia due `webServer`: Mailpit, con `--smtp-auth-accept-any`, e `next build && next start -H 127.0.0.1` con `env` esplicito (`SMTP_HOST=127.0.0.1`, `SMTP_PORT=1025`, `SMTP_SECURE=false`, `SMTP_USER=''`, `SMTP_PASSWORD=''`, la `DATABASE_URL` e `PROJECT_EMAIL` di prova, `ENABLE_GALLERY=true`). Le variabili passate così hanno la precedenza su `.env`. Così una prova non manda mai email vere.
   - Mailpit deve essere nel `PATH`, nella versione indicata in `README.md`. Su ogni computer serve una volta `npx playwright install chromium`.
-- Pagina interna `/galleria` che mostra ogni prodotto × taglio con i materiali predefiniti nelle tre viste disegnate, con la foto ufficiale accanto per il confronto e, per ogni gruppo, una riga con la vista esterna per ciascun valore; per i prodotti al livello B mostra la foto e i campioni. Serve come controllo visivo, come bersaglio per axe e come materiale di riserva per la demo.
+- Pagina interna `/galleria` che mostra ogni prodotto × taglio con i materiali predefiniti in tutte le sue viste, con la foto ufficiale accanto per il confronto e, per ogni gruppo, una riga con la vista in cui il gruppo si vede meglio (Esterno; Interno 3D per la boiserie di Cabanon) per ciascun valore; per un prodotto al livello B mostrerebbe la foto e i campioni. Serve come controllo visivo, come bersaglio per axe e come materiale di riserva per la demo.
 - Controllo di accessibilità come descritto nella sezione 14.
 - Ogni prodotto si controlla da solo: o il seed fallisce, o il prodotto compare nella galleria.
 
@@ -803,14 +782,14 @@ La documentazione sta nella cartella `docs/` del repository, in Markdown, e fa p
 | `docs/architettura.md` | Struttura del progetto e del flusso |
 | `docs/modello-dati.md` | Tabelle, relazioni, diagramma |
 | `docs/catalogo-inventario.md` | Prodotti e tagli con i file disponibili (FBX, DWG, SKP, nessuno), livello di resa, tempo misurato per taglio |
-| `docs/viste.md` | Come si produce una vista in chat: il testo della richiesta, il formato, i controlli; per ogni taglio il file di partenza usato e l'esito dei controlli |
+| `docs/viste.md` | Oggi `data/viste/README.md`: contenuto delle cartelle, formato a marcature, materiali dalle foto, ordine degli script, correzioni note, verifica, differenze note rispetto al sito; per ogni prodotto il file di partenza usato |
 | `docs/decisioni/` | Una scheda per ogni scelta; quando una scelta cambia si aggiunge una nuova scheda che sostituisce la precedente |
 | `docs/privacy-e-accessibilita.md` | Informativa, conservazione, controlli WCAG eseguiti |
 | `docs/manuale-uso.md` | Come si usa il configuratore |
 | `docs/prove.md` | Prove eseguite e risultati |
 | `docs/demo.md` | Percorso della demo, controlli della mattina, ripieghi |
 
-**Registro delle decisioni.** Le schede 0001–0030 sono nel [registro](docs-iniziali/docs/decisioni/README.md); fino alla fase 2 stanno in `docs-iniziali/docs/decisioni/`, poi si spostano in `docs/decisioni/`. Le schede 0016–0020 registrano le decisioni P1–P15 della sezione 20.3; le schede 0021–0024 registrano i cambi di scelta decisi dopo la revisione della v6; le schede 0025–0027 registrano i cambi del 2026-11-12 e le schede 0028–0030 quelli decisi dopo la revisione EGM della v7, sempre il 2026-11-12 (sezione 23.1).
+**Registro delle decisioni.** Le schede 0001–0031 sono nel [registro](docs-iniziali/docs/decisioni/README.md); fino alla fase 2 stanno in `docs-iniziali/docs/decisioni/`, poi si spostano in `docs/decisioni/`. Le schede 0016–0020 registrano le decisioni P1–P15 della sezione 20.3; le schede 0021–0024 registrano i cambi di scelta decisi dopo la revisione della v6; le schede 0025–0027 registrano i cambi del 2026-11-12 e le schede 0028–0030 quelli decisi dopo la revisione EGM della v7, sempre il 2026-11-12; la scheda 0031 registra i cambi del 2026-11-13, dopo la produzione delle viste (sezione 23.1).
 
 | N. | Scheda | Stato |
 |---|---|---|
@@ -838,12 +817,13 @@ La documentazione sta nella cartella `docs/` del repository, in Markdown, e fa p
 | 0022 | [Seed come sincronizzazione completa, catalogo letto dal database](docs-iniziali/docs/decisioni/0022-seed-sincronizzazione-catalogo.md) | Accettata; in parte sostituita da 0028 |
 | 0023 | [La notifica al progetto si attende prima della risposta](docs-iniziali/docs/decisioni/0023-notifica-attesa.md) | Sostituita da 0030 |
 | 0024 | [Il request_id lo genera il server, nel modulo](docs-iniziali/docs/decisioni/0024-request-id-dal-server.md) | Sostituita da 0026 |
-| 0025 | [Viste SVG pronte, generate da uno script a partire dal modello 3D](docs-iniziali/docs/decisioni/0025-viste-pronte-da-modello-3d.md) | Accettata; in parte sostituita da 0029 |
+| 0025 | [Viste SVG pronte, generate da uno script a partire dal modello 3D](docs-iniziali/docs/decisioni/0025-viste-pronte-da-modello-3d.md) | Accettata; in parte sostituita da 0029 e 0031 |
 | 0026 | [Pagina unica a passaggi, invio in una finestra di dialogo](docs-iniziali/docs/decisioni/0026-pagina-unica-come-il-mockup.md) | Accettata |
 | 0027 | [Niente regole di compatibilità né optional; pedana obbligatoria](docs-iniziali/docs/decisioni/0027-niente-regole-ne-optional.md) | Accettata |
 | 0028 | [Il seed svuota e ricarica il catalogo in una transazione](docs-iniziali/docs/decisioni/0028-seed-svuota-e-ricarica.md) | Accettata |
-| 0029 | [Viste prodotte in chat a partire dai file dell'Area Pro, nel formato del contratto](docs-iniziali/docs/decisioni/0029-viste-prodotte-in-chat.md) | Accettata |
+| 0029 | [Viste prodotte in chat a partire dai file dell'Area Pro, nel formato del contratto](docs-iniziali/docs/decisioni/0029-viste-prodotte-in-chat.md) | Accettata; in parte sostituita da 0031 |
 | 0030 | [Le due email partono in parallelo; "Riprova" senza attese](docs-iniziali/docs/decisioni/0030-invii-in-parallelo-riprova-semplice.md) | Accettata |
+| 0031 | [Viste a marcature dai pacchetti prodotti in chat, texture dalle foto, primi prodotti Air, Air Corner, Aladdin e Cabanon](docs-iniziali/docs/decisioni/0031-viste-a-marcature-e-texture-dalle-foto.md) | Accettata |
 
 ---
 
@@ -855,10 +835,11 @@ La documentazione sta nella cartella `docs/` del repository, in Markdown, e fa p
 |---|---|---|---|
 | L'invio Gmail non funziona dalla rete della demo o l'account viene bloccato | Alto: requisito obbligatorio | Provato nella fase 1, timeout, "Scarica il PDF", hotspot, prova generale (sezioni 10.5 e 17). Il blocco dell'unico account Gmail è un rischio accettato: non c'è un secondo account SMTP | N |
 | La conversione SVG → PNG non rende le texture | Medio | Prova nella fase 2, ripiego a colori pieni (sezione 11) | N |
-| Le viste prodotte in chat non raggiungono la qualità di Aladdin 60, o richiedono troppo tempo per taglio | Alto per la qualità grafica | Riferimento fissato (viste di Aladdin 60), procedura conservata in `docs/viste.md`, prova sul formato con il controllo delle proporzioni, confronto in `/galleria`, regola delle 4 ore, riuso delle viste tra tagli, foto ufficiale come ripiego (sezione 9.2). Il metodo non è ancora misurato su un taglio completo da FBX o DWG: rischio accettato, il ripiego è il livello B (sezione 9.1) | M |
+| Le viste di un prodotto nuovo, prodotte in chat, non raggiungono la qualità dei quattro di partenza, o richiedono troppo tempo | Medio: i quattro prodotti di partenza sono pronti | Procedura e script conservati (`docs/viste.md`, `scripts/viste/`), verifica delle combinazioni, prova sul formato, confronto in `/galleria`, regola delle 4 ore, riuso delle viste tra tagli, foto ufficiale come ripiego (sezione 9.2) | M |
+| Una modifica agli script cambia le viste senza che ci se ne accorga | Medio | `verifica.mjs` ricompone le 114 combinazioni dei pacchetti; le correzioni sono idempotenti e marcate (sezione 18) | M |
 | Docker non parte su uno dei portatili | Medio | Solo database in Docker, provato nella fase 1, prerequisiti documentati (sezione 7) | Entrambi |
 | Il contratto cambia spesso e blocca il lavoro in parallelo | Medio | PR unica iniziale, modifiche solo con PR discussa, schema bloccato dopo la fase 4 (sezione 15) | Entrambi |
-| Tempo insufficiente: al massimo 11 giorni lavorativi, meno se il via libera tarda | Alto | Minimo di 3 prodotti, regole e optional tolti (scheda 0027), script delle viste tolto (scheda 0029), seed e invio semplificati (schede 0028 e 0030), ordine dei tagli e dei lavori da tagliare già fissato (sezione 15.5) | Entrambi |
+| Tempo insufficiente: al massimo 11 giorni lavorativi, meno se il via libera tarda | Alto | Minimo di 3 prodotti, regole e optional tolti (scheda 0027), viste dei quattro prodotti già pronte e Yoku S messo da parte (scheda 0031), seed e invio semplificati (schede 0028 e 0030), ordine dei tagli e dei lavori da tagliare già fissato (sezione 15.5) | Entrambi |
 | "Riprova" e "Scarica il PDF" accessibili conoscendo solo l'`id` della riga | Medio: chi prova un `id` scarica il PDF con l'email di un'altra persona | Token casuale non indovinabile per queste azioni (P4, sezione 20.3) | N |
 | Il pulsante permette di inviare email a qualsiasi indirizzo | Basso in demo locale | Rischio accettato e dichiarato; anti-spam come lavoro futuro | N |
 | Il database non coincide con i file del catalogo | Medio: interfaccia e server vedono cataloghi diversi | Seed che svuota e ricarica il catalogo in transazione, rilanciato da `npm run demo` (sezione 8.2) | N |
@@ -874,7 +855,8 @@ La documentazione sta nella cartella `docs/` del repository, in Markdown, e fa p
 | Punto | Esito |
 |---|---|
 | Libreria che impagina il PDF | **PDFKit**, scheda [0015](docs-iniziali/docs/decisioni/0015-pdf-pdfkit-resvg.md) |
-| Significato di `step` e `zones` | Confermato dall'autore: `step` è il numero del passaggio del configuratore in cui compare il gruppo; `zones` sono le zone dell'SVG a cui il gruppo applica il materiale |
+| Significato di `step` | Confermato dall'autore: `step` è il numero del passaggio del configuratore in cui compare il gruppo. `zones` non esiste più: il legame con le viste è il codice del gruppo (scheda 0031) |
+| Legame tra catalogo e viste | Il 2026-11-13 l'autore sceglie codici uguali: gruppi, valori e tagli del catalogo hanno gli `id` del manifest; il manifest tiene texture e gradienti, il catalogo etichette e misure (scheda 0031) |
 | Tutor e valutatore | Sono la stessa persona: nei documenti si usa solo "tutor" |
 | Dove sta il mockup | Nel repository, in `docs/mockup/configuratore-saune-mockup.html`. Il contenuto è descritto nell'appendice B |
 | Dati di Aladdin | Raccolti dal sito il 2026-11-11: bozza in [`data/prodotti/aladdin.json`](data/prodotti/aladdin.json), fonti e lacune nell'appendice A |
@@ -901,22 +883,22 @@ Le decisioni P1–P15 sono state prese il 2026-11-11 e alcune sono state riviste
 | P9 | Prove | Vitest, Playwright con `@axe-core/playwright`, Mailpit | 0019 |
 | P10 | Versioni | Node.js 24 LTS, Next.js stabile fissato, PostgreSQL 17, versioni esatte | 0019 |
 | P11 | Testi | Informativa dalla bozza del mockup; email al cliente come descritta; notifica senza l'email del cliente | 0017 |
-| P12 | Immagini nel PDF | Vista esterna grande e vista frontale; foto e campioni per i prodotti senza viste | 0025 |
-| P13 | Texture | Foto del campione stesa sulla zona e fusa con l'ombreggiatura; colore pieno come ripiego | 0025, 0029 |
+| P12 | Immagini nel PDF | Vista Esterno grande e vista Interno; foto e campioni per un prodotto al livello B | 0025, 0031 |
+| P13 | Texture | Texture ricavate dalle foto dei campioni, in pattern in prospettiva per ogni faccia; colore medio della foto come ripiego | 0031 |
 | P14 | Font | Jost e IBM Plex Sans, file TTF nel repository | 0016 (valida per i font, come dice la 0025) |
-| P15 | Mockup | Si riprendono l'interfaccia e la resa delle viste; le viste di Aladdin 60 si convertono nel formato del contratto | 0025, 0029 |
+| P15 | Mockup | Si riprende l'interfaccia; le viste vengono dai pacchetti prodotti in chat, non dal mockup | 0025, 0031 |
 
 Il dettaglio di ogni decisione segue.
 
 **P1. Formato dei file del catalogo.**
 - Un file JSON per prodotto in `data/prodotti/<codice>.json`, validato da uno schema Zod in `src/contratti/`.
-- Codici: `^[a-z0-9-]+$`, cioè minuscole, cifre e trattino, senza spazi né accenti (`rovere`, `wenge`, `45`); etichette in italiano con gli accenti (`Wengé rigatino`).
-- Chiavi dell'URL: `product` per il prodotto, `size` per il taglio, poi i codici dei gruppi del prodotto (per Aladdin `wood` e `floor`). Un gruppo non può chiamarsi `product`, `size`, `email`, `emailConferma`, `informativa`, `requestId` né `token`, che sono già campi del modulo o dell'URL. Il taglio non è un gruppo: nel file sta nell'array `sizes`.
-- Zone a materiale: `ext`, `roof`, `int`, `bench`, `floor`, `mirror`, `metal`. Ognuna prende il materiale da un gruppo (`zones`) o da `fixedZones`, mai da entrambi: per Aladdin `wood` copre `ext`, `roof`, `int` e `bench`, e `fixedZones` copre `mirror` e `metal`; per Yoku S `wood` copre `ext` e `roof`, e `fixedZones` mette l'Aspen su `int` e `bench`. `floor` e `metal` possono restare senza materiale (sezione 9.3). Le viste contengono anche tre zone a colore fisso, senza materiale: `stove`, `glass`, `shadow` (sezione 15.2).
+- Codici: `^[a-zA-Z0-9-]+$`, cioè lettere senza accenti, cifre e trattino, senza spazi (`rovere`, `wenge`, `45`, `aspenT`, `gardenM`); le maiuscole servono perché i codici sono gli `id` del manifest (scheda 0031). Etichette in italiano con gli accenti (`Wengé rigatino`).
+- Chiavi dell'URL: `product` per il prodotto, `size` per il taglio, poi i codici dei gruppi del prodotto (per Aladdin `wood` e `floor`, per Cabanon `ext` e `int`). Un gruppo non può chiamarsi `product`, `size`, `email`, `emailConferma`, `informativa`, `requestId` né `token`, che sono già campi del modulo o dell'URL. Il taglio non è un gruppo: nel file sta nell'array `sizes`.
+- Legame con le viste: codici di tagli, gruppi e valori uguali agli `id` del manifest del prodotto, controllati da `controllaViste` (sezione 15.2). `fixedMaterials` elenca i materiali fissi da mostrare nel pannello Materiali (per Aladdin specchio e alluminio anodizzato, per Cabanon l'alluminio della struttura e l'Aspen del pavimento).
 - `schemaVersion` al primo livello del file è la versione del formato del file: il seed la controlla e non la salva.
-- `material.type`: `wood`, `mirror`, `aluminium`, `ceramic` (identificatori in inglese, sezione 8.1).
-- `photos`: chiave `<taglio>/<valore>`, dove il valore è quello del gruppo indicato da `photoGroup` (per Aladdin `wood`); con `photoGroup` nullo la chiave è il solo `<taglio>` (per Yoku S la foto della variante inserita).
-- Le chiavi che iniziano con `_` sono note della bozza: un `z.preprocess` le toglie, poi lo schema è `.strict()`, quindi ogni altra chiave sconosciuta (ad esempio un errore di battitura) fa fallire la validazione. Il file si usa così com'è dal seed e, fino alla fine della fase 3, dall'interfaccia (sezione 8.2). `_daVerificare` elenca i dati incerti; `_assetSources` dice da dove scaricare texture e foto, che N scarica una volta nella fase 2, ottimizza e mette nel commit in `public/` (sezione 9.4).
+- `material.type`: `wood`, `mirror`, `aluminium`, `ceramic`, `cladding` (l'ondulino di Cabanon; identificatori in inglese, sezione 8.1).
+- `photos`: chiave `<taglio>/<valore>`, dove il valore è quello del gruppo indicato da `photoGroup` (per Aladdin e Air `wood`); con `photoGroup` nullo la chiave è il solo `<taglio>` (per Cabanon, che ha una foto per taglio).
+- Le chiavi che iniziano con `_` sono note della bozza: un `z.preprocess` le toglie, poi lo schema è `.strict()`, quindi ogni altra chiave sconosciuta (ad esempio un errore di battitura) fa fallire la validazione. Il file si usa così com'è dal seed e, fino alla fine della fase 3, dall'interfaccia (sezione 8.2). `_daVerificare` elenca i dati incerti; `_assetSources` dice da dove scaricare le foto, che N scarica una volta nella fase 2, ottimizza e mette nel commit in `public/foto/` (sezione 9.4); le foto dei campioni sono già in `texture/originali/`.
 - *Perché JSON e non TypeScript o YAML:* lo legge sia il seed sia l'interfaccia senza compilazione, e Zod dà errori chiari; YAML aggiungerebbe una dipendenza e ambiguità sui tipi.
 
 **P2. Validazione.** Non ci sono regole di compatibilità (scheda 0027). Ogni gruppo è a scelta singola, obbligatoria, con un valore predefinito che deve essere uno dei suoi valori: il seed rifiuta un file in cui non lo è. `valida(config, catalogo)` controlla solo la struttura (sezione 10.1). Nell'interfaccia non esistono scelte disattivate.
@@ -973,27 +955,23 @@ Il dettaglio di ogni decisione segue.
 - *Email al cliente:* oggetto "Il riepilogo della tua sauna Aladdin, n. 2026-000042"; corpo con saluto, elenco delle scelte, PDF in allegato, nota "messaggio automatico, non rispondere" e indirizzo per chiedere la cancellazione.
 - *Notifica al progetto:* oggetto "Nuova richiesta di riepilogo n. 2026-000042"; corpo con prodotto, scelte e data, **senza l'email del cliente**, che resta solo nel database. Così le notifiche non contengono dati personali; le copie delle email al cliente in "Posta inviata" si cancellano con la procedura della sezione 12.
 
-**P12. Viste nel PDF.** Una pagina A4 verticale con la vista esterna in grande, la vista frontale più piccola e sotto l'elenco delle scelte. Per i prodotti con la foto: la foto della versione e i campioni dei materiali. Se un taglio riusa le viste di un altro, la nota "illustrazione del taglio …" compare anche nel PDF.
+**P12. Viste nel PDF.** Una pagina A4 verticale con la vista Esterno in grande, la vista Interno più piccola e sotto l'elenco delle scelte. Per un prodotto al livello B: la foto della versione e i campioni dei materiali. Se un taglio riusa le viste di un altro, la nota "illustrazione del taglio …" compare anche nel PDF.
 
-**P13. Texture.** Le texture del sito sono foto di campioni (ad esempio 1394 × 902 px), non immagini ripetibili senza giunture.
+**P13. Texture.** Le foto dei campioni del sito (ad esempio 1394 × 902 px) non si ripetono senza giunture: `texture-dalle-foto.ps1` ne ricava texture quadrate di 512 px che si ripetono senza giunte (sezione 9.1).
 
-- *Resa:* per ogni zona con un materiale `componiVista` crea un pattern con `patternUnits="userSpaceOnUse"` che contiene la foto del campione, e disegna ogni poligono due volte: prima con il colore del materiale scurito secondo l'ombra, poi con il pattern e `mix-blend-mode: multiply`. È la tecnica del mockup. La foto non segue la prospettiva della faccia: sul fianco della vista esterna resta piatta, e l'effetto di volume viene dall'ombra.
-- *Orientamento:* il pattern si ruota di 90 gradi nelle zone in cui la venatura corre nell'altro senso, `roof` e `bench`, come nel mockup. L'angolo è una costante per zona in `src/lib/viste/`: le viste non lo contengono.
-- *Senza texture:* con `texture: null` (ad esempio l'alluminio) si usa solo il colore, e il controllo "presenza delle texture" salta quel materiale.
-- *Verifica:* la prova della fase 2 controlla che resvg renda pattern, fusione e sfocatura dell'ombra come il browser.
-- *Ripiego:* `flat: true`, cioè solo i colori con le ombre. Se il materiale non si riconosce nemmeno così, la frase "texture del catalogo" nelle sezioni 2 e 9 va corretta per quel materiale.
+- *Resa:* ogni faccia delle viste ha un pattern con `patternUnits="userSpaceOnUse"` e una `patternTransform` che lo porta sul piano della faccia; il pattern contiene la texture dell'opzione scelta. Le ombre sono poligoni neri semitrasparenti sopra il pattern, già nel file base: non ci sono fusioni né filtri.
+- *Senza texture:* un'opzione con `texture: null` (ad esempio "Senza pedana" nel manifest di Aladdin, che il catalogo non propone) toglie il pattern; l'ondulino di Cabanon e lo specchio di Aladdin usano gradienti.
+- *Verifica:* la prova della fase 2 controlla che resvg renda pattern in prospettiva e gradienti come il browser.
+- *Ripiego:* `flat: true`, cioè il colore medio della foto del campione al posto della texture (sezione 11).
 
-**P14. Font.** Jost e IBM Plex Sans, gli stessi del mockup, entrambi con licenza SIL Open Font License, salvati nel repository (`src/fonts/`) come file TTF **statici**, presi dalla cartella `static/` dei pacchetti di Google Fonts, non variabili, perché PDFKit incorpora solo l'istanza predefinita di un font variabile e resvg supporta poco gli assi di variazione: `Jost-Regular.ttf`, `Jost-Medium.ttf`, `IBMPlexSans-Regular.ttf`, `IBMPlexSans-SemiBold.ttf`. Sul server i file si leggono da `src/fonts/` (appendice C). Pesi: Jost Medium per titoli e misure, IBM Plex Sans Regular per il testo e SemiBold per le etichette. Gli stessi file li usano `next/font/local` nella pagina e PDFKit nel PDF. Le viste non contengono testo, quindi resvg non ha bisogno dei font. Il mockup oggi li carica da Google Fonts: nel progetto non si fa (scheda 0008).
+**P14. Font.** Jost e IBM Plex Sans, gli stessi del mockup, entrambi con licenza SIL Open Font License, salvati nel repository (`src/fonts/`) come file TTF **statici**, presi dalla cartella `static/` dei pacchetti di Google Fonts, non variabili, perché PDFKit incorpora solo l'istanza predefinita di un font variabile e resvg supporta poco gli assi di variazione: `Jost-Regular.ttf`, `Jost-Medium.ttf`, `IBMPlexSans-Regular.ttf`, `IBMPlexSans-SemiBold.ttf`. Sul server i file si leggono da `src/fonts/` (appendice C). Pesi: Jost Medium per titoli e misure, IBM Plex Sans Regular per il testo e SemiBold per le etichette. Gli stessi file li usano `next/font/local` nella pagina e PDFKit nel PDF. Le viste non disegnano testo (il `<title>` non si vede), quindi resvg non ha bisogno dei font. Il mockup oggi li carica da Google Fonts: nel progetto non si fa (scheda 0008).
 
-**P15. Dal mockup al codice.** Il mockup (`docs/mockup/configuratore-saune-mockup.html`) è il riferimento per due cose:
-- **l'interfaccia:** passaggi, anteprima con le quattro viste, barra in basso, finestra di invio, testi dei messaggi d'errore e bozza dell'informativa;
-- **la resa delle viste:** sei livelli d'ombra per zona e texture fusa in moltiplicazione.
+**P15. Dal mockup al codice.** Il mockup (`docs/mockup/configuratore-saune-mockup.html`) è il riferimento per l'interfaccia: passaggi, anteprima con le viste, barra in basso, finestra di invio, testi dei messaggi d'errore e bozza dell'informativa. Le viste invece vengono dai pacchetti prodotti in chat (sezione 9.1, scheda 0031).
 
 Non si riprendono:
 - i dati di esempio scritti nel codice, compresi optional e regole;
-- il formato delle viste incorporate di Aladdin 60 (classi, variabili CSS, `color-mix()`): le viste si convertono nel formato del contratto (sezione 9.1);
-- il disegno schematico a parametri usato per gli altri prodotti e tagli;
-- la vista "Interno";
+- le viste incorporate di Aladdin 60 e il loro formato (classi, variabili CSS, `color-mix()`), sostituite da quelle di `public/viste/aladdin/60/`;
+- il disegno schematico a parametri usato per gli altri prodotti e tagli, e la sua vista "Interno" schematica (la vista Interno del progetto è quella dei pacchetti);
 - i font caricati da Google Fonts (scheda 0008), le definizioni SVG scritte nel DOM e le variabili CSS dentro l'SVG.
 
 ### 20.4 Domande per il tutor
@@ -1008,10 +986,11 @@ Le domande hanno avuto risposta il 2026-11-11 e il 2026-11-12 (sezione 20.2):
 
 - Finire il documento e ottenere il **via libera del tutor** per iniziare il codice: ogni giorno di attesa toglie un giorno al calendario della sezione 15.5.
 - Creare l'**email del progetto**: finché manca, il codice usa la variabile `PROJECT_EMAIL` e l'informativa un segnaposto.
-- Raccogliere in una cartella locale, fuori dal repository, i **file dell'Area Pro** (FBX, DWG o SKP) dei tagli da inserire, e compilare `docs/catalogo-inventario.md` con ciò che esiste per ogni taglio.
+- Compilare `docs/catalogo-inventario.md` con i file dell'Area Pro usati per i quattro prodotti e, per i prodotti futuri, con ciò che esiste per ogni taglio; i file restano in una cartella locale, fuori dal repository.
+- Scrivere i **file del catalogo** di Air, Air Corner e Cabanon in `data/prodotti/`, e passare Aladdin a `viewer: "svg"`, con i codici del manifest (sezione 15.5).
 - Portare **Node.js alla versione 24** su entrambi i portatili: su uno è installata la 22 (P10).
 - Annotare cosa è stato verificato di Docker e di Gmail nella fase 1, con le date, in `docs/prove.md`.
-- Scegliere il **terzo prodotto**, con la foto ufficiale, durante lo sviluppo (sezione 15.5).
+- Spostare viste e texture da `data/viste/` a `public/viste/` e aggiornare i percorsi degli script (fase 2).
 
 ---
 
@@ -1021,9 +1000,10 @@ Le domande hanno avuto risposta il 2026-11-11 e il 2026-11-12 (sezione 20.2):
 - **Funzioni di intelligenza artificiale nell'applicazione.** Escluse per indicazione del tutor; le regole di migrabilità lasciano aperta la possibilità di aggiungerle.
 - **Regole di compatibilità, optional e gruppi a scelta multipla.** Il catalogo non ne ha (scheda 0027).
 - **3D in tempo reale.** Escluso da questa versione.
-- **Generatore delle viste a parametri**, **script delle viste nel repository** e **vista dall'interno** (schede 0025 e 0029).
+- **Generatore delle viste a parametri** e **script che generano le viste dal modello 3D** (schede 0025 e 0029); gli script di `scripts/viste/` convertono e correggono le viste prodotte in chat, non le generano.
+- **Interno 3D per prodotti diversi da Cabanon** (scheda 0031).
+- **Yoku S**, solo se avanza tempo (scheda 0031, appendice A.2); **Cabanon Terrace** e **deck Small**, perché manca il modello.
 - **Viste per i tagli senza file dell'Area Pro:** riusano le viste di un altro taglio della stessa forma o restano fuori (sezione 9.2).
-- **Pedana disegnata come riquadro di 120 × 120 cm:** colora tutto il pavimento (sezione 9.3).
 - **Nuovo invio della notifica al progetto** dopo un fallimento (scheda 0030).
 - **Varianti che cambiano la forma** oltre quella del file dell'Area Pro disponibile.
 - **Funzionamento senza JavaScript** e pagina di conferma con un proprio indirizzo (scheda 0026).
@@ -1045,10 +1025,10 @@ Le domande hanno avuto risposta il 2026-11-11 e il 2026-11-12 (sezione 20.2):
    - PostgreSQL + JSONB (il dominio è relazionale);
    - Docker solo per il database (indicazione del tutor, riproducibilità);
    - Drizzle (migrazioni e tipi in due);
-   - viste SVG prodotte dai file 3D del produttore invece del 3D in tempo reale (peso, fedeltà al prodotto, procedura conservata e controllata);
+   - viste SVG prodotte dai file del produttore, con le texture delle foto di effe.it, invece del 3D in tempo reale (peso, fedeltà al prodotto, procedura conservata e verificata su 114 combinazioni);
    - dati minimi e nessun cookie.
 4. Per ogni scelta dire l'alternativa scartata e cosa farebbe cambiare idea, ad esempio "Puppeteer se la fedeltà del PDF non bastasse" o "Postgres online cambiando solo `.env` se si pubblicasse".
-5. Presentare le esclusioni (prezzi, IA, 3D, applicazione in Docker, scheduler, regole e optional) come decisioni motivate. Mostrare l'inventario dei file disponibili per prodotto e il tempo misurato per taglio: trasformano "il più possibile" in un dato difendibile. Dire apertamente che la pedana obbligatoria si discosta dal sito, che il prodotto che mostra combinazioni senza foto è Yoku S e che per Yoku S si è assunto che entrambi i legni esterni valgano per tutte le versioni (appendice A.2).
+5. Presentare le esclusioni (prezzi, IA, 3D, applicazione in Docker, scheduler, regole e optional) come decisioni motivate. Mostrare l'inventario dei file disponibili per prodotto e il tempo misurato per taglio: trasformano "il più possibile" in un dato difendibile. Dire apertamente dove le viste si discostano dal sito: la pedana obbligatoria di Aladdin, Aladdin 45 disegnato con le misure del DWG (180 × 160 invece di 180 × 140 cm), i deck di Cabanon ricostruiti dai PDF e dai render, i tagli di Air che riusano le viste di un altro (`data/viste/README.md`, "Cose da sapere").
 6. Avere pronta la risposta a "perché il catalogo sta anche nel database, se la fonte sono i file?": vincoli come seconda difesa, lettura del catalogo dalla pagina, coerenza con le configurazioni salvate, indicazione del tutor.
 
 ---
@@ -1091,6 +1071,24 @@ Le domande hanno avuto risposta il 2026-11-11 e il 2026-11-12 (sezione 20.2):
 | Notifica fallita | Rimandata all'avvio | Registrata e non rimandata (10.3) |
 | Calendario | Fase 2 di un giorno | Fase 2 di due giorni, fasi 3 e 4 accorciate; nessun margine, dichiarato (15.5) |
 | Dettagli di codice | Nelle sezioni di architettura | Nell'appendice C |
+
+**Dopo la produzione delle viste (2026-11-13, scheda 0031).** Le righe "Ora" delle tabelle precedenti sulle viste valgono solo dove questa tabella non le cambia.
+
+| Punto | Prima | Ora |
+|---|---|---|
+| Prodotti di partenza | Aladdin, Yoku S e un terzo prodotto con la foto | Air, Air Corner, Aladdin e Cabanon, tutti al livello A; Yoku S messo da parte (2, 9.1, 15.5) |
+| Problema | Combinazioni senza foto, mostrate da Yoku S | Viste coerenti con interno e pianta, scelte senza foto (pedana, boiserie), riepilogo (2) |
+| Viste | Esterno, Frontale, Pianta, Materiali | Esterno, Interno (la vecchia Frontale), Pianta, Materiali; Interno 3D solo per Cabanon (9.1) |
+| Formato delle viste | Solo `<path>` con `data-zone` e `data-shade`, colori calcolati da `componiVista` | File base con forme, ombre e pattern in prospettiva, e marcature di ciò che cambia; manifest per prodotto (15.2) |
+| Legame con il catalogo | `zones`, `fixedZones`, colore e texture dei materiali, `materialiPerZona` | Codici uguali agli `id` del manifest; il manifest tiene texture e gradienti, il catalogo etichette e misure; codici anche con maiuscole (8.1, P1) |
+| Texture | Foto del campione fusa in moltiplicazione | Texture ripetibili ricavate dalle foto dei campioni di effe.it, con uno script (9.1, P13) |
+| Script delle viste | Nessuno nel repository | `scripts/viste/`: conversione, correzioni note, Interno 3D, materiali, texture, verifica; non generano le viste (9.1, appendice C) |
+| Cartelle | `public/viste/<prodotto>/<taglio>/`, `public/texture/` | `public/viste/<prodotto>/` con il manifest, `public/viste/texture/`; oggi in `data/viste/`, da spostare nella fase 2 (15.1) |
+| Pedana di Aladdin | Colora tutto il pavimento | Riquadro di 120 × 120 cm sotto la stufa (9.3) |
+| PDF | Esterno e frontale; prova con fusioni e sfocatura | Esterno e Interno; prova con pattern JPG e gradienti; `flat` con il colore medio della foto (11, P12) |
+| Livello B e regola delle 4 ore | Per i prodotti senza viste, Yoku S compreso | Ripiego per i prodotti futuri; oggi nessun prodotto al livello B (9.2) |
+| Criterio 2 | Aladdin e Yoku S al livello A, Yoku S per le combinazioni senza foto | Almeno 3 prodotti al livello A tra i quattro di partenza; tolta la parte sulle combinazioni senza foto (16) |
+| Prove | Formato a `<path>`, `materialiPerZona`, proporzioni | Formato a marcature, `controllaViste` sui codici, `componiVista` sulle marcature, `verifica.mjs` (18) |
 
 ### 23.2 Rispetto alla v5
 
@@ -1152,14 +1150,15 @@ Fonte: [effe.it/prodotto/aladdin](https://www.effe.it/prodotto/aladdin/), consul
 
 **Lacune e incertezze**
 - *Ordine delle dimensioni.* Il sito scrive le misure di Aladdin come larghezza × altezza × profondità ("200 x 210 x 160"). Verificato dall'autore il 2026-11-12: Aladdin 60 è 200 × 160 × 210 cm e Aladdin 45 è 180 × 140 × 210 cm (larghezza × profondità × altezza), come nel file.
-- *Pedana nel taglio 45.* Nessuna regola: la pedana è disponibile per entrambi i tagli, e nelle viste colora tutto il pavimento (sezione 9.3).
+- *Pedana nel taglio 45.* Nessuna regola: la pedana è disponibile per entrambi i tagli; nelle viste è un riquadro di 120 × 120 cm sotto la stufa, in posizione stimata dalle foto (sezione 9.3).
+- *Misure del 45 nelle viste.* Il DWG di Aladdin 45 misura 180 × 160 cm, il sito dice 180 × 140: le viste seguono il DWG, le misure mostrate quelle del sito.
 - *Pedana obbligatoria.* Il sito la presenta come completamento ("può essere completata"). Per scelta dell'autore una finitura è sempre selezionata, con Moka predefinita (scheda 0027).
-- *Cover della stufa.* Il sito la dice in alluminio anodizzato; nelle viste del mockup la stufa è la zona `stove`, a colore fisso scuro. Al confronto con le foto (fase 2) si decide se le facce della cover vanno nella zona `metal`.
-- *Colori dei materiali.* I valori esadecimali sono quelli delle viste di Aladdin 60 del mockup, dove fanno da base alla texture fusa in moltiplicazione; servono anche per il ripiego a colori pieni.
+- *Cover della stufa e frame.* Il sito li dice in alluminio anodizzato; nelle viste sono a colore fisso, già nel file base.
+- *Colori dei materiali.* Le texture vengono dalle foto dei campioni del sito (sezione 9.1); i valori esadecimali della bozza `aladdin.json`, presi dal mockup, escono dal file con `color`, `texture`, `zones` e `fixedZones` (scheda 0031).
 
 ### A.2 Dati di Yoku S
 
-Fonte: [effe.it/prodotto/yoku-s](https://www.effe.it/prodotto/yoku-s/), consultata il 2026-11-12. Serve a mostrare le combinazioni senza foto (sezione 2); il file del prodotto si scrive nella fase 6.
+Fonte: [effe.it/prodotto/yoku-s](https://www.effe.it/prodotto/yoku-s/), consultata il 2026-11-12. Il 2026-11-13 Yoku S è stato messo da parte (scheda 0031): si inserisce solo se avanza tempo, con la procedura della sezione 9.1. I dati restano qui per quel caso; le parti su zone e `fixedZones` vanno lette con i codici del manifest al posto delle zone.
 
 | Dato | Valore sul sito |
 |---|---|
@@ -1181,6 +1180,7 @@ Il mockup è un file HTML/JS, generato a partire dai file forniti dall'autore e 
 - **Due modi di disegnare.** Per un solo prodotto e un solo taglio (Aladdin 60) le viste Esterno, Frontale e Pianta sono disegni SVG già pronti, incorporati nel file come dati e prodotti in chat dal modello 3D: il codice ne cambia solo colori e texture. Le zone sono `ext`, `roof`, `bench`, `floor`, `mirror`, `metal`, `stove`, `glass`, più un'ombra a terra sfumata; ogni zona è disegnata con sei livelli d'ombra e la foto del campione fusa in moltiplicazione, con la texture di tetto e panche ruotata di 90 gradi. Il pavimento occupa tutto l'interno. Pesano fino a 305 KB e usano classi, variabili CSS e `color-mix()`. Per ogni altro prodotto e taglio il mockup usa un disegno schematico calcolato da pochi parametri, molto più povero. La v6 descriveva il secondo modo come se avesse prodotto le viste del primo.
 - **Materiali:** per le viste pronte, piccole foto dei campioni incorporate nel file; per il disegno schematico, colori approssimati e venature generate dal codice (`feTurbulence`).
 - **Dati inventati da non riportare nel catalogo:** gli optional (cromoterapia, audio, mensole, pedana aggiuntiva), la regola che disattiva un optional per un taglio e il valore "Nessuna pedana".
+- **Oggi.** Le viste del mockup non si usano più: tutte le viste, comprese quelle di Aladdin 60, vengono dai pacchetti prodotti in chat il 2026-11-13 (sezione 9.1, scheda 0031).
 - **Da non riprendere:** l'elenco è in P15 (sezione 20.3). In più, la nota "nel prototipo reale qui compaiono render o un modello 3D" contrasta con l'esclusione del 3D (sezione 21).
 
 ## 26. Appendice C: note di implementazione
@@ -1198,7 +1198,8 @@ Il corpo del documento fissa comportamenti e garanzie; qui c'è il modo di otten
 - **Runtime (P8).** PDFKit e resvg non girano nel runtime Edge. `nodejs` è già il predefinito: nessun file esporta `runtime`, e un file `'use server'` non potrebbe farlo, perché può esportare solo funzioni async.
 - **Font sul server (P14).** Il percorso è `path.join(process.cwd(), 'src/fonts', nome)`.
 - **Pagine dinamiche (sezione 10.1).** `/` legge `searchParams`, quindi Next.js la genera a ogni richiesta. `/galleria` non li legge e `next build` la genererebbe una volta sola, con il catalogo e `ENABLE_GALLERY` del momento della build: il file esporta `export const dynamic = 'force-dynamic'` e risponde `notFound()` se la galleria non è attiva (P6).
-- **Viste di un altro prodotto (sezione 9.3).** Il browser le legge con `fetch('/viste/<prodotto>/<taglio>/<vista>.svg')`; il server le legge da disco con `path.join(process.cwd(), 'public/viste', …)`.
+- **Viste di un altro prodotto (sezione 9.3).** Il browser legge prima `fetch('/viste/<prodotto>/manifest.json')`, poi i file elencati in `files` (`/viste/<prodotto>/<cartella>/<vista>.svg`); il server li legge da disco con `path.join(process.cwd(), 'public/viste', …)`. Le texture si chiamano con `href = (t) => '/viste/texture/' + fileTexture(t)` nel browser e con un data URI (`tipoTexture` dà il tipo MIME) nel server.
 - **Mailpit già avviato (sezione 18).** Il `globalSetup` di Vitest avvia Mailpit solo se la porta 1025 non risponde già, e chiude solo il processo che ha avviato; in Playwright il `webServer` di Mailpit ha `reuseExistingServer: true`. Così le prove girano anche con il Mailpit dello sviluppo acceso.
 - **Alias nelle prove (sezione 18).** `vitest.config.ts` dichiara in `resolve.alias` lo stesso alias `@` → `src` di `tsconfig.json`, che Vitest non legge da solo.
-- **Conversione delle viste del mockup (sezione 9.1).** Si fa con lo script usa e getta `scripts/converti-mockup.ts`, eseguito una volta nella fase 2: legge l'oggetto `AVIEW` del mockup con `JSON.parse` e scrive i tre file, con la radice `<svg xmlns=… viewBox=…>` della sezione 15.2. Ogni `<path class="<zona><ombra>">` diventa `<path data-zone="<zona>" data-shade="<ombra>">` con lo stesso `d` e `fill-rule="evenodd"`, e `class="glass"` diventa `data-zone="glass"` con `fill-rule="evenodd"`, senza `data-shade`; i path con `fill="url(#atx_…)"` (la seconda passata della texture) si tolgono; il `<polygon>` dell'ombra, dove c'è (non nella Pianta), diventa un `<path data-zone="shadow">`, con il `d` ricavato dai `points` (`M` sul primo punto, `L` sugli altri, `Z` in fondo), e resta il primo elemento; lo `<style>` e le `<defs>` si tolgono. Il `viewBox` resta quello originale.
+- **Script delle viste (sezione 9.1).** Per rifare tutto dai pacchetti, in quest'ordine: `node scripts/viste/converti-pacchetti.mjs <pacchetti> public/viste`, `node scripts/viste/correggi-viste.mjs`, `node scripts/viste/vista-interna-cabanon.mjs`, `node scripts/viste/materiali.mjs`; poi si tolgono le texture PNG che `converti-pacchetti` riscrive. Le texture si rifanno solo se cambiano le foto, con `powershell -ExecutionPolicy Bypass -File scripts/viste/texture-dalle-foto.ps1` (Windows). Le correzioni sono idempotenti: ognuna lascia una marcatura (`data-colori`, `data-pavimento`) o controlla che il cambiamento manchi. `vista-interna-cabanon.mjs` toglie poligoni per indice e controlla i riempimenti attesi: se cambia una correzione che aggiunge o toglie poligoni, gli indici vanno ricontati. Infine `node scripts/viste/verifica.mjs <pacchetti> public/viste`.
+- **`flat` (sezione 11).** Non c'è ancora in `componi.mjs`: si aggiunge portando la funzione in TypeScript, sostituendo ogni `<image>` dei pattern con un `<rect>` del colore medio di `medie.json`.
